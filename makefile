@@ -10,7 +10,7 @@ graph.o: graph/graph.cpp graph/graph.h graph/vertex.cpp graph/vertex.h
 	g++ -c graph/graph.cpp -o graph/graph.o
 vertex.o: graph/vertex.cpp graph/vertex.h
 	g++ -c graph/vertex.cpp -o graph/vertex.o
-backup: graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h makefile
-	zip ../backup.zip graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h makefile
+backup: graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h makefile README doc.odt
+	zip ../backup.zip graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h makefile README doc.odt
 clean:
 	rm -vf */*.o
