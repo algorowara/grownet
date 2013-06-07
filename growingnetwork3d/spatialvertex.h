@@ -7,15 +7,11 @@ class SpatialVertex : public Vertex{
 	
 public:
 
-	SpatialVertex(long int dimension, double* position, long int startTime);
-	long int getDimension();
-	double* getPosition();
-	~SpatialVertex();
-
-protected:
-
 	long int dimension;
 	double* position;
+
+	SpatialVertex(long int dimension, double* position, long int startTime);
+	~SpatialVertex();
 	
 };
 

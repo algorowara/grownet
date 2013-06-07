@@ -22,6 +22,7 @@ public:
 	GrowingNetwork3D(long int n, long int m);
 	void grow(long int n);
 	double* randomLocation();
+	double* displacement(SpatialVertex* a, SpatialVertex* b);
 	vector<SpatialVertex*>* findMNearestNeighbors(SpatialVertex* start);
 	void equalize();
 	
