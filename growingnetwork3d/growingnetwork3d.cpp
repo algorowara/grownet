@@ -4,11 +4,11 @@
 #include <cstdlib>
 #include <cfloat>
 
-#define DIST_SQUARED(disp) (disp[0] * disp[0] + disp[1] * disp[1])
-
 using namespace std;
 
 GrowingNetwork3D::GrowingNetwork3D(long int n, long int m){
+	
+	radius = 1;
 	
 	for(int i = 0; i < m+1; i++){	// for the first m+1 nodes, which form a clique
 		
@@ -58,6 +58,7 @@ void GrowingNetwork3D::grow(long int n){
  * randomly select a point on the surface of a sphere
  * using theta = 2 * pi * u, phi = acos(2 * v - 1), where
  * u and v are taken uniformly from the interval (0, 1)
+ * see doc.odt for specification of the coordinate system
  */
 double* GrowingNetwork3D::randomLocation(){
 	
@@ -73,16 +74,12 @@ double* GrowingNetwork3D::randomLocation(){
 /**
  * calculates the linear displacement in the theta- and phi-directions
  * between two vertices (from a to b)
- * assumes a unit sphere, so a radius of one is implied
  * dynamically allocates an array which should be deleted after use
  */
-double* GrowingNetwork3D::displacement(SpatialVertex* a, SpatialVertex* b){
+double* GrowingNetwork3D::calculateDisplacement(SpatialVertex* a, SpatialVertex* b){
 	
-	double* displacement = new double[DIM];
-	
-
-	
-	return displacement;
+	//TODO: implement this
+	return NULL;
 	
 }
 
@@ -152,4 +149,45 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 	
 	return near;
 	 
+}
+
+/**
+ * method to calculate the linear distance covered by an edge
+ * for some edge that is a straight line
+ * if no edge exists between the specified nodes, returns 0
+ * note that the result is linear with radius;
+ * if the radius is dependent on N, results for different N
+ * will not be directly comparable
+ */
+double GrowingNetwork3D::edgeLinearDistance(SpatialVertex* a, SpatialVertex* b){
+	
+	if(!a->hasNeighbor(b)){	// if the specified pair of nodes does is not linked
+	
+		return 0;	// no linear distance is covered
+		
+	}
+	
+	// convert the spherical coordinates of both nodes to Cartesian coordinates
+	// and store the Cartesian displacement
+	double aCart[3];
+	double bCart[3];
+	double disCart[3];
+	
+	aCart[0] = radius * sin(PHI(a)) * cos(THETA(a));
+	aCart[1] = radius * sin(PHI(a)) * sin(THETA(a));
+	aCart[2] = radius * cos(PHI(a));
+	
+	bCart[0] = radius * sin(PHI(b)) * cos(THETA(b));
+	bCart[1] = radius * sin(PHI(b)) * sin(THETA(b));
+	bCart[2] = radius * cos(PHI(a));
+	
+	for(int i = 0; i < 3; i++){
+		
+		disCart[i] = bCart[i] - aCart[i];
+		
+	}
+	
+	// return the square root of the sum of the squares of the cartesian components
+	return sqrt(disCart[0] * disCart[0] + disCart[1] * disCart[1]  + disCart[2] * disCart[2]);
+	
 }
