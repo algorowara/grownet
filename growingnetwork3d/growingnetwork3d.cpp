@@ -167,25 +167,11 @@ double GrowingNetwork3D::edgeLinearDistance(SpatialVertex* a, SpatialVertex* b){
 		
 	}
 	
-	// convert the spherical coordinates of both nodes to Cartesian coordinates
-	// and store the Cartesian displacement
-	double aCart[3];
-	double bCart[3];
-	double disCart[3];
-	
-	aCart[0] = radius * sin(PHI(a)) * cos(THETA(a));
-	aCart[1] = radius * sin(PHI(a)) * sin(THETA(a));
-	aCart[2] = radius * cos(PHI(a));
-	
-	bCart[0] = radius * sin(PHI(b)) * cos(THETA(b));
-	bCart[1] = radius * sin(PHI(b)) * sin(THETA(b));
-	bCart[2] = radius * cos(PHI(a));
-	
-	for(int i = 0; i < 3; i++){
-		
-		disCart[i] = bCart[i] - aCart[i];
-		
-	}
+	// compute and store the Cartesian coordinates describing the displacement between the nodes
+	double disCart[3];	
+	disCart[0] = radius * (sin(PHI(a)) * cos(THETA(a)) - sin(PHI(b)) * cos(THETA(b)));
+	disCart[1] = radius * (sin(PHI(a)) * sin(THETA(a)) - sin(PHI(b)) * sin(THETA(b)));
+	disCart[2] = radius * (cos(PHI(a)) - cos(PHI(b)));
 	
 	// return the square root of the sum of the squares of the cartesian components
 	return sqrt(disCart[0] * disCart[0] + disCart[1] * disCart[1]  + disCart[2] * disCart[2]);
