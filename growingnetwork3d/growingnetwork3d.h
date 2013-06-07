@@ -3,7 +3,7 @@
 
 #include "../graph/growingnetwork.h"
 
-/*
+/**
  * though the nodes inhabit three-dimensional space,
  * they do so on the surface of a sphere,
  * making the radial component of their sphereical coordinates
@@ -23,7 +23,8 @@ public:
 	void grow(long int n);
 	double* randomLocation();
 	double* displacement(SpatialVertex* a, SpatialVertex* b);
-	vector<SpatialVertex*>* findMNearestNeighbors(SpatialVertex* start);
+	double* force(double* disp);
+	SpatialVertex** findMNearestNeighbors(SpatialVertex* start);
 	void equalize();
 	
 };
