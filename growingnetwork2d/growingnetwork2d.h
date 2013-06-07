@@ -14,7 +14,6 @@ public:
 	long int edgeArcDistance(Vertex* a, Vertex* b);
 	double* edgeAgeVsArcDistance();
 	double edgeLinearDistance(Vertex* a, Vertex* b);
-	double* edgeAgeVsLinearDistance();
 	double* edgeArcDistanceDistribution();
 
 };

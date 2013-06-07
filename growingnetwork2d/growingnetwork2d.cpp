@@ -137,25 +137,6 @@ double GrowingNetwork2D::edgeLinearDistance(Vertex* a, Vertex* b){
 	
 }
 
-double* GrowingNetwork2D::edgeAgeVsLinearDistance(){
-	
-	double* arc = edgeAgeVsArcDistance();
-	double* lin = new double[N];
-	
-	double r = N/(2 * M_PI);
-	
-	for(int i = 0; i < N; i++){
-	
-		lin[i] = 2 * r * sin(M_PI * arc[i]/N);
-		
-	}
-	
-	delete arc;
-	
-	return lin;
-	
-}
-
 /*
  * method to return the proportion of edges of a given arc distance, for all possible arc distances
  * where the resulting array is N/2 + 1 long, as N/2 is the maximum possible arc distance

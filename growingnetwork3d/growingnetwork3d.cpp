@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <cfloat>
 
-#define DIST_SQUARED(displacement) (displacement[0] * displacement[0] + displacement[1] * displacement[1])
+#define DIST_SQUARED(disp) (disp[0] * disp[0] + disp[1] * disp[1])
 
 using namespace std;
 
@@ -35,11 +35,11 @@ void GrowingNetwork3D::grow(long int n){
 	while(n > 0){
 		
 		SpatialVertex* newNode = new SpatialVertex(DIM, randomLocation(), getTime());
-		vector<SpatialVertex*>* neighbors = findMNearestNeighbors(newNode);
+		SpatialVertex** neighbors = findMNearestNeighbors(newNode);
 		
 		for(int i = 0; i < m; i++){
 			
-			newNode->addNeighbor(neighbors->at(i));
+			newNode->addNeighbor(neighbors[i]);
 			
 		}
 		
@@ -76,9 +76,9 @@ double* GrowingNetwork3D::randomLocation(){
  * assumes a unit sphere, so a radius of one is implied
  * dynamically allocates an array which should be deleted after use
  */
-double* GrowingNetwork3D::displacement(Vertex* a, Vertex* b){
+double* GrowingNetwork3D::displacement(SpatialVertex* a, SpatialVertex* b){
 	
-	double* displacement = new double[DIM]
+	double* displacement = new double[DIM];
 	
 
 	
@@ -90,13 +90,13 @@ double* GrowingNetwork3D::displacement(Vertex* a, Vertex* b){
  * method to calculate the repulsive force between two nodes based on their displacement
  * currently falls off as 1/r^2
  */
-double* GrowingNetwork3D::force(double* disp){
+double* GrowingNetwork3D::calculateForce(double* disp){
 	
 	double* force = new double[DIM];
 	double magnitude = 1.0 / DIST_SQUARED(disp);	// calculate the magnitude as 1/r^2, units are irrelevant
 	
 	force[0] = magnitude * disp[0] / sqrt(DIST_SQUARED(disp));	// multiply the magnitude
-	force[1] = magnitude * displacement[1] / sqrt(DIST_SQUARED(disp));	// by the unit vector
+	force[1] = magnitude * disp[1] / sqrt(DIST_SQUARED(disp));	// by the unit vector
 	
 	return force;
 	
@@ -125,7 +125,7 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 			
 		}
 	
-		double* disp = displacement(start, nodes.at(i));
+		double* disp = calculateDisplacement(start, nodes.at(i));
 		double square = DIST_SQUARED(disp);
 		
 		for(int j = 0; j < m; j++){	// iterate through all distance-squared records

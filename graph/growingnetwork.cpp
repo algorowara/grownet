@@ -36,22 +36,22 @@ long int GrowingNetwork::edgeAge(Vertex* a, Vertex* b){
 	
 }
 
-/*
- * generate an array relating edge age (the index) to average edge connectivity (the content)
- * where edge connectivity is defined as the proportion of shortest paths of which the edge is a part
+/**
+ * generate an array relating edge age (the index) to average edge betweenness (the content)
+ * where edge betweenness is defined as the proportion of shortest paths of which the edge is a part
  * as there are as many ages as nodes, the resulting dynamically allocated array will be of size N
  */
-double* GrowingNetwork::edgeAgeVsConnectivity(){
+double* GrowingNetwork::edgeAgeVsBetweenness(){
 
-	long int connectivity[N];	// this array is local and temporary to minimize the effects of floating-point error
-											// the index signifies an age
-											// the element signifies the number of shortest paths which use that edge
+	long int betweenness[N];	// this array is local and temporary to minimize the effects of floating-point error
+								// the index signifies an age
+								// the element signifies the number of shortest paths which use that edge
 
-	double* dconn = new double[N];
+	double* dbet = new double[N];
 	
 	for(int i = 0; i < N; i++){
 		
-		connectivity[i] = 0;
+		betweenness[i] = 0;
 		
 	}
 	
@@ -67,7 +67,7 @@ double* GrowingNetwork::edgeAgeVsConnectivity(){
 				Vertex* a = nodes.at(j)->pathFromInitial.at(k-1);	// use the previous node
 				Vertex* b = nodes.at(j)->pathFromInitial.at(k);	// and the current node
 				
-				connectivity[edgeAge(a, b)]++;	// to determine the age of the edge, and increment the count accordingly
+				betweenness[edgeAge(a, b)]++;	// to determine the age of the edge, and increment the count accordingly
 			
 			}
 			
@@ -79,13 +79,45 @@ double* GrowingNetwork::edgeAgeVsConnectivity(){
 	
 	for(int i = 0; i < N; i++){	// average and normalize each value
 		
-		dconn[i] = connectivity[i]/(double)m;	// average over the m edges of each age
-		dconn[i] /= N * (N-1);	// normalize over the number of shortest paths
-														// which will each be counted twice:
-														// once from node A to node B, and once from node B to node A
+		dbet[i] = betweenness[i]/(double)m;	// average over the m edges of each age
+		dbet[i] /= N * (N-1);	// normalize over the number of shortest paths
+								// which will each be counted twice:
+								// once from node A to node B, and once from node B to node A
 		
 	}
 	
-	return dconn;
+	return dbet;
+	
+}
+
+/**
+ * returns a dynamically allocated array of doubles relating
+ * edge age (the indices of the array) to
+ * average linear distance for that edge (the elements of the array)
+ */
+double* GrowingNetwork::edgeAgeVsLinearDistance(){
+	
+	double* lin = new double[N];
+	
+	for(int i = 0; i < N; i++){	// iterating over all nodes in the GrowingNetwork
+		
+		for(int j = 0; j < K(i); i++){	// for each neighbor (and the corresponding edge)
+		
+			Vertex* a = nodes.at(i);
+			Vertex* b = nodes.at(i)->neighbors.at(j);
+			lin[edgeAge(a, b)] += edgeLinearDistance(a, b);	// add the length of the edge to the sum
+			
+		}
+		
+	}
+	
+	for(int i = 0; i < N; i++){	// for each sum of lengths
+		
+		lin[i] /= 2 * m;	// average over the number of edges of age i (m edges)
+							// and the number of time each edge is counted (twice)
+		
+	}
+	
+	return lin;
 	
 }
