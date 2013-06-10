@@ -6,8 +6,8 @@
 
 using namespace std;
 
-#define N (nodes.size())
-#define K(i) (nodes.at(i)->neighbors.size())
+#define N nodes.size()
+#define K(i) nodes.at(i)->neighbors.size()
 
 class Graph{
 
@@ -26,6 +26,7 @@ public:
 	static void memoize(Vertex* root);
 	static void memoize(Vertex* root, vector<Vertex*> path, long int distance);
 	static void clean(Vertex* root);
+	~Graph();
 	
 };
 

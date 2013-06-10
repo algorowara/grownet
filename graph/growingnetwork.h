@@ -13,7 +13,7 @@ public:
 	virtual void grow(long int n) = 0;
 	long int edgeAge(Vertex* a, Vertex* b);
 	double* edgeAgeVsBetweenness();
-	virtual double edgeLinearDistance(Vertex* a, Vertex* b);
+	virtual double edgeLinearDistance(Vertex* a, Vertex* b) = 0;
 	double* edgeAgeVsLinearDistance();
 	
 protected:

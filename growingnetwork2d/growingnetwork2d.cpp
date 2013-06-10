@@ -1,6 +1,4 @@
-#include "../graph/vertex.h"
-#include "../graph/growingnetwork.h"
-#include "growingnetwork2d.h"
+#include "../growingnetwork2d/growingnetwork2d.h"
 #include <vector>
 #include <iostream>
 #include <ctime>

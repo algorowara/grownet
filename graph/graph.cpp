@@ -212,3 +212,13 @@ void Graph::clean(Vertex* root){
 	}
 	
 }
+
+Graph::~Graph(){
+	
+	for(long int i = 0; i < N; i++){
+		
+		delete nodes.at(i);
+		
+	}
+	
+}
