@@ -126,7 +126,7 @@ double* GrowingNetwork2D::edgeAgeVsArcDistance(){
 	
 }
 
-double GrowingNetwork2D::edgeLinearDistance(Vertex* a, Vertex* b){
+double GrowingNetwork2D::linearDistance(Vertex* a, Vertex* b){
 
 	double theta = 2 * M_PI * edgeArcDistance(a, b)/N;
 	double r = N/(2 * M_PI);

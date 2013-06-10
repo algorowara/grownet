@@ -105,7 +105,7 @@ double* GrowingNetwork::edgeAgeVsLinearDistance(){
 		
 			Vertex* a = nodes.at(i);
 			Vertex* b = nodes.at(i)->neighbors.at(j);
-			lin[edgeAge(a, b)] += edgeLinearDistance(a, b);	// add the length of the edge to the sum
+			lin[edgeAge(a, b)] += linearDistance(a, b);	// add the length of the edge to the sum
 			
 		}
 		

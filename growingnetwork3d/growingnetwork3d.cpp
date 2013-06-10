@@ -64,37 +64,34 @@ double* GrowingNetwork3D::randomLocation(){
 	
 	double* position = new double[DIM];
 	
-	position[0] = 2 * M_PI * (((double)rand())/RAND_MAX);
-	position[1] = acos(2 * (((double)rand())/RAND_MAX) - 1);
+	double theta = 2 * M_PI * (((double)rand())/RAND_MAX);
+	double phi = acos(2 * (((double)rand())/RAND_MAX - 1);
+	
+	position[0] = radius * sin(phi) * cos(theta);
+	position[1] = radius * sin(phi) * sin(theta);
+	position[2] = radius * cos(phi);
 	
 	return position;
 	
 }
 
 /**
- * calculates the linear displacement in the theta- and phi-directions
- * between two vertices (from a to b)
- * dynamically allocates an array which should be deleted after use
- */
-double* GrowingNetwork3D::calculateDisplacement(SpatialVertex* a, SpatialVertex* b){
-	
-	//TODO: implement this
-	return NULL;
-	
-}
-
-/**
  * method to calculate the repulsive force between two nodes based on their displacement
  * currently falls off as 1/r^2
+ * dynamically allocates an array which should be deleted by the caller after use
  */
 double* GrowingNetwork3D::calculateForce(double* disp){
 	
 	double* force = new double[DIM];
 	double magnitude = 1.0 / DIST_SQUARED(disp);	// calculate the magnitude as 1/r^2, units are irrelevant
 	
-	force[0] = magnitude * disp[0] / sqrt(DIST_SQUARED(disp));	// multiply the magnitude
-	force[1] = magnitude * disp[1] / sqrt(DIST_SQUARED(disp));	// by the unit vector
-	
+	for(long int i = 0; i < DIM; i++){
+
+		force[i] = magnitude * disp[i] / sqrt(DIST_SQUARED(disp));	// multiply the magnitude
+																	// by the unit vector
+																	
+	}
+
 	return force;
 	
 }
@@ -122,7 +119,7 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 			
 		}
 	
-		double* disp = calculateDisplacement(start, nodes.at(i));
+		double* disp = calculateAngularDisplacement(start, nodes.at(i));
 		double square = DIST_SQUARED(disp);
 		
 		for(int j = 0; j < m; j++){	// iterate through all distance-squared records
@@ -152,28 +149,13 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 }
 
 /**
- * method to calculate the linear distance covered by an edge
- * for some edge that is a straight line
- * if no edge exists between the specified nodes, returns 0
+ * method to calculate the length of the straight line between two nodes
  * note that the result is linear with radius;
  * if the radius is dependent on N, results for different N
  * will not be directly comparable
  */
-double GrowingNetwork3D::edgeLinearDistance(SpatialVertex* a, SpatialVertex* b){
+double GrowingNetwork3D::linearDistance(SpatialVertex* a, SpatialVertex* b){
 	
-	if(!a->hasNeighbor(b)){	// if the specified pair of nodes does is not linked
-	
-		return 0;	// no linear distance is covered
-		
-	}
-	
-	// compute and store the Cartesian coordinates describing the displacement between the nodes
-	double disCart[3];	
-	disCart[0] = radius * (sin(PHI(a)) * cos(THETA(a)) - sin(PHI(b)) * cos(THETA(b)));
-	disCart[1] = radius * (sin(PHI(a)) * sin(THETA(a)) - sin(PHI(b)) * sin(THETA(b)));
-	disCart[2] = radius * (cos(PHI(a)) - cos(PHI(b)));
-	
-	// return the square root of the sum of the squares of the cartesian components
-	return sqrt(disCart[0] * disCart[0] + disCart[1] * disCart[1]  + disCart[2] * disCart[2]);
+	return ((X(b) - X(a)) * (X(b) - X(a)) + (Y(b) - Y(a)) * (Y(b) - Y(a)) + (Z(b) - Z(a)) * (Z(b) - Z(a)));
 	
 }

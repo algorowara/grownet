@@ -2,6 +2,7 @@
 #define GROWINGNETWORK2D_H
 
 #include "../graph/growingnetwork.h"
+#include <omp.h>
 
 using namespace std;
 
@@ -13,7 +14,7 @@ public:
 	void grow(long int n);
 	long int edgeArcDistance(Vertex* a, Vertex* b);
 	double* edgeAgeVsArcDistance();
-	double edgeLinearDistance(Vertex* a, Vertex* b);
+	double linearDistance(Vertex* a, Vertex* b);
 	double* edgeArcDistanceDistribution();
 
 };
