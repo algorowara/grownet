@@ -80,18 +80,36 @@ double* GrowingNetwork3D::randomLocation(){
  * currently falls off as 1/r^2
  * dynamically allocates an array which should be deleted by the caller after use
  */
-double* GrowingNetwork3D::calculateForce(double* disp){
+double* GrowingNetwork3D::sumForces(SpatialVertex* node){
 	
-	double* force = new double[DIM];
-	double magnitude = 1.0 / DIST_SQUARED(disp);	// calculate the magnitude as 1/r^2, units are irrelevant
+	double* force = new double[DIM];	// allocate a new array for the force vector
+	SpatialVertex* other;	// local placeholder for any other node in two-body interactions
+	double magnitude, distance;	// local placeholders for the magnitude of a force and the distance between two nodes
 	
-	for(long int i = 0; i < DIM; i++){
-
-		force[i] = magnitude * disp[i] / sqrt(DIST_SQUARED(disp));	// multiply the magnitude
-																	// by the unit vector
-																	
+	for(int i = 0; i < DIM; i++){	// ensure all components are set to zero first
+		
+		force[i] = 0;
+		
 	}
-
+	
+	for(int i = 0; i < N; i++){	// for every node in the graph
+		
+		if(nodes.at(i) == node){	// except this one
+			
+			continue;	// skip this one
+			
+		}
+		
+		other = nodes.at(i);
+		magnitude = 1.0 / DISTANCE_SQUARED(node, other);	// calculate the unitless magnitude of the repulsive force
+		distance = DISTANCE(node, other);
+		
+		force[0] += magnitude * (X(node) - X(other))/distance;	// multiply the magnitude
+		force[1] += magnitude * (Y(node) - Y(other))/distance;	// by the unit vector
+		force[2] += magnitude * (Z(node) - Z(other))/distance;	// of the displacement
+		
+	}
+	
 	return force;
 	
 }
@@ -148,14 +166,15 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 	 
 }
 
-/**
- * method to calculate the length of the straight line between two nodes
- * note that the result is linear with radius;
- * if the radius is dependent on N, results for different N
- * will not be directly comparable
- */
-double GrowingNetwork3D::linearDistance(SpatialVertex* a, SpatialVertex* b){
+void GrowingNetwork3D::normalizeRadius(SpatialVertex* node){
 	
-	return ((X(b) - X(a)) * (X(b) - X(a)) + (Y(b) - Y(a)) * (Y(b) - Y(a)) + (Z(b) - Z(a)) * (Z(b) - Z(a)));
+	// find the ratio of the ideal radius to the current radial distance
+	double ratio = radius / sqrt(DIST_SQUARED(node->position));
+	
+	for(long int i = 0; i < DIM; i++){	// for each dimension
+		
+		node->position[i] *= ratio;	// multiply it by that ratio
+		
+	}
 	
 }

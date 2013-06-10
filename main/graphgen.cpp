@@ -15,7 +15,7 @@ int main(){	// average degree as a function of node age
 		
 	}
 	
-	#pragma omp parallel shared(average) private(net, i) num_threads(4)
+	#pragma omp parallel shared(average) private(net, i)
 	{
 		
 		#pragma omp for schedule(guided)

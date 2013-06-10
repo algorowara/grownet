@@ -11,7 +11,8 @@
 #define X(node) node->position[0]
 #define Y(node) node->position[1]
 #define Z(node) node->position[2]
-#define DIST_SQUARED(d) (d[0] * d[0] + d[1] * d[1] + d[2] * d[2])
+#define DISTANCE_SQUARED(a, b) ((X(b) - X(a)) * (X(b) - X(a)) + (Y(b) - Y(a)) * (Y(b) - Y(a)) + (Z(b) - Z(a)) * (Z(b) - Z(a)))
+#define DISTANCE(a, b) sqrt(DISTANCE_SQUARED(a, b))
 
 using namespace std;
 
@@ -26,10 +27,10 @@ public:
 	void grow(long int n);
 	double* randomLocation();
 	double* calculateAngularDisplacement(SpatialVertex* a, SpatialVertex* b);
-	double* calculateForce(double* disp);
+	double* sumForces(SpatialVertex* node);
 	SpatialVertex** findMNearestNeighbors(SpatialVertex* start);
 	void equalize();
-	double linearDistance(SpatialVertex* a, SpatialVertex* b);
+	void normalizeRaidus(SpatialVertex* node);
 	
 };
 
