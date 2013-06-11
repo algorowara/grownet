@@ -4,10 +4,12 @@ using namespace std;
 
 GrowingNetwork3D::GrowingNetwork3D(long int n, long int m){
 	
+	srand(std::time(NULL));
+	
 	radius = 1;
 	
 	for(long int i = 0; i < m+1; i++){	// for the first m+1 nodes, which form a clique
-		
+	
 		SpatialVertex* newNode = new SpatialVertex(DIM, randomLocation(), getTime());	// generate a new node in DIM dimensions
 		nodes.push_back(newNode);
 		
@@ -41,7 +43,7 @@ void GrowingNetwork3D::grow(long int n){
 			
 		}
 		
-		addNode(newNode);
+		nodes.push_back(newNode);
 		equalize();
 		
 		delete neighbors;
@@ -63,7 +65,7 @@ double* GrowingNetwork3D::randomLocation(){
 	double* position = new double[DIM];
 	
 	double theta = 2 * M_PI * (((double)rand())/RAND_MAX);
-	double phi = acos(2 * (((double)rand())/RAND_MAX - 1));
+	double phi = acos((2 * ((double)rand())/RAND_MAX - 1));
 	
 	position[0] = radius * sin(phi) * cos(theta);
 	position[1] = radius * sin(phi) * sin(theta);
