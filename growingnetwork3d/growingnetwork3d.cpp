@@ -4,26 +4,19 @@ using namespace std;
 
 GrowingNetwork3D::GrowingNetwork3D(long int n, long int m){
 	
-	cout<<"Entered constructor."<<endl;
-	
 	radius = 1;
 	
 	for(long int i = 0; i < m+1; i++){	// for the first m+1 nodes, which form a clique
-	
-		cout<<"Placed "<<i<<"th node."<<endl;
 		
 		SpatialVertex* newNode = new SpatialVertex(DIM, randomLocation(), getTime());	// generate a new node in DIM dimensions
 		nodes.push_back(newNode);
-		cout<<nodes.size()<<" nodes now in network."<<endl;
 		
 		for(long int j = 0; j < nodes.size()-1; j++){	// link it to all previously created nodes
 			
-			cout<<"Adding link between nodes "<<i<<" and "<<j<<"."<<endl;
 			newNode->addNeighbor(nodes.at(j));
 			
 		}
 		
-		cout<<"Added neighbors to "<<i<<"th node."<<endl;
 		
 		equalize();	// equalize the distribution of nodes
 		tick();
@@ -36,8 +29,6 @@ GrowingNetwork3D::GrowingNetwork3D(long int n, long int m){
 }
 
 void GrowingNetwork3D::grow(long int n){
-	
-	cout<<"Entered growth phase."<<endl;
 	
 	while(n > 0){
 		

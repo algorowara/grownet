@@ -5,9 +5,25 @@ using namespace std;
 
 int main(){
 	
-	long int n = 1000, m = 3;
+	long int n = 6, m = 3;
 	GrowingNetwork3D* net = new GrowingNetwork3D(n, m);
 	
-	cout<<"Success!"<<endl;
+	for(long int i = 0; i < n; i++){
+		
+		for(long int j = 0; j < DIM; j++){
+			
+			cout<<net->nodes.at(i)->position[j];
+			
+			if(j < DIM-1){
+			
+				cout<<" ";
+				
+			}
+			
+		}
+		
+		cout<<endl;
+		
+	}
 	
 }

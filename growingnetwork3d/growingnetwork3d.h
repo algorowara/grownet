@@ -7,7 +7,6 @@
 #include <cstdlib>
 #include <cfloat>
 #include <omp.h>
-#include <iostream>
 
 /**
  * for specifications of the coordinate system,
