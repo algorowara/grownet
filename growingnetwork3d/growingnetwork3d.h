@@ -2,6 +2,12 @@
 #define GROWINGNETWORK3D_H
 
 #include "../graph/growingnetwork.h"
+#include "../growingnetwork3d/spatialvertex.h"
+#include <cmath>
+#include <cstdlib>
+#include <cfloat>
+#include <omp.h>
+#include <iostream>
 
 /**
  * for specifications of the coordinate system,
@@ -26,11 +32,13 @@ public:
 	GrowingNetwork3D(long int n, long int m);
 	void grow(long int n);
 	double* randomLocation();
-	double* calculateAngularDisplacement(SpatialVertex* a, SpatialVertex* b);
+	double linearDistance(Vertex* a, Vertex* b);
 	double* sumForces(SpatialVertex* node);
 	SpatialVertex** findMNearestNeighbors(SpatialVertex* start);
+	void normalizeRadius(SpatialVertex* node);
+	double calculatePotential();
 	void equalize();
-	void normalizeRaidus(SpatialVertex* node);
+	void gradientDescent();
 	
 };
 

@@ -1,24 +1,29 @@
-#include "spatialvertex.h"
-#include "growingnetwork3d.h"
-#include <cmath>
-#include <cstdlib>
-#include <cfloat>
+#include "../growingnetwork3d/growingnetwork3d.h"
 
 using namespace std;
 
 GrowingNetwork3D::GrowingNetwork3D(long int n, long int m){
 	
+	cout<<"Entered constructor."<<endl;
+	
 	radius = 1;
 	
-	for(int i = 0; i < m+1; i++){	// for the first m+1 nodes, which form a clique
+	for(long int i = 0; i < m+1; i++){	// for the first m+1 nodes, which form a clique
+	
+		cout<<"Placed "<<i<<"th node."<<endl;
 		
 		SpatialVertex* newNode = new SpatialVertex(DIM, randomLocation(), getTime());	// generate a new node in DIM dimensions
+		nodes.push_back(newNode);
+		cout<<nodes.size()<<" nodes now in network."<<endl;
 		
-		for(int j = 0; j < nodes.size()-1; j++){	// link it to all previously created nodes
+		for(long int j = 0; j < nodes.size()-1; j++){	// link it to all previously created nodes
 			
+			cout<<"Adding link between nodes "<<i<<" and "<<j<<"."<<endl;
 			newNode->addNeighbor(nodes.at(j));
 			
 		}
+		
+		cout<<"Added neighbors to "<<i<<"th node."<<endl;
 		
 		equalize();	// equalize the distribution of nodes
 		tick();
@@ -31,6 +36,8 @@ GrowingNetwork3D::GrowingNetwork3D(long int n, long int m){
 }
 
 void GrowingNetwork3D::grow(long int n){
+	
+	cout<<"Entered growth phase."<<endl;
 	
 	while(n > 0){
 		
@@ -65,13 +72,33 @@ double* GrowingNetwork3D::randomLocation(){
 	double* position = new double[DIM];
 	
 	double theta = 2 * M_PI * (((double)rand())/RAND_MAX);
-	double phi = acos(2 * (((double)rand())/RAND_MAX - 1);
+	double phi = acos(2 * (((double)rand())/RAND_MAX - 1));
 	
 	position[0] = radius * sin(phi) * cos(theta);
 	position[1] = radius * sin(phi) * sin(theta);
 	position[2] = radius * cos(phi);
 	
 	return position;
+	
+}
+
+/**
+ * method to calculate the linear distance between two nodes
+ * if the nodes are not of a type to have a position in space
+ * return 0, as they are unknown
+ */
+double GrowingNetwork3D::linearDistance(Vertex* a, Vertex* b){
+	
+	if(sizeof(a) == sizeof(SpatialVertex) && sizeof(b) == sizeof(SpatialVertex)){
+	
+		SpatialVertex* a_loc = (SpatialVertex*)a;
+		SpatialVertex* b_loc = (SpatialVertex*)b;
+	
+		return DISTANCE(a_loc, b_loc);
+	
+	}
+	
+	return 0;
 	
 }
 
@@ -137,8 +164,7 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 			
 		}
 	
-		double* disp = calculateAngularDisplacement(start, nodes.at(i));
-		double square = DIST_SQUARED(disp);
+		double square = DISTANCE_SQUARED(start, nodes.at(i));
 		
 		for(int j = 0; j < m; j++){	// iterate through all distance-squared records
 			
@@ -157,8 +183,6 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 			}
 			
 		}
-		
-		delete disp;
 		 
 	}
 	
@@ -166,15 +190,127 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 	 
 }
 
+/**
+ * method to ensure that the radial distance of a node from the origin
+ * is that specified in the radius field
+ * without disturbing the unit direction
+ */
 void GrowingNetwork3D::normalizeRadius(SpatialVertex* node){
 	
 	// find the ratio of the ideal radius to the current radial distance
-	double ratio = radius / sqrt(DIST_SQUARED(node->position));
+	double ratio = radius / sqrt(X(node) * X(node) + Y(node) * Y(node) + Z(node) * Z(node));
 	
 	for(long int i = 0; i < DIM; i++){	// for each dimension
 		
 		node->position[i] *= ratio;	// multiply it by that ratio
 		
+	}
+	
+}
+
+/**
+ * method to calculate the potential of all the nodes in the network
+ * where the potential of any node pair is defined as 1/r
+ * where r is the magnitude of the displacement between the two nodes
+ */
+double GrowingNetwork3D::calculatePotential(){
+	
+	double potential = 0;
+	
+	#pragma omp parallel shared(potential)
+	{
+		
+		double localSum = 0;	// sum of potential energies local to this thread
+		SpatialVertex* a;
+		SpatialVertex* b;
+		
+		#pragma omp for schedule(guided)
+		
+		for(int i = 0; i < N; i++){	// for every node
+			
+			for(int j = 0; j < N; j++){	// for every pair of nodes
+				
+				a = nodes.at(i);
+				b = nodes.at(j);
+				
+				if(a != b){	// if they are not the same
+				
+					localSum += 1.0/DISTANCE(a, b);	// add their potential energy to the local sum
+							
+				}
+								
+			}
+			
+		}
+		
+		#pragma omp atomic
+		potential += localSum;	// add the local sums together
+		
+	}
+	
+	return potential;
+	
+}
+
+/**
+ * method to call whichever equalization algorithm is in use at the time
+ * currently calls gradientDescent()
+ */
+void GrowingNetwork3D::equalize(){
+
+	gradientDescent();
+	
+}
+
+/**
+ * uses a gradient descent algorithm where the potential is 1/r
+ */
+void GrowingNetwork3D::gradientDescent(){
+	
+	double gamma = 1.0 / N;	// gamma is the conversion factor from force to movement
+								// currently scales with 1/N, as net force is expected to increas as N
+	double* netForce[N];	// local array to store the net forces on each node
+	double previousPotential = DBL_MAX;	// record of the last potential
+	double tolerance = N * 0.001;	// maximum change in potential to stop equalization
+	long int loopCount = 100;	// maximum number of iterations allowed
+	
+	while(abs(previousPotential - calculatePotential()) > tolerance && loopCount > 0){
+
+		#pragma omp parallel shared(netForce)
+		{
+			
+			#pragma omp for schedule(guided)
+			for(int i = 0; i < N; i++){	// for every node
+				
+				netForce[i] = sumForces(nodes.at(i));	// store the net force on the node
+														// thread safety is not an issue here
+														// because the values of i are divided among threads
+														// and no two will ever write to the same index
+				
+			}
+			
+		}
+		
+		#pragma omp parallel shared(netForce)
+		{
+			
+			#pragma omp for schedule(guided)
+			for(int i = 0; i < N; i++){	// for every node
+				
+				for(int j = 0; j < DIM; j++){	// for every dimension
+					
+					nodes.at(i)->position[j] += gamma * netForce[i][j];	// displace the node by gamma * netForce
+					
+				}
+				
+				normalizeRadius(nodes.at(i));	// return the node to the surface of the sphere
+				
+			}
+			
+		}
+	
+		loopCount--;
+	
 	}
 	
 }

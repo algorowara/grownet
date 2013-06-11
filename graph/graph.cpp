@@ -5,7 +5,7 @@
 
 using namespace std;
 
-/*
+/**
  * method to add a node to the graph at the end of the current set of nodes
  */
 void Graph::addNode(Vertex* node){

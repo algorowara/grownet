@@ -5,7 +5,7 @@
 int main(){	// average degree as a function of node age
 	
 	GrowingNetwork2D* net;
-	long int n = 100000, m = 2;
+	long int n = 1000000, m = 2;
 	double average[n];
 	int num_reps = 100;
 	
