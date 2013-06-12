@@ -1,5 +1,6 @@
 FOPENMP = -fopenmp
 
+all: main/test main/graphgen
 main/test: main/test.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o
 	g++ main/test.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/test $(FOPENMP)
 main/graphgen: main/graphgen.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o
@@ -20,9 +21,10 @@ graph/graph.o: graph/graph.cpp graph/graph.h graph/vertex.cpp graph/vertex.h
 	g++ -c graph/graph.cpp -o graph/graph.o
 graph/vertex.o: graph/vertex.cpp graph/vertex.h
 	g++ -c graph/vertex.cpp -o graph/vertex.o
-backup: graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h makefile README doc.odt
-	zip ../backup.zip graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h makefile README doc.odt
+backup: graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h main/*.cpp main/*.m makefile README doc.odt
+	zip ../backup.zip graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h main/*.cpp main/*.m makefile README doc.odt
 clean:
 	rm -vf main/test
 	rm -vf main/graphgen
+	rm -vf main/points.txt
 	rm -vf */*.o

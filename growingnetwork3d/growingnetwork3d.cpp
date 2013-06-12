@@ -260,11 +260,10 @@ void GrowingNetwork3D::equalize(){
  */
 void GrowingNetwork3D::gradientDescent(){
 	
-	double gamma = 1.0 / N;	// gamma is the conversion factor from force to movement
-								// currently scales with 1/N, as net force is expected to increas as N
+	double gamma = 1.0/N;	// gamma is the conversion factor from force to movement
 	double* netForce[N];	// local array to store the net forces on each node
 	double previousPotential = DBL_MAX;	// record of the last potential
-	double tolerance = N * 0.001;	// maximum change in potential to stop equalization
+	double tolerance = 0.0001 * N;	// maximum change in potential to stop equalization
 	long int loopCount = 100;	// maximum number of iterations allowed
 	
 	while(abs(previousPotential - calculatePotential()) > tolerance && loopCount > 0){
