@@ -7,10 +7,19 @@
 
 using namespace std;
 
-PositiveChargeGrowingNetwork2D::PositiveChargeGrowingNetwork2D(long int n, long int m){
+PositiveChargeGrowingNetwork2D::PositiveChargeGrowingNetwork2D(long int n, long int m, double gamma, double tolerance, long int maxItr){
 
-	srand(std::time(NULL));
+	static bool randSeeded = false;
 
+	if(!randSeeded){	//if the random number generator has not yet been seeded
+	
+		srand(std::time(NULL));
+		randSeeded = true;
+	}
+
+	this->gamma = gamma;
+	this->tolerance = tolerance;
+	this->maxItr = maxItr;
 	radius = 1;
 	alpha = 0.1; //electron electron force constant
 	beta = alpha*N; //electron cloud force constant

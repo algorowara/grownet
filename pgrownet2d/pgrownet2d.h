@@ -26,8 +26,11 @@ public:
 	double radius;
 	double alpha; //electron-electron force constant
 	double beta; //electron-cloud force constant
+	double gamma;
+	double tolerance;
+	long int maxItr;
 
-	PositiveChargeGrowingNetwork2D(long int n, long int m);
+	PositiveChargeGrowingNetwork2D(long int n, long int m, double gamma, double tolerance, long int maxItr);
 	void grow(long int n);
 	double* randomLocation();
 	double linearDistance(Vertex* a, Vertex* b);

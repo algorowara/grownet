@@ -7,9 +7,9 @@ using namespace std;
 int main(){
 
 	long int n = 4, m = 2;
-	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m);
+	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m,.1,.001,1000);
 	ofstream pgrowdata;
-	pgrowdata.open("main/pgrowdata.txt", ios::out | ios::trunc);
+	pgrowdata.open("pgrowdata.txt", ios::out | ios::trunc);
 
 	for(long int i = 0; i < n; i++){
 
