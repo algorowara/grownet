@@ -54,7 +54,7 @@ void GrowingNetwork3D::grow(long int n){
 			
 		}
 		
-		nodes.push_back(newNode);
+		nodes.push_back(newNode);		
 		equalize();
 		
 		delete neighbors;
@@ -174,7 +174,7 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 			
 			if(square < dsquare[j]){	// if this node is closer than the nearest neighbor j
 				
-				for(int k = m-1; k > j; k++){	// shift everything from j to m one position back
+				for(int k = m-1; k > j; k--){	// shift everything from j to m one position back
 					
 					dsquare[k] = dsquare[k-1];
 					near[k] = near[k-1];
