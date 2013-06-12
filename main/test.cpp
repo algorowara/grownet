@@ -5,7 +5,7 @@ using namespace std;
 
 int main(){
 	
-	long int n = 50, m = 3;
+	long int n = 6, m = 3;
 	GrowingNetwork3D* net = new GrowingNetwork3D(n, m);
 	
 	for(long int i = 0; i < n; i++){
