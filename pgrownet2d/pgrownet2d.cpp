@@ -166,7 +166,7 @@ SpatialVertex** PositiveChargeGrowingNetwork2D::findMNearestNeighbors(SpatialVer
 
 			if(square < dsquare[j]){	//if this node is closer than the nearest neighbor j
 
-				for int(k = m-1; k > j; k++){	//shift everything from j to m one position back
+				for (int k = m-1; k > j; k++){	//shift everything from j to m one position back
 
 					dsquare[k] = dsquare[k-1];
 					near[k] = near[k-1];
@@ -220,7 +220,7 @@ double PositiveChargeGrowingNetwork2D::calculatePotential(){
 
 			}
 
-			localSum += beta*log(sqrt((X(i) * X(i)) + (Y(i) * Y(i)))); //add the potential energy due to the cloud of positive charge
+			localSum += beta*log(sqrt((X(a) * X(a)) + (Y(a) * Y(a)))); //add the potential energy due to the cloud of positive charge
 
 		}	
 
