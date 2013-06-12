@@ -33,9 +33,9 @@ public:
 
 	vector<SpatialVertex*> nodes;
 	double radius;
-	double gamma;
-	double tolerance;
-	long int maxItr;
+	double baseGam;
+	double baseTol;
+	long int baseItr;
 
 	GrowingNetwork3D(long int n, long int m, double gam = DEFAULT_GAMMA, double tol = DEFAULT_TOLERANCE, long int itr = DEFAULT_ITR);
 	void grow(long int n);

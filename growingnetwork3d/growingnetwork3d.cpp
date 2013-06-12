@@ -15,9 +15,9 @@ GrowingNetwork3D::GrowingNetwork3D(long int n, long int m, double gam, double to
 	
 	this->radius = 1;
 	this->m = m;
-	this->gamma = gam;
-	this->tolerance = tol;
-	this->maxItr = itr;
+	baseGam = gam;
+	baseTol = tol;
+	baseItr = itr;
 	
 	for(long int i = 0; i < m+1; i++){	// for the first m+1 nodes, which form a clique
 	
@@ -253,7 +253,9 @@ double GrowingNetwork3D::calculatePotential(){
 
 void GrowingNetwork3D::equalize(){
 	
-	gradientDescent(gamma, tolerance, maxItr);
+	// externally provided solutions to the Thompson problem show Energy proportional to N^2
+	
+	gradientDescent(gamma, baseTol * N * N, maxItr);
 	
 }
 
