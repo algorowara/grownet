@@ -21,6 +21,10 @@
 #define DISTANCE_SQUARED(a, b) ((X(b) - X(a)) * (X(b) - X(a)) + (Y(b) - Y(a)) * (Y(b) - Y(a)) + (Z(b) - Z(a)) * (Z(b) - Z(a)))
 #define DISTANCE(a, b) sqrt(DISTANCE_SQUARED(a, b))
 
+#define DEFAULT_GAMMA 1.0
+#define DEFAULT_TOLERANCE 0.0
+#define DEFAULT_ITR 36
+
 using namespace std;
 
 class GrowingNetwork3D : public GrowingNetwork{
@@ -29,8 +33,11 @@ public:
 
 	vector<SpatialVertex*> nodes;
 	double radius;
+	double gamma;
+	double tolerance;
+	long int maxItr;
 
-	GrowingNetwork3D(long int n, long int m);
+	GrowingNetwork3D(long int n, long int m, double gam = DEFAULT_GAMMA, double tol = DEFAULT_TOLERANCE, long int itr = DEFAULT_ITR);
 	void grow(long int n);
 	double* randomLocation();
 	double linearDistance(Vertex* a, Vertex* b);
