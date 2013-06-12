@@ -244,4 +244,46 @@ void PositiveChargeGrowingNetwork2D::equalize(){
 
 }
 
+PositiveChargeGrowingNetwork3D::gradientDescent(double gamma, double tolerance, long int maxItr){
+
+        double* netForce[N];    // local array to store the net forces on each node
+        double previousPotential = DBL_MAX;     // record of the last potential
+
+        while(abs(previousPotential - calculatePotential()) > tolerance && maxItr > 0){
+
+                #pragma omp parallel shared(netForce)
+                {
+
+                        #pragma omp for schedule(guided)
+                        for(int i = 0; i < N; i++){     // for every node
+
+                                netForce[i] = sumForces(nodes.at(i));  
+
+                        }
+
+                }
+
+                #pragma omp parallel shared(netForce)
+                {
+
+                        #pragma omp for schedule(guided)
+                        for(int i = 0; i < N; i++){     // for every node
+
+                                for(int j = 0; j < DIM; j++){   // for every dimension
+
+                                        nodes.at(i)->position[j] += gamma * netForce[i][j];     // displace the node by gamma * netForce
+
+                                }
+
+                                normalizeRadius(nodes.at(i));   // return the node to the surface of the sphere
+
+                        }
+
+                }
+
+                maxItr--;
+
+        }
+
+}
 
