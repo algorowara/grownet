@@ -12,6 +12,8 @@ PositiveChargeGrowingNetwork2D::PositiveChargeGrowingNetwork2D(long int n, long 
 	srand(std::time(NULL));
 
 	radius = 1;
+	alpha = 0.1; //electron electron force constant
+	beta = alpha*N; //electron cloud force constant
 
 	for(long int i = 0; i < m+1; i++){	//for the first m+1 nodes, which form a clique
 
@@ -129,7 +131,7 @@ double* PositiveChargeGrowingNetwork2D::sumForces(SpatialVertex* node){
 
 	}
 	pdistance = sqrt((X(node) * X(node)) + (Y(node) * Y(node)));	//this is the distance from the origin to the node (i.e. radius of node)
-	pmagnitude = - beta / pdistance;	//calcualte the unitless magnitude of the attractive electron-positive charge force
+	pmagnitude = - beta * pdistance;	//calcualte the unitless magnitude of the attractive electron-positive charge force
 	
 	force[0] += pmagnitude * (X(node) / pdistance);
 	force[1] += pmagnitude * (Y(node) / pdistance);	//multiple the magnitude by a vector pointin radially outwards
@@ -201,7 +203,7 @@ double PositiveChargeGrowingNetwork2D::calculatePotential(){
 
 		double localSum = 0;	//sum of potential energies local to this thread
 		SpatialVertex* a;
-		Spatialvertex* b;
+		SpatialVertex* b;
 
 		#pragma omp for schedule(guided)
 
@@ -214,13 +216,13 @@ double PositiveChargeGrowingNetwork2D::calculatePotential(){
 
 				if(a != b){	//if they are not the same
 
-					localSum += -alpha*log(DISTANCE(a, b); //add their potential energy to the local sum
+					localSum += -alpha*log(DISTANCE(a, b)); //add their potential energy to the local sum
 
 				}
 
 			}
 
-			localSum += beta*log(sqrt((X(a) * X(a)) + (Y(a) * Y(a)))); //add the potential energy due to the cloud of positive charge
+			localSum += (beta/2)*((X(a) * X(a)) + (Y(a) * Y(a))); //add the potential energy due to the cloud of positive charge
 
 		}	
 
@@ -236,8 +238,10 @@ double PositiveChargeGrowingNetwork2D::calculatePotential(){
 /**
  * method to call whichever equalization algorithm is in use at the * time; currently called gradientDescent()
  */
-void Growingnetwork3D::equalize(){
+void PositiveChargeGrowingNetwork2D::equalize(){
 
 	gradientDescent();
 
 }
+
+

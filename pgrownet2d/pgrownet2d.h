@@ -24,6 +24,8 @@ public:
 
 	vector<SpatialVertex*> nodes;
 	double radius;
+	double alpha; //electron-electron force constant
+	double beta; //electron-cloud force constant
 
 	PositiveChargeGrowingNetwork2D(long int n, long int m);
 	void grow(long int n);
