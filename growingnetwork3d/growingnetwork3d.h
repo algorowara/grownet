@@ -39,7 +39,7 @@ public:
 	void normalizeRadius(SpatialVertex* node);
 	double calculatePotential();
 	void equalize();
-	void gradientDescent();
+	void gradientDescent(double gamma, double tolerance, long int maxItr);
 	
 };
 

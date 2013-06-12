@@ -4,7 +4,14 @@ using namespace std;
 
 GrowingNetwork3D::GrowingNetwork3D(long int n, long int m){
 	
-	srand(std::time(NULL));
+	static bool randSeeded = false;
+	
+	if(!randSeeded){	// if the random number generator has not yet been seeded
+		
+		srand(std::time(NULL));	// do so with the current time as the seed
+		randSeeded = true;	// make a note for future initializations
+		
+	}
 	
 	radius = 1;
 	
@@ -221,16 +228,11 @@ double GrowingNetwork3D::calculatePotential(){
 		
 		for(int i = 0; i < N; i++){	// for every node
 			
-			for(int j = 0; j < N; j++){	// for every pair of nodes
+			for(int j = i+1; j < N; j++){	// for every node which has not yet been visited by the outer loop
 				
 				a = nodes.at(i);
-				b = nodes.at(j);
-				
-				if(a != b){	// if they are not the same
-				
-					localSum += 1.0/DISTANCE(a, b);	// add their potential energy to the local sum
-							
-				}
+				b = nodes.at(j);				
+				localSum += 1.0/DISTANCE(a, b);	// add their potential energy to the local sum
 								
 			}
 			
@@ -251,22 +253,22 @@ double GrowingNetwork3D::calculatePotential(){
  */
 void GrowingNetwork3D::equalize(){
 
-	gradientDescent();
+	gradientDescent(0, 0, 0);
 	
 }
 
 /**
  * uses a gradient descent algorithm where the potential is 1/r
+ * where gamma is the conversion factor from force to movement; delta(position) = gamma * netForce
+ * where tolerance is the minimum change in potential between steps that allows the function to continue
+ * and maxItr is the maximum number of iterations allowed before the function exits, regardless of tolerance
  */
-void GrowingNetwork3D::gradientDescent(){
+void GrowingNetwork3D::gradientDescent(double gamma, double tolerance, long int maxItr){
 	
-	double gamma = 1.0/N;	// gamma is the conversion factor from force to movement
 	double* netForce[N];	// local array to store the net forces on each node
 	double previousPotential = DBL_MAX;	// record of the last potential
-	double tolerance = 0.0001 * N;	// maximum change in potential to stop equalization
-	long int loopCount = 100;	// maximum number of iterations allowed
 	
-	while(abs(previousPotential - calculatePotential()) > tolerance && loopCount > 0){
+	while(abs(previousPotential - calculatePotential()) > tolerance && maxItr > 0){
 
 		#pragma omp parallel shared(netForce)
 		{
@@ -301,7 +303,7 @@ void GrowingNetwork3D::gradientDescent(){
 			
 		}
 	
-		loopCount--;
+		maxItr--;
 	
 	}
 	

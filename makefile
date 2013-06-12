@@ -3,8 +3,8 @@ FOPENMP = -fopenmp
 all: main/test main/graphgen
 main/test: main/test.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o
 	g++ main/test.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/test $(FOPENMP)
-main/graphgen: main/graphgen.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o
-	g++ main/graphgen.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/graphgen $(FOPENMP)
+main/graphgen: main/graphgen.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o
+	g++ main/graphgen.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/graphgen $(FOPENMP)
 main/test.o: main/test.cpp growingnetwork3d/growingnetwork3d.cpp growingnetwork3d/growingnetwork3d.h
 	g++ -c main/test.cpp -o main/test.o
 main/graphgen.o: main/graphgen.cpp growingnetwork2d/growingnetwork2d.cpp growingnetwork2d/growingnetwork2d.h

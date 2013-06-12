@@ -1,47 +1,47 @@
 #include "../growingnetwork2d/growingnetwork2d.h"
+#include "../growingnetwork3d/growingnetwork3d.h"
 #include <iostream>
+#include <cfloat>
 #include <omp.h>
 
-int main(){	// average degree as a function of node age
+int main(){	// potential as a function of N
 	
-	GrowingNetwork2D* net;
-	long int n = 1000000, m = 2;
-	double average[n];
-	int num_reps = 100;
+	long int num_reps = 1000;
+	GrowingNetwork3D* net;
 	
-	for(int i = 0; i < n; i++){
+	for(long int n = 2; n < 100; n++){
 		
-		average[i] = 0;
+		double max = DBL_MIN;
+		double avg = 0;
+		double min = DBL_MAX;
 		
-	}
-	
-	#pragma omp parallel shared(average) private(net, i)
-	{
-		
-		#pragma omp for schedule(guided)
-	
-		for(int i = 0; i < num_reps; i++){
+		for(long int i = 0; i < num_reps; i++){
 			
-			cout<<"Sample "<<i<<" being produced by thread "<<omp_get_thread_num()<<endl;
-			net = new GrowingNetwork2D(n, m);
+			net = new GrowingNetwork3D(n, 0);
+			double potential = net->calculatePotential();
 			
-			for(int j = 0; j < n; j++){
+			if(potential < min){
 			
-				#pragma omp atomic
-				average[n - net->nodes.at(j)->getStartTime()] += net->K(j);
+				min = potential;
 				
 			}
 			
-			delete net;
+			if(potential > max){
+				
+				max = potential;
+				
+			}
 			
+			
+			
+			avg += potential;
+			delete net;
+		
 		}
 		
-	}
-	
-	for(int i = 0; i < n; i+= 1000){
 		
-		average[i] /= num_reps;
-		cout<<i<<" "<<average[i]<<endl;
+		avg /= (num_reps * sqrt(n));
+		cout<<n<<" "<<min<<endl;
 		
 	}
 	

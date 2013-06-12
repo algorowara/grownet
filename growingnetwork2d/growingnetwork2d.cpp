@@ -9,7 +9,14 @@ using namespace std;
 
 GrowingNetwork2D::GrowingNetwork2D(long int n, long int m){
 	
-	srand(std::time(NULL));
+	static bool randSeeded = false;
+	
+	if(!randSeeded){	// if the random number generator has not yet been seeded
+		
+		srand(std::time(NULL));	// do so using the current time as a seed
+		randSeeded = true;	// make a note of this
+		
+	}
 
 	if(n <= m){	// a growing network cannot be instantiated with as many or fewer nodes than its parameter m
 	
