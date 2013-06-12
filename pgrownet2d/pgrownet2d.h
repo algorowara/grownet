@@ -35,7 +35,7 @@ public:
 	SpatialVertex** findMNearestNeighbors(SpatialVertex* start);
 	double calculatePotential();
 	void equalize();
-	void gradientDescent();
+	void gradientDescent(double gamma, double tolerance, long int maxItr);
 
 };
 
