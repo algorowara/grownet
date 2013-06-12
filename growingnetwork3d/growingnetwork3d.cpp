@@ -2,7 +2,7 @@
 
 using namespace std;
 
-GrowingNetwork3D::GrowingNetwork3D(long int n, long int m){
+GrowingNetwork3D::GrowingNetwork3D(long int n, long int m, double gam, double tol, long int itr){
 	
 	static bool randSeeded = false;
 	
@@ -13,7 +13,11 @@ GrowingNetwork3D::GrowingNetwork3D(long int n, long int m){
 		
 	}
 	
-	radius = 1;
+	this->radius = 1;
+	this->m = m;
+	this->gamma = gam;
+	this->tolerance = tol;
+	this->maxItr = itr;
 	
 	for(long int i = 0; i < m+1; i++){	// for the first m+1 nodes, which form a clique
 	
@@ -247,13 +251,9 @@ double GrowingNetwork3D::calculatePotential(){
 	
 }
 
-/**
- * method to call whichever equalization algorithm is in use at the time
- * currently calls gradientDescent()
- */
 void GrowingNetwork3D::equalize(){
-
-	gradientDescent(0, 0, 0);
+	
+	gradientDescent(gamma, tolerance, maxItr);
 	
 }
 
