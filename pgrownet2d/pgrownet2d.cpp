@@ -69,7 +69,7 @@ void PositiveChargeGrowingNetwork2D::grow(long int n){
 
 	}
 
-	//beta = alpha*N;
+	beta = alpha*N;
 
 }
 
