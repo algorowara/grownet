@@ -22,7 +22,7 @@
 #define DISTANCE(a, b) sqrt(DISTANCE_SQUARED(a, b))
 
 #define DEFAULT_GAMMA 1.0
-#define DEFAULT_TOLERANCE 1.0
+#define DEFAULT_TOLERANCE 0.1
 #define DEFAULT_ITR 36
 
 using namespace std;
@@ -46,7 +46,8 @@ public:
 	void normalizeRadius(SpatialVertex* node);
 	double calculatePotential();
 	void equalize();
-	void gradientDescent(double gamma, double tolerance, long int maxItr);
+	void gradientDescent(double gamma, double baseTolerance, long int maxItr);
+	double minimumPotential();
 	
 };
 

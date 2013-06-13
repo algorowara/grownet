@@ -256,22 +256,24 @@ void GrowingNetwork3D::equalize(){
 	// externally provided solutions to the Thompson problem show Energy proportional to N^2
 	// force and average separation should both be proportional to 1/N, so gamma should be proportional to 1/N^2
 	
-	gradientDescent(baseGam/(N * N), baseTol * (N * N), baseItr);
+	gradientDescent(baseGam/(N * N), baseTol, baseItr);
 	
 }
 
 /**
  * uses a gradient descent algorithm where the potential is 1/r
  * where gamma is the conversion factor from force to movement; delta(position) = gamma * netForce
- * where tolerance is the minimum change in potential between steps that allows the function to continue
+ * where baseTolerance is the maximum ratio of the difference between the potential and the minimum, and the minimum
  * and maxItr is the maximum number of iterations allowed before the function exits, regardless of tolerance
  */
-void GrowingNetwork3D::gradientDescent(double gamma, double tolerance, long int maxItr){
+void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long int maxItr){
 	
 	double* netForce[N];	// local array to store the net forces on each node
-	double previousPotential = DBL_MAX;	// record of the last potential
+	double previousPotential = DBL_MAX;	// local field to store the previous known potential
+	double minPot = minimumPotential();	// storage of the minimum potential for this N
+	double tolerance = minPot * baseTolerance;	// actual value of tolerance
 	
-	while(abs(previousPotential - calculatePotential()) > tolerance && maxItr > 0){
+	while(previousPotential - minPot > tolerance && maxItr > 0){
 
 		#pragma omp parallel shared(netForce)
 		{
@@ -306,8 +308,18 @@ void GrowingNetwork3D::gradientDescent(double gamma, double tolerance, long int 
 			
 		}
 	
-		maxItr--;
+		maxItr--;	// move one iteration closer to ending regardless of the potential energy
 	
 	}
+	
+}
+
+/**
+ * return the potential energy as a function of N
+ * as calculated from the equation given in the design document
+ */
+double inline GrowingNetwork3D::minimumPotential(){
+	
+	return 514.267 - 8.106 * N + 0.489 * N * N;
 	
 }
