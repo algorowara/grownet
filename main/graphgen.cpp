@@ -6,7 +6,7 @@
 
 int main(){	// potential as a function of N
 
-	long int n = 16, m = 3;
+	long int n = 100, m = 3;
 	GrowingNetwork3D* net;
 	double minPot = DBL_MAX;
 	double minGam, minTol;
@@ -14,7 +14,7 @@ int main(){	// potential as a function of N
 	
 	for(double gamma = 0.1; gamma <= 2.0; gamma += 0.1){
 		
-		for(double tolerance = 0.0; tolerance <= 10.0; tolerance += 0.5){
+		for(double tolerance = 0.0; tolerance <= 1.0; tolerance += 0.05){
 			
 			for(long int maxItr = 0; maxItr <= 100; maxItr += 5){
 				

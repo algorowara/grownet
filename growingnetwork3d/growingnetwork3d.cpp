@@ -57,7 +57,7 @@ void GrowingNetwork3D::grow(long int n){
 		nodes.push_back(newNode);		
 		equalize();
 		
-		delete neighbors;
+		delete[] neighbors;
 		tick();		
 		n--;
 		
@@ -270,7 +270,7 @@ void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long 
 	
 	double* netForce[N];	// local array to store the net forces on each node
 	double previousPotential = DBL_MAX;	// local field to store the previous known potential
-	double minPot = minimumPotential();	// storage of the minimum potential for this N
+	double minPot = calculateMinimumPotential();	// storage of the minimum potential for this N
 	double tolerance = minPot * baseTolerance;	// actual value of tolerance
 	
 	while(previousPotential - minPot > tolerance && maxItr > 0){
@@ -303,11 +303,13 @@ void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long 
 				}
 				
 				normalizeRadius(nodes.at(i));	// return the node to the surface of the sphere
+				delete[] netForce[i];	// delete the now-outdated force vector for this node
 				
 			}
 			
 		}
 	
+		previousPotential = calculatePotential();	// update the record of the latest potential
 		maxItr--;	// move one iteration closer to ending regardless of the potential energy
 	
 	}
@@ -318,8 +320,18 @@ void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long 
  * return the potential energy as a function of N
  * as calculated from the equation given in the design document
  */
-double inline GrowingNetwork3D::minimumPotential(){
+double inline GrowingNetwork3D::calculateMinimumPotential(){
 	
 	return 514.267 - 8.106 * N + 0.489 * N * N;
+	
+}
+
+GrowingNetwork3D::~GrowingNetwork3D(){
+	
+	for(long int i = 0; i < N; i++){
+		
+		delete nodes.at(i);
+		
+	}
 	
 }

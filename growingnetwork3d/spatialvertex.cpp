@@ -10,6 +10,6 @@ SpatialVertex::SpatialVertex(long int dimension, double* position, long int star
 
 SpatialVertex::~SpatialVertex(){
 	
-	delete this->position;
+	delete[] this->position;
 	
 }
