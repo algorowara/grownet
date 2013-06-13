@@ -6,8 +6,8 @@ using namespace std;
 
 int main(){
 
-	long int n = 4, m = 2;
-	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m,.1,.001,1000);
+	long int n = 31, m = 2;
+	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m,.01,.00001,100000);
 	ofstream pgrowdata;
 	pgrowdata.open("pgrowdata.txt", ios::out | ios::trunc);
 
@@ -30,5 +30,5 @@ int main(){
 	}
 
 	pgrowdata.close();
-
+	cout << net->beta;
 }

@@ -21,8 +21,8 @@ PositiveChargeGrowingNetwork2D::PositiveChargeGrowingNetwork2D(long int n, long 
 	this->tolerance = tolerance;
 	this->maxItr = maxItr;
 	radius = 1;
-	alpha = 0.1; //electron electron force constant
-	beta = alpha*N; //electron cloud force constant
+	alpha = .01; //electron electron force constant
+	beta = alpha*n; //electron cloud force constant
 
 	for(long int i = 0; i < m+1; i++){	//for the first m+1 nodes, which form a clique
 
@@ -68,6 +68,8 @@ void PositiveChargeGrowingNetwork2D::grow(long int n){
 		n--;
 
 	}
+
+	//beta = alpha*N;
 
 }
 
@@ -143,7 +145,7 @@ double* PositiveChargeGrowingNetwork2D::sumForces(SpatialVertex* node){
 	pmagnitude = - beta * pdistance;	//calcualte the unitless magnitude of the attractive electron-positive charge force
 	
 	force[0] += pmagnitude * (X(node) / pdistance);
-	force[1] += pmagnitude * (Y(node) / pdistance);	//multiple the magnitude by a vector pointin radially outwards
+	force[1] += pmagnitude * (Y(node) / pdistance);	//multiple the magnitude by a vector pointing radially outwards
 
 	return force;
 
@@ -200,7 +202,7 @@ SpatialVertex** PositiveChargeGrowingNetwork2D::findMNearestNeighbors(SpatialVer
 /** 
  * method to calculate the potential of all the nodes in the
  * network, where the potential of any node pair is defined as 
- * log(r-r') and the potential between the cloud of positive charge * and any node is log(r) where r is the position of the node and 
+ * log(r-r') and the potential between the cloud of positive charge * and any node is (r^2)/2 where r is the position of the node and 
  * r' is the position of any other node
  */
 double PositiveChargeGrowingNetwork2D::calculatePotential(){
@@ -283,6 +285,7 @@ void PositiveChargeGrowingNetwork2D::gradientDescent(double gamma, double tolera
                                         nodes.at(i)->position[j] += gamma * netForce[i][j];     // displace the node by gamma * netForce
 
                                 }
+				delete[] netForce[i]; //clear netForce to avoid memleak 
 
                         }
 
