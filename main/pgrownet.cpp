@@ -30,5 +30,4 @@ int main(){
 	}
 
 	pgrowdata.close();
-	cout << net->beta;
 }

@@ -15,9 +15,9 @@ GrowingNetwork3D::GrowingNetwork3D(long int n, long int m, double gam, double to
 	
 	this->radius = 1;
 	this->m = m;
-	this->gamma = gam;
-	this->tolerance = tol;
-	this->maxItr = itr;
+	baseGam = gam;
+	baseTol = tol;
+	baseItr = itr;
 	
 	for(long int i = 0; i < m+1; i++){	// for the first m+1 nodes, which form a clique
 	
@@ -54,10 +54,10 @@ void GrowingNetwork3D::grow(long int n){
 			
 		}
 		
-		nodes.push_back(newNode);
+		nodes.push_back(newNode);		
 		equalize();
 		
-		delete neighbors;
+		delete[] neighbors;
 		tick();		
 		n--;
 		
@@ -174,7 +174,7 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 			
 			if(square < dsquare[j]){	// if this node is closer than the nearest neighbor j
 				
-				for(int k = m-1; k > j; k++){	// shift everything from j to m one position back
+				for(int k = m-1; k > j; k--){	// shift everything from j to m one position back
 					
 					dsquare[k] = dsquare[k-1];
 					near[k] = near[k-1];
@@ -253,22 +253,45 @@ double GrowingNetwork3D::calculatePotential(){
 
 void GrowingNetwork3D::equalize(){
 	
-	gradientDescent(gamma, tolerance, maxItr);
+	// externally provided solutions to the Thompson problem show Energy proportional to N^2
+	// force and average separation should both be proportional to 1/N, so gamma should be proportional to 1/N^2
+	
+	gradientDescent(baseGam/(N * N), baseTol, baseItr);
 	
 }
 
 /**
  * uses a gradient descent algorithm where the potential is 1/r
  * where gamma is the conversion factor from force to movement; delta(position) = gamma * netForce
- * where tolerance is the minimum change in potential between steps that allows the function to continue
+ * where baseTolerance is the maximum ratio of the difference between the potential and the minimum, and the minimum
  * and maxItr is the maximum number of iterations allowed before the function exits, regardless of tolerance
  */
-void GrowingNetwork3D::gradientDescent(double gamma, double tolerance, long int maxItr){
+void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long int maxItr){
+
+	if(gamma < 0){	// check for negative gamma, which would turn gradient descent into gradient ascent
+	
+		gamma *= -1;	// fix if necessary, assume the negative sign is in error
+		
+	}
+	
+	if(baseTolerance < 0){	// check for negative tolerance, which would demand an energy below the minimum
+		
+		baseTolerance *= -1;	// fix if necessary, assume the negative sign is in error
+		
+	}
+	
+	if(maxItr < 0){	// check for negative iterations, which is just silly
+		
+		maxItr *= -1;	// fix the darn thing
+		
+	}
 	
 	double* netForce[N];	// local array to store the net forces on each node
-	double previousPotential = DBL_MAX;	// record of the last potential
+	double previousPotential = DBL_MAX;	// local field to store the previous known potential
+	double minPot = calculateMinimumPotential();	// storage of the minimum potential for this N
+	double tolerance = minPot * baseTolerance;	// actual value of tolerance
 	
-	while(abs(previousPotential - calculatePotential()) > tolerance && maxItr > 0){
+	while(previousPotential - minPot > tolerance && maxItr > 0){
 
 		#pragma omp parallel shared(netForce)
 		{
@@ -298,13 +321,35 @@ void GrowingNetwork3D::gradientDescent(double gamma, double tolerance, long int 
 				}
 				
 				normalizeRadius(nodes.at(i));	// return the node to the surface of the sphere
+				delete[] netForce[i];	// delete the now-outdated force vector for this node
 				
 			}
 			
 		}
 	
-		maxItr--;
+		previousPotential = calculatePotential();	// update the record of the latest potential
+		maxItr--;	// move one iteration closer to ending regardless of the potential energy
 	
+	}
+	
+}
+
+/**
+ * return the potential energy as a function of N
+ * as calculated from the equation given in the design document
+ */
+double inline GrowingNetwork3D::calculateMinimumPotential(){
+	
+	return 514.267 - 8.106 * N + 0.489 * N * N;
+	
+}
+
+GrowingNetwork3D::~GrowingNetwork3D(){
+	
+	for(long int i = 0; i < N; i++){
+		
+		delete nodes.at(i);
+		
 	}
 	
 }
