@@ -22,7 +22,7 @@
 #define DISTANCE(a, b) sqrt(DISTANCE_SQUARED(a, b))
 
 #define DEFAULT_GAMMA 1.0
-#define DEFAULT_TOLERANCE 0.0
+#define DEFAULT_TOLERANCE 1.0
 #define DEFAULT_ITR 36
 
 using namespace std;

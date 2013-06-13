@@ -254,8 +254,9 @@ double GrowingNetwork3D::calculatePotential(){
 void GrowingNetwork3D::equalize(){
 	
 	// externally provided solutions to the Thompson problem show Energy proportional to N^2
+	// force and average separation should both be proportional to 1/N, so gamma should be proportional to 1/N^2
 	
-	gradientDescent(gamma, baseTol * N * N, maxItr);
+	gradientDescent(baseGam/(N * N), baseTol * (N * N), baseItr);
 	
 }
 

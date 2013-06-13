@@ -6,7 +6,7 @@ using namespace std;
 
 int main(){
 	
-	long int n = 12, m = 3;
+	long int n = 500, m = 3;
 	GrowingNetwork3D* net = new GrowingNetwork3D(n, m);
 	ofstream points;
 	points.open("main/points.txt", ios::out | ios::trunc);
