@@ -8,61 +8,96 @@ double utility(GrowingNetwork3D* net);
 
 int main(){
 	
-	GrowingNetwork3D* net;
-	long int n = 100, m = 3, num = 16;
-	double minGam, minTol;
-	long int minItr;
-	double avgUtil = 0;
-	double maxUtil = DBL_MIN;
-	
-	#pragma omp parallel shared(minGam, minTol, minItr, maxUtil) private(net, avgUtil)
-	{
+	long int sample_size = 25;
+	long int n = 100, m = 3;
+	double base_gamma_step = 0.05, base_tol_step = 0.05;
+	long int base_itr_step = 2;
+	double gamma = 2.8, gamma_step = base_gamma_step, tolerance = 0.6, tol_step = base_tol_step;
+	long int iterations = 40, itr_step = base_itr_step;
+	long int gen = 0;
+	GrowingNetwork3D* net = new GrowingNetwork3D(n, m, gamma, tolerance, iterations);
+
+	double prev_util = utility(net);
+	double best_gamma, best_tolerance;
+	long int best_iterations;
+
+	while(gen < 100){
 		
-		for(double baseGam = 0.2; baseGam <= 3.0; baseGam += 0.2){
-			
-			for(double baseTol = 0.0; baseTol <= 2.0; baseTol += 0.1){
+		best_gamma = gamma;
+		best_tolerance = tolerance;
+		best_iterations = iterations;
+		
+		#pragma omp parallel shared(best_gamma, best_tolerance, best_iterations, prev_util) private(net)
+		{
+		
+			#pragma omp for schedule(dynamic)
+			for(long int i = 0; i < 8; i++){
 				
-				#pragma omp for schedule(dynamic, 1)
-				for(long int baseItr = 10; baseItr <= 200; baseItr += 10){
+				double test_gamma = abs(gamma + ((i & 1<<0) ? -1:1) * gamma_step);
+				double test_tolerance = abs(tolerance + ((i & 1<<1) ? -1:1) * tol_step);
+				long int test_iterations = abs(iterations + ((i & 1<<2) ? -1:1) * itr_step);
+				double test_util = 0;
+				
+				for(long int j = 0; j < sample_size; j++){
 					
-					avgUtil = 0.0;
+					net = new GrowingNetwork3D(n, m, test_gamma, test_tolerance, test_iterations);
+					test_util += utility(net)/sample_size;
+					delete net;
 					
-					for(long int i = 0; i < num; i++){
+				}
+				
+				#pragma omp critical (comparison)
+				{
+					
+					if(test_util > prev_util){
 						
-						net = new GrowingNetwork3D(n, m, baseGam, baseTol, baseItr);
-						avgUtil += utility(net)/num;
-						delete net;
+						prev_util = test_util;
+						best_gamma = test_gamma;
+						best_tolerance = test_tolerance;
+						best_iterations = test_iterations;
 						
 					}
-					
-					#pragma omp critical
-					{
-						
-						if(avgUtil > maxUtil){
-							
-							minGam = baseGam;
-							minTol = baseTol;
-							minItr = baseItr;
-							maxUtil = avgUtil;
-							
-						}
-						
-						cout<<"Completed test of "<<baseGam<<", "<<baseTol<<", "<<baseItr<<endl;
-						
-					}
-					
+				
 				}
 				
 			}
 			
 		}
-	
+		
+		if(best_gamma == gamma && best_tolerance == tolerance && best_iterations == iterations){
+			
+			gamma_step += base_gamma_step;
+			tol_step += base_tol_step;
+			itr_step += base_itr_step;
+			
+		}
+		
+		else{
+			
+			gamma = best_gamma;
+			tolerance = best_tolerance;
+			iterations = best_iterations;
+			
+			if(gamma_step > base_gamma_step && tol_step > base_tol_step && itr_step > base_itr_step){
+				
+				gamma_step = base_gamma_step;
+				tol_step = base_tol_step;
+				itr_step = base_itr_step;
+				
+			}
+			
+		}
+		
+		gen++;
+		//cout<<"End generation "<<gen<<": "<<gamma<<", "<<tolerance<<", "<<iterations<<endl;
+		
 	}
 	
-	cout<<"Maximizing Gamma: "<<minGam<<endl;
-	cout<<"Maximizing Tolerance: "<<minTol<<endl;
-	cout<<"Maximizing Iterations: "<<minItr<<endl;
-	cout<<"Maximum Utility: "<<maxUtil<<endl;
+	cout<<"Found after "<<gen<<" generations:"<<endl;
+	cout<<"\tGamma = "<<gamma<<endl;
+	cout<<"\tTolerance = "<<tolerance<<endl;
+	cout<<"\tIterations = "<<iterations<<endl;
+	cout<<"\twith "<<prev_util<<" utility"<<endl;
 	
 }
 
@@ -71,6 +106,6 @@ double utility(GrowingNetwork3D* net){
 	double excess = net->calculatePotential() - net->calculateMinimumPotential();
 	long int iterations = net->baseItr;
 	
-	return -1 * (excess + ((double)iterations)/net->N);
+	return -1 * (excess + ((double)iterations)/(net->N));
 	
 }

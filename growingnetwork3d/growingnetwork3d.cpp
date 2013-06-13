@@ -267,6 +267,24 @@ void GrowingNetwork3D::equalize(){
  * and maxItr is the maximum number of iterations allowed before the function exits, regardless of tolerance
  */
 void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long int maxItr){
+
+	if(gamma < 0){	// check for negative gamma, which would turn gradient descent into gradient ascent
+	
+		gamma *= -1;	// fix if necessary, assume the negative sign is in error
+		
+	}
+	
+	if(baseTolerance < 0){	// check for negative tolerance, which would demand an energy below the minimum
+		
+		baseTolerance *= -1;	// fix if necessary, assume the negative sign is in error
+		
+	}
+	
+	if(maxItr < 0){	// check for negative iterations, which is just silly
+		
+		maxItr *= -1;	// fix the darn thing
+		
+	}
 	
 	double* netForce[N];	// local array to store the net forces on each node
 	double previousPotential = DBL_MAX;	// local field to store the previous known potential
