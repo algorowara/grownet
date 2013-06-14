@@ -10,18 +10,18 @@ int main(){
 	
 	long int sample_size = 25;
 	long int n = 100, m = 3;
-	double base_gamma_step = 0.05, base_tol_step = 0.05;
-	long int base_itr_step = 2;
+	double base_gamma_step = 0.01, base_tol_step = 0.01;
+	long int base_itr_step = 1;
 	double gamma = 2.8, gamma_step = base_gamma_step, tolerance = 0.6, tol_step = base_tol_step;
 	long int iterations = 40, itr_step = base_itr_step;
-	long int gen = 0;
+	long int gen = 0, genmax = 400;
 	GrowingNetwork3D* net = new GrowingNetwork3D(n, m, gamma, tolerance, iterations);
 
 	double prev_util = utility(net);
 	double best_gamma, best_tolerance;
 	long int best_iterations;
 
-	while(gen < 100){
+	while(gen < genmax){
 		
 		best_gamma = gamma;
 		best_tolerance = tolerance;
@@ -101,11 +101,8 @@ int main(){
 	
 }
 
-double utility(GrowingNetwork3D* net){
+double utilty(GrowingNetwork3D* net){
 	
-	double excess = net->calculatePotential() - net->calculateMinimumPotential();
-	long int iterations = net->baseItr;
-	
-	return -1 * (excess + ((double)iterations)/(net->N));
+	return net->calculateMinimumPotential() - net->calculatePotential();
 	
 }

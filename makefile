@@ -1,6 +1,6 @@
 FLAGS = -fopenmp -O3
 
-all: main/test main/graphgen main/parametertune
+all: main/test main/graphgen main/parametertune main/pgrownet
 main/parametertune: main/parametertune.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o
 	g++ $(FLAGS)  main/parametertune.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/parametertune 
 main/test: main/test.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o
@@ -34,6 +34,8 @@ pgrownet2d/pgrownet2d.o: pgrownet2d/pgrownet2d.cpp pgrownet2d/pgrownet2d.h growi
 backup: graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h main/*.cpp main/*.m makefile README doc.odt
 	zip ../backup.zip graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h main/*.cpp main/*.m makefile README doc.odt
 clean:
+	rm -vf main/pgrownet
+	rm -vf main/parametertune
 	rm -vf main/test
 	rm -vf main/graphgen
 	rm -vf main/points.txt

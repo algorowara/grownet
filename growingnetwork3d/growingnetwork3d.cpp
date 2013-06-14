@@ -338,9 +338,9 @@ void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long 
  * return the potential energy as a function of N
  * as calculated from the equation given in the design document
  */
-double inline GrowingNetwork3D::calculateMinimumPotential(){
+double GrowingNetwork3D::calculateMinimumPotential(){
 	
-	return 514.267 - 8.106 * N + 0.489 * N * N;
+	return 0.063594969640041382 * sqrt(N) + -0.55213813866389005 * pow(N, 1.5) + 0.49998893897252450 * (N * N);
 	
 }
 
