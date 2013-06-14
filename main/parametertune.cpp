@@ -101,7 +101,7 @@ int main(){
 	
 }
 
-double utilty(GrowingNetwork3D* net){
+double utility(GrowingNetwork3D* net){
 	
 	return net->calculateMinimumPotential() - net->calculatePotential();
 	
