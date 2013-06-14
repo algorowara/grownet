@@ -4,6 +4,7 @@
 #include <ctime>
 #include <cmath>
 #include <stdlib.h>
+#include <assert.h>
 
 using namespace std;
 
@@ -81,10 +82,10 @@ double* PositiveChargeGrowingNetwork2D::randomLocation(){
 	double* position = new double[DIM];
 
 	double theta = 2 * M_PI * (((double)rand())/RAND_MAX);
-	double p_radius = radius * (((double)rand())/RAND_MAX); 
+	double p_radius2 = radius*radius * (((double)rand())/RAND_MAX); 
 
-	position[0] = p_radius * cos(theta);
-	position[1] = p_radius * sin(theta);
+	position[0] = sqrt(p_radius2) * cos(theta);
+	position[1] = sqrt(p_radius2) * sin(theta);
 
 	return position;
 
@@ -100,7 +101,7 @@ double PositiveChargeGrowingNetwork2D::linearDistance(Vertex* a, Vertex* b){
 		SpatialVertex* a_loc = (SpatialVertex*)a;
 		SpatialVertex* b_loc = (SpatialVertex*)b;
 
-		return DISTANCE(a_loc, b_loc);
+		return DISTANCE_2D(a_loc, b_loc);
 
 	}
 
@@ -134,8 +135,8 @@ double* PositiveChargeGrowingNetwork2D::sumForces(SpatialVertex* node){
 		}
 
 		other = nodes.at(i);
-		magnitude = alpha / DISTANCE(node, other);	//calculate the unitless magnitude of the repulsive electron-electron force
-		distance = DISTANCE(node, other);
+		magnitude = alpha / DISTANCE_2D(node, other);	//calculate the unitless magnitude of the repulsive electron-electron force
+		distance = DISTANCE_2D(node, other);
 
 		force[0] += magnitude * (X(node) - X(other))/distance; 
 		force[1] += magnitude * (Y(node) - Y(other))/distance;  //multiply the magnitude by the unit vector of the distancement
@@ -173,7 +174,7 @@ SpatialVertex** PositiveChargeGrowingNetwork2D::findMNearestNeighbors(SpatialVer
 
 		}
 
-		double square = DISTANCE_SQUARED(start, nodes.at(i));
+		double square = DISTANCE_SQUARED_2D(start, nodes.at(i));
 
 		for(int j = 0; j < m; j++){	//iterate through all distance squared records
 
@@ -224,10 +225,9 @@ double PositiveChargeGrowingNetwork2D::calculatePotential(){
 
 				a = nodes.at(i);
 				b = nodes.at(j);
-
+	
 				if(a != b){	//if they are not the same
-
-					localSum += -alpha*log(DISTANCE(a, b)); //add their potential energy to the local sum
+					localSum += -alpha*log(DISTANCE_2D(a, b)); //add their potential energy to the local sum
 
 				}
 
@@ -238,6 +238,7 @@ double PositiveChargeGrowingNetwork2D::calculatePotential(){
 		}	
 
 		#pragma omp atomic
+
 		potential += localSum;	// add the local sums together
 
 	}
@@ -296,4 +297,3 @@ void PositiveChargeGrowingNetwork2D::gradientDescent(double gamma, double tolera
         }
 
 }
-

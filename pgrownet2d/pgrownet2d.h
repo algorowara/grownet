@@ -13,8 +13,8 @@
 #define DIM 2
 #define X(node) node->position[0]
 #define Y(node) node->position[1]
-#define DISTANCE_SQUARED(a, b)  ((X(b) - X(a)) * (X(b) - X(a)) + (Y(b) - Y(a)) * (Y(b) - Y(a)))
-#define DISTANCE(a, b) sqrt(DISTANCE_SQUARED(a, b))
+#define DISTANCE_SQUARED_2D(a, b)  ((X(b) - X(a)) * (X(b) - X(a)) + (Y(b) - Y(a)) * (Y(b) - Y(a)))
+#define DISTANCE_2D(a, b) sqrt(DISTANCE_SQUARED_2D(a, b))
 
 using namespace std;
 
