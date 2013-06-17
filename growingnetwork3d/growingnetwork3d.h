@@ -16,9 +16,9 @@
  */
 #define N nodes.size()
 #define DIM (3)
-#define X(node) ((SpatialVertex*)node)->position[0]
-#define Y(node) ((SpatialVertex*)node)->position[1]
-#define Z(node) ((SpatialVertex*)node)->position[2]
+#define X(node) node->position[0]
+#define Y(node) node->position[1]
+#define Z(node) node->position[2]
 #define DISTANCE_SQUARED(a, b) ((X(b) - X(a)) * (X(b) - X(a)) + (Y(b) - Y(a)) * (Y(b) - Y(a)) + (Z(b) - Z(a)) * (Z(b) - Z(a)))
 #define DISTANCE(a, b) sqrt(DISTANCE_SQUARED(a, b))
 

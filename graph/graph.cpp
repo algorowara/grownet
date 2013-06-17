@@ -24,16 +24,16 @@ double Graph::averagePathLength(){
 	
 	for(int i = 0; i < N; i++){
 	
-		memoize(nodes.at(i));
+		memoize(getNode(i));
 		
 		for(int j = 0; j < N; j++){
 			
-			sum += nodes.at(j)->distanceFromInitial;
+			sum += getNode(j)->distanceFromInitial;
 			num++;
 			
 		}
 		
-		clean(nodes.at(i));
+		clean(getNode(i));
 		
 	}
 	
@@ -62,7 +62,7 @@ long int Graph::nodesWithDegree(long int k){
 	
 	for(int i = 0; i < N; i++){
 	
-		if(nodes.at(i)->neighbors.size() == k){
+		if(getNode(i)->neighbors.size() == k){
 		
 			num++;
 			
@@ -94,9 +94,9 @@ double* Graph::degreeDistribution(){
 
 	for(int i = 0; i < N; i++){
 		
-		long int index = nodes.at(i)->neighbors.size();
+		long int index = getNode(i)->neighbors.size();
 		
-		dist[nodes.at(i)->neighbors.size()]++;
+		dist[getNode(i)->neighbors.size()]++;
 		
 	}
 	
@@ -116,7 +116,7 @@ double Graph::averageDegree(){
 	
 	for(int i = 0; i < N; i++){
 		
-			sum += nodes.at(i)->neighbors.size();
+			sum += getNode(i)->neighbors.size();
 		
 	}
 	
@@ -130,7 +130,7 @@ double Graph::averageClusteringCoefficient(){
 	
 	for(int i = 0; i < N; i++){
 	
-		sum += nodes.at(i)->clusteringCoefficient();
+		sum += getNode(i)->clusteringCoefficient();
 		
 	}
 	
@@ -185,7 +185,7 @@ void Graph::memoize(Vertex* root, vector<Vertex*> path, long int distance){
 		
 		for(long int i = 0; i < root->neighbors.size(); i++){
 		
-			memoize(root->neighbors.at(i), path, distance + 1);
+			memoize(root->getNeighbor(i), path, distance + 1);
 		
 		}
 		
@@ -211,7 +211,7 @@ void Graph::clean(Vertex* root){
 		
 		for(long int i = 0; i < root->neighbors.size(); i++){
 		
-			clean(root->neighbors.at(i));
+			clean(root->getNeighbor(i));
 			
 		}
 		
@@ -223,7 +223,7 @@ Graph::~Graph(){
 	
 	for(long int i = 0; i < N; i++){
 		
-		delete nodes.at(i);
+		delete getNode(i);
 		
 	}
 	

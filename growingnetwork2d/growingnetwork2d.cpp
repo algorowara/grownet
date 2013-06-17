@@ -46,7 +46,7 @@ GrowingNetwork2D::GrowingNetwork2D(long int n, long int m){
 		
 			for(int j = 0; j < i; j++){	// link all previously created nodes to this new node
 			
-				nodes.at(i)->addNeighbor(nodes.at(j));	// link node i with node j (0 <= j < i)
+				getNode(i)->addNeighbor(getNode(j));	// link node i with node j (0 <= j < i)
 				
 			}
 			
@@ -74,8 +74,8 @@ void GrowingNetwork2D::grow(long int n){
 	
 		for(int i = 0; i < m/2; i++){	// for the m/2 nodes on either side of the interval
 			
-			newNode->addNeighbor(nodes.at(pos-i));	// connect the new node to its neighbor i nodes behind
-			newNode->addNeighbor(nodes.at((pos+i+1)%N));	// and the other neighbor i+1 nodes ahead
+			newNode->addNeighbor(getNode(pos-i));	// connect the new node to its neighbor i nodes behind
+			newNode->addNeighbor(getNode((pos+i+1)%N));	// and the other neighbor i+1 nodes ahead
 		
 		}
 	
@@ -114,10 +114,10 @@ double* GrowingNetwork2D::edgeAgeVsArcDistance(){
 	
 	for(int i = 0; i < N; i++){
 		
-		for(int j = 0; j < nodes.at(i)->neighbors.size(); j++){
+		for(int j = 0; j < K(i); j++){
 			
-			long int age = edgeAge(nodes.at(i), nodes.at(i)->neighbors.at(j));
-			long int distance = edgeArcDistance(nodes.at(i), nodes.at(i)->neighbors.at(j));
+			long int age = edgeAge(getNode(i), getNode(i)->getNeighbor(j));
+			long int distance = edgeArcDistance(getNode(i), getNode(i)->getNeighbor(j));
 			dist[age] += distance;
 			
 		}
@@ -161,9 +161,9 @@ double* GrowingNetwork2D::edgeArcDistanceDistribution(){
 	
 	for(int i = 0; i < N; i++){	// for every node in the graph
 		
-		for(int j = 0; j < nodes.at(i)->neighbors.size(); j++){	// for all of its neighbors
+		for(int j = 0; j < K(i); j++){	// for all of its neighbors
 			
-			long int arc = edgeArcDistance(nodes.at(i), nodes.at(i)->neighbors.at(j));	// determine the arc distance between them
+			long int arc = edgeArcDistance(getNode(i), getNode(i)->getNeighbor(j));	// determine the arc distance between them
 			num[arc]++;	// increment the count of edges with the appropriate length
 			
 		}

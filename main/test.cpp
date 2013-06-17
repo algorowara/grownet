@@ -21,7 +21,7 @@ int main(){
 			
 			for(int j = 0; j < DIM; j++){
 				
-				init[i][j] = net->nodes.at(i)->position[j];
+				init[i][j] = net->getNode(i)->position[j];
 			
 			}
 			
@@ -33,7 +33,7 @@ int main(){
 			
 			for(int j = 0; j < DIM; j++){
 				
-				final[i][j] = net->nodes.at(i)->position[j];
+				final[i][j] = net->getNode(i)->position[j];
 			
 			}
 			
@@ -68,7 +68,7 @@ int main(){
 		
 		for(int j = 0; j < DIM; j++){
 			
-			end_position<<net->nodes.at(i)->position[j];
+			end_position<<net->getNode(i)->position[j];
 			
 			if(j < DIM-1){
 				

@@ -7,7 +7,7 @@
 using namespace std;
 
 #define N nodes.size()
-#define K(i) nodes.at(i)->neighbors.size()
+#define K(i) getNode(i)->neighbors.size()
 
 class Graph{
 
