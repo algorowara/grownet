@@ -10,7 +10,7 @@ class Vertex{
 
 public:
 	
-	int distanceFromInitial;
+	long int distanceFromInitial;
 	vector<Vertex*> pathFromInitial;
 	vector<Vertex*> neighbors;
 		
@@ -21,6 +21,7 @@ public:
 	double clusteringCoefficient();
 	long int getStartTime();
 	bool hasNeighbor(Vertex* neighbor);
+	Vertex* getNeighbor(long int i);
 	
 protected:
 

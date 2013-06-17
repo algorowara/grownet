@@ -33,11 +33,11 @@ double Vertex::clusteringCoefficient(){
 	
 	for(int a = 0; a < k; a++){	// for every neighboring node
 		
-		for(int b = 0; b < neighbors.at(a)->neighbors.size(); b++){	// examine each of that neighbor's neighbors
+		for(int b = 0; b < getNeighbor(a)->neighbors.size(); b++){	// examine each of that neighbor's neighbors
 			
 			for(int c = 0; c < k; c++){	// search through each neighboring node
 				
-					if(neighbors.at(a)->neighbors.at(b) == neighbors.at(c)){	// if the neighbor's neighbor is also a neighbor
+					if(getNeighbor(a)->getNeighbor(b) == getNeighbor(c)){	// if the neighbor's neighbor is also a neighbor
 					
 						q++;	// increment the number of known neighbor-to-neighbor edges
 						break;	// just in case a neighbor is included twice
@@ -66,7 +66,7 @@ bool Vertex::hasNeighbor(Vertex* neighbor){
 	
 	for(int i = 0; i < neighbors.size(); i++){
 		
-		if(neighbors.at(i) == neighbor){
+		if(getNeighbor(i) == neighbor){
 		
 			return true;
 			
@@ -75,5 +75,11 @@ bool Vertex::hasNeighbor(Vertex* neighbor){
 	}
 	
 	return false;
+	
+}
+
+Vertex* Vertex::getNeighbor(long int i){
+	
+	return neighbors.at(i);
 	
 }

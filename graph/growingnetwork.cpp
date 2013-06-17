@@ -57,15 +57,15 @@ double* GrowingNetwork::edgeAgeVsBetweenness(){
 	
 	for(int i = 0; i < N; i++){	// for every node, construct the shortest paths from that node
 	
-		memoize(nodes.at(i));
+		memoize(getNode(i));
 		
 		for(int j = 0; j < N; j++){	// for every node, use its shortest path from the root
 			
-			for(int k = 1; k < nodes.at(j)->pathFromInitial.size(); k++){	// for every node in the shortest path except the first
+			for(int k = 1; k < getNode(j)->pathFromInitial.size(); k++){	// for every node in the shortest path except the first
 																			// note that starting at k = 1 ensures that node i is not included
 																			
-				Vertex* a = nodes.at(j)->pathFromInitial.at(k-1);	// use the previous node
-				Vertex* b = nodes.at(j)->pathFromInitial.at(k);	// and the current node
+				Vertex* a = getNode(j)->pathFromInitial.at(k-1);	// use the previous node
+				Vertex* b = getNode(j)->pathFromInitial.at(k);	// and the current node
 				
 				betweenness[edgeAge(a, b)]++;	// to determine the age of the edge, and increment the count accordingly
 			
@@ -73,7 +73,7 @@ double* GrowingNetwork::edgeAgeVsBetweenness(){
 			
 		}
 		
-		clean(nodes.at(i));
+		clean(getNode(i));
 		
 	}
 	
@@ -103,8 +103,8 @@ double* GrowingNetwork::edgeAgeVsLinearDistance(){
 		
 		for(int j = 0; j < K(i); i++){	// for each neighbor (and the corresponding edge)
 		
-			Vertex* a = nodes.at(i);
-			Vertex* b = nodes.at(i)->neighbors.at(j);
+			Vertex* a = getNode(i);
+			Vertex* b = getNode(i)->getNeighbor(j);
 			lin[edgeAge(a, b)] += linearDistance(a, b);	// add the length of the edge to the sum
 			
 		}

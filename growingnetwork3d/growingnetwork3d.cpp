@@ -26,7 +26,7 @@ GrowingNetwork3D::GrowingNetwork3D(long int n, long int m, double gam, double to
 		
 		for(long int j = 0; j < nodes.size()-1; j++){	// link it to all previously created nodes
 			
-			newNode->addNeighbor(nodes.at(j));
+			newNode->addNeighbor(getNode(j));
 			
 		}
 		
@@ -131,13 +131,13 @@ double* GrowingNetwork3D::sumForces(SpatialVertex* node){
 	
 	for(int i = 0; i < N; i++){	// for every node in the graph
 		
-		if(nodes.at(i) == node){	// except this one
+		if(getNode(i) == node){	// except this one
 			
 			continue;	// skip this one
 			
 		}
 		
-		other = (SpatialVertex*)nodes.at(i);
+		other = getNode(i);
 		magnitude = 1.0 / DISTANCE_SQUARED(node, other);	// calculate the unitless magnitude of the repulsive force
 		distance = DISTANCE(node, other);
 		
@@ -168,13 +168,13 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 	
 	for(int i = 0; i < N; i++){
 		
-		if(nodes.at(i) == start){	// do not consider the distance between the starting node and itself
+		if(getNode(i) == start){	// do not consider the distance between the starting node and itself
 		
 			continue;
 			
 		}
 	
-		double square = DISTANCE_SQUARED(start, nodes.at(i));
+		double square = DISTANCE_SQUARED(start, getNode(i));
 		
 		for(int j = 0; j < m; j++){	// iterate through all distance-squared records
 			
