@@ -223,7 +223,7 @@ Graph::~Graph(){
 	
 	for(long int i = 0; i < N; i++){
 		
-		delete nodes.at(i);
+		delete getNode(i);
 		
 	}
 	

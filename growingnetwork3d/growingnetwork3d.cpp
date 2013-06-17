@@ -352,10 +352,4 @@ double GrowingNetwork3D::calculateMinimumPotential(){
 
 GrowingNetwork3D::~GrowingNetwork3D(){
 	
-	for(long int i = 0; i < N; i++){
-		
-		delete nodes.at(i);
-		
-	}
-	
 }
