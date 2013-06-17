@@ -189,6 +189,7 @@ SpatialVertex** PositiveChargeGrowingNetwork2D::findMNearestNeighbors(SpatialVer
 			
  				dsquare[j] = square;	//put the data for this new nearest neighbor in the spot previously occupied by neighbor j
 				near[j] = nodes.at(i);
+				break;	// stop looking for others
 
 			}
 
