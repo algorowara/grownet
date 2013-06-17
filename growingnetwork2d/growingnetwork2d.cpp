@@ -93,7 +93,8 @@ void GrowingNetwork2D::grow(long int n){
 long int GrowingNetwork2D::edgeArcDistance(Vertex* a, Vertex* b){
 	
 	// find the minimum of distance in ascending order vs. descending order of index
-	return min((unsigned long int)abs(indexOf(b) - indexOf(a)), (unsigned long int)N - abs(indexOf(b) - indexOf(a)));
+	long int oneway = abs(indexOf(b) - indexOf(a)), another = N - abs(indexOf(b) - indexOf(a));
+	return min(oneway, another);
 	
 }
 

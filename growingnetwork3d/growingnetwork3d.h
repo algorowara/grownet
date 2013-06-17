@@ -14,10 +14,11 @@
  * for specifications of the coordinate system,
  * please see doc.odt
  */
+#define N nodes.size()
 #define DIM (3)
-#define X(node) node->position[0]
-#define Y(node) node->position[1]
-#define Z(node) node->position[2]
+#define X(node) ((SpatialVertex*)node)->position[0]
+#define Y(node) ((SpatialVertex*)node)->position[1]
+#define Z(node) ((SpatialVertex*)node)->position[2]
 #define DISTANCE_SQUARED(a, b) ((X(b) - X(a)) * (X(b) - X(a)) + (Y(b) - Y(a)) * (Y(b) - Y(a)) + (Z(b) - Z(a)) * (Z(b) - Z(a)))
 #define DISTANCE(a, b) sqrt(DISTANCE_SQUARED(a, b))
 
@@ -31,13 +32,13 @@ class GrowingNetwork3D : public GrowingNetwork{
 	
 public:
 
-	vector<SpatialVertex*> nodes;
 	double radius;
 	double baseGam;
 	double baseTol;
 	long int baseItr;
 
 	GrowingNetwork3D(long int n, long int m, double gam = DEFAULT_GAMMA, double tol = DEFAULT_TOLERANCE, long int itr = DEFAULT_ITR);
+	SpatialVertex* getNode(long int i);
 	void grow(long int n);
 	double* randomLocation();
 	double linearDistance(Vertex* a, Vertex* b);

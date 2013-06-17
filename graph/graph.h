@@ -22,7 +22,8 @@ public:
 	double averageDegree();
 	double averageClusteringCoefficient();
 	void insertNode(Vertex* node, long int position);
-	long int indexOf(Vertex* node);	
+	long int indexOf(Vertex* node);
+	Vertex* getNode(long int i);	
 	static void memoize(Vertex* root);
 	static void memoize(Vertex* root, vector<Vertex*> path, long int distance);
 	static void clean(Vertex* root);

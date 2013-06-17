@@ -6,37 +6,19 @@ using namespace std;
 
 int main(){
 	
-	double tol_min = 0.0, tol_max = 5.0, tol_step = 0.05;
-	double gam_min = 0.0, gam_max = 100, gam_step = 1.0;
-	long int sample = 4;
-	long int n = 100, m = 3;
+	long int m = 3;
+	double gamma = 1.0, tolerance = 0.001;
+	long int maxItr = 1000;
+	long int sample_size = 4;
+	time_t start, end;
 	
-	for(double tol = tol_min + tol_step; tol <= tol_max; tol += tol_step){
+	for(long int n = 50; n <= 2000; n += 50){
 		
-		for(double gam = gam_min + gam_step; gam <= gam_max; gam += gam_step){
+		for(long int i = 0; i < sample_size; i++){
 			
-			double avg = 0.0;
-			
-			#pragma omp parallel shared(avg)
-			{
-				
-				#pragma omp for schedule(dynamic)
-				for(long int i = 0; i < sample; i++){
-					
-					GrowingNetwork3D* net = new GrowingNetwork3D(n, m, gam, tol);
-					
-					#pragma omp critical
-					{
-						
-						avg += ((net->calculatePotential() - net->calculateMinimumPotential())/net->calculateMinimumPotential())/sample;
-						
-					}
-					
-				}
-				
-			}
-			
-			cout<<tol<<" "<<gam<<" "<<avg<<endl;
+			GrowingNetwork3D* net = new GrowingNetwork3D(n, m, gamma, tolerance, maxItr);
+			cout<<(net->N)<<" "<<(net->averagePathLength())<<endl;
+			delete net;
 			
 		}
 		

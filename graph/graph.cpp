@@ -27,7 +27,7 @@ double Graph::averagePathLength(){
 		memoize(nodes.at(i));
 		
 		for(int j = 0; j < N; j++){
-		
+			
 			sum += nodes.at(j)->distanceFromInitial;
 			num++;
 			
@@ -146,7 +146,7 @@ long int Graph::indexOf(Vertex* node){
 	
 	for(int i = 0; i < N; i++){
 	
-		if(node == nodes.at(i)){
+		if(node == getNode(i)){
 		
 			return i;
 			
@@ -155,6 +155,12 @@ long int Graph::indexOf(Vertex* node){
 	}
 	
 	return -1;
+	
+}
+
+Vertex* Graph::getNode(long int i){
+	
+	return nodes.at(i);
 	
 }
 
