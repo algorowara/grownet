@@ -29,11 +29,11 @@ PositiveChargeGrowingNetwork2D::PositiveChargeGrowingNetwork2D(long int n, long 
 
 		SpatialVertex* newNode = new SpatialVertex(DIM, randomLocation(), getTime()); //generate a new node in DIM dimensions
 
-		nodes.push_back(newNode);
+		addNode(newNode);
 
 		for(long int j = 0; j < nodes.size()-1; j++){	//link it to all previously created nodes
 
-			newNode->addNeighbor(nodes.at(j));
+			newNode->addNeighbor(getNode(j));
 
 		}
 
@@ -48,23 +48,29 @@ PositiveChargeGrowingNetwork2D::PositiveChargeGrowingNetwork2D(long int n, long 
 
 }
 
+SpatialVertex* PositiveChargeGrowingNetwork2D::getNode(long int i){
+
+        return (SpatialVertex*)nodes.at(i);
+
+}
+
 void PositiveChargeGrowingNetwork2D::grow(long int n){
 
 	while(n > 0){
 
 		SpatialVertex* newNode = new SpatialVertex(DIM, randomLocation(), getTime());
-		SpatialVertex** neighbors = findMNearestNeighbors(newNode);
+		SpatialVertex** nearNeighbors = findMNearestNeighbors(newNode);
 
 		for(int i = 0; i < m; i++){
 
-			newNode->addNeighbor(neighbors[i]);
+			newNode->addNeighbor(nearNeighbors[i]);
 
 		}
 
-		nodes.push_back(newNode);
+		addNode(newNode);
 		equalize();
 
-		delete neighbors;
+		delete[] nearNeighbors;
 		tick();
 		n--;
 
@@ -128,13 +134,13 @@ double* PositiveChargeGrowingNetwork2D::sumForces(SpatialVertex* node){
 
 	for(int i = 0; i < N; i++){	//for every node in the graph
 
-		if(nodes.at(i) == node){	//except this one
+		if(getNode(i) == node){	//except this one
 
 			continue;	//skip this one
 
 		}
 
-		other = nodes.at(i);
+		other = getNode(i);
 		magnitude = alpha / DISTANCE_2D(node, other);	//calculate the unitless magnitude of the repulsive electron-electron force
 		distance = DISTANCE_2D(node, other);
 
@@ -168,13 +174,13 @@ SpatialVertex** PositiveChargeGrowingNetwork2D::findMNearestNeighbors(SpatialVer
 
 	for(int i = 0; i < N; i++){
 
-		if(nodes.at(i) == start){	//do not consider the distance between the starting node and itself
+		if(getNode(i) == start){	//do not consider the distance between the starting node and itself
 
 			continue;
 
 		}
 
-		double square = DISTANCE_SQUARED_2D(start, nodes.at(i));
+		double square = DISTANCE_SQUARED_2D(start, getNode(i));
 
 		for(int j = 0; j < m; j++){	//iterate through all distance squared records
 
@@ -188,7 +194,7 @@ SpatialVertex** PositiveChargeGrowingNetwork2D::findMNearestNeighbors(SpatialVer
 				}	
 			
  				dsquare[j] = square;	//put the data for this new nearest neighbor in the spot previously occupied by neighbor j
-				near[j] = nodes.at(i);
+				near[j] = getNode(i);
 				break;	// stop looking for others
 
 			}
@@ -224,8 +230,8 @@ double PositiveChargeGrowingNetwork2D::calculatePotential(){
 
 			for(int j = 0; j < N; j++){	//for every pair of nodes
 
-				a = nodes.at(i);
-				b = nodes.at(j);
+				a = getNode(i);
+				b = getNode(j);
 	
 				if(a != b){	//if they are not the same
 					localSum += -alpha*log(DISTANCE_2D(a, b)); //add their potential energy to the local sum
@@ -270,7 +276,7 @@ void PositiveChargeGrowingNetwork2D::gradientDescent(double gamma, double tolera
                         #pragma omp for schedule(guided)
                         for(int i = 0; i < N; i++){     // for every node
 
-                                netForce[i] = sumForces(nodes.at(i));  
+                                netForce[i] = sumForces(getNode(i));  
 
                         }
 
@@ -284,17 +290,24 @@ void PositiveChargeGrowingNetwork2D::gradientDescent(double gamma, double tolera
 
                                 for(int j = 0; j < DIM; j++){   // for every dimension
 
-                                        nodes.at(i)->position[j] += gamma * netForce[i][j];     // displace the node by gamma * netForce
+                                        getNode(i)->position[j] += gamma * netForce[i][j];     // displace the node by gamma * netForce
 
                                 }
+
 				delete[] netForce[i]; //clear netForce to avoid memleak 
 
                         }
 
                 }
 
+		previousPotential = calculatePotential();
+
                 maxItr--;
 
         }
+
+}
+
+PositiveChargeGrowingNetwork2D::~PositiveChargeGrowingNetwork2D(){
 
 }

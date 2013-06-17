@@ -22,7 +22,6 @@ class PositiveChargeGrowingNetwork2D : public GrowingNetwork{
 
 public:
 
-	vector<SpatialVertex*> nodes;
 	double radius;
 	double alpha; //electron-electron force constant
 	double beta; //electron-cloud force constant
@@ -31,6 +30,7 @@ public:
 	long int maxItr;
 
 	PositiveChargeGrowingNetwork2D(long int n, long int m, double gamma, double tolerance, long int maxItr);
+	SpatialVertex* getNode(long int i);
 	void grow(long int n);
 	double* randomLocation();
 	double linearDistance(Vertex* a, Vertex* b);
@@ -39,6 +39,7 @@ public:
 	double calculatePotential();
 	void equalize();
 	void gradientDescent(double gamma, double tolerance, long int maxItr);
+	~PositiveChargeGrowingNetwork2D();
 
 };
 
