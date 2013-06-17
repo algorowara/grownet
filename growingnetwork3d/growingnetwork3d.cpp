@@ -22,7 +22,7 @@ GrowingNetwork3D::GrowingNetwork3D(long int n, long int m, double gam, double to
 	for(long int i = 0; i < m+1; i++){	// for the first m+1 nodes, which form a clique
 	
 		SpatialVertex* newNode = new SpatialVertex(DIM, randomLocation(), getTime());	// generate a new node in DIM dimensions
-		nodes.push_back(newNode);
+		addNode(newNode);
 		
 		for(long int j = 0; j < nodes.size()-1; j++){	// link it to all previously created nodes
 			
@@ -41,23 +41,29 @@ GrowingNetwork3D::GrowingNetwork3D(long int n, long int m, double gam, double to
 	
 }
 
+SpatialVertex* GrowingNetwork3D::getNode(long int i){
+	
+	return (SpatialVertex*)nodes.at(i);
+	
+}
+
 void GrowingNetwork3D::grow(long int n){
 	
 	while(n > 0){
 		
 		SpatialVertex* newNode = new SpatialVertex(DIM, randomLocation(), getTime());
-		SpatialVertex** neighbors = findMNearestNeighbors(newNode);
+		SpatialVertex** nearNeighbors = findMNearestNeighbors(newNode);
 		
 		for(int i = 0; i < m; i++){
 			
-			newNode->addNeighbor(neighbors[i]);
+			newNode->addNeighbor(nearNeighbors[i]);
 			
 		}
 		
-		nodes.push_back(newNode);		
+		addNode(newNode);		
 		equalize();
 		
-		delete[] neighbors;
+		delete[] nearNeighbors;
 		tick();		
 		n--;
 		
@@ -131,7 +137,7 @@ double* GrowingNetwork3D::sumForces(SpatialVertex* node){
 			
 		}
 		
-		other = nodes.at(i);
+		other = (SpatialVertex*)nodes.at(i);
 		magnitude = 1.0 / DISTANCE_SQUARED(node, other);	// calculate the unitless magnitude of the repulsive force
 		distance = DISTANCE(node, other);
 		
@@ -182,7 +188,7 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 				}
 				
 				dsquare[j] = square;	// put the data for this new nearest neighbor
-				near[j] = nodes.at(i);	// in the spot previously occupied by neighbor j
+				near[j] = getNode(i);	// in the spot previously occupied by neighbor j
 				
 			}
 			
@@ -234,8 +240,8 @@ double GrowingNetwork3D::calculatePotential(){
 			
 			for(int j = i+1; j < N; j++){	// for every node which has not yet been visited by the outer loop
 				
-				a = nodes.at(i);
-				b = nodes.at(j);				
+				a = getNode(i);
+				b = getNode(j);				
 				localSum += 1.0/DISTANCE(a, b);	// add their potential energy to the local sum
 								
 			}
@@ -299,7 +305,7 @@ void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long 
 			#pragma omp for schedule(guided)
 			for(int i = 0; i < N; i++){	// for every node
 				
-				netForce[i] = sumForces(nodes.at(i));	// store the net force on the node
+				netForce[i] = sumForces(getNode(i));	// store the net force on the node
 														// thread safety is not an issue here
 														// because the values of i are divided among threads
 														// and no two will ever write to the same index
@@ -316,11 +322,11 @@ void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long 
 				
 				for(int j = 0; j < DIM; j++){	// for every dimension
 					
-					nodes.at(i)->position[j] += gamma * netForce[i][j];	// displace the node by gamma * netForce
+					getNode(i)->position[j] += gamma * netForce[i][j];	// displace the node by gamma * netForce
 					
 				}
 				
-				normalizeRadius(nodes.at(i));	// return the node to the surface of the sphere
+				normalizeRadius(getNode(i));	// return the node to the surface of the sphere
 				delete[] netForce[i];	// delete the now-outdated force vector for this node
 				
 			}
