@@ -166,7 +166,7 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 	}
 	
 	
-	for(int i = 0; i < N; i++){
+	for(int i = 0; i < N; i++){	// for all nodes in the graph
 		
 		if(getNode(i) == start){	// do not consider the distance between the starting node and itself
 		
@@ -174,7 +174,9 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 			
 		}
 	
-		double square = DISTANCE_SQUARED(start, getNode(i));
+		double square = DISTANCE_SQUARED(start, getNode(i));	// calculate the square of the distance
+																// as minimizing distance squared is the same
+																// as minimizing distance (as a signless scalar)
 		
 		for(int j = 0; j < m; j++){	// iterate through all distance-squared records
 			
@@ -189,6 +191,8 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 				
 				dsquare[j] = square;	// put the data for this new nearest neighbor
 				near[j] = getNode(i);	// in the spot previously occupied by neighbor j
+				
+				break;	// stop iterating through records
 				
 			}
 			
