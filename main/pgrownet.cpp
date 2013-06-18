@@ -6,7 +6,7 @@ using namespace std;
 
 int main(){
 
-	long int n = 500, m = 3;
+	long int n = 5000, m = 3;
 	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m,.05,.0001,10000);
 	ofstream pgrowdata;
 	pgrowdata.open("pgrowdata.txt", ios::out | ios::trunc);
@@ -34,9 +34,15 @@ int main(){
 	
 	double* dist = net->degreeDistribution();
 
+	ofstream pdegdist;
+	pdegdist.open("pdegdist.txt", ios::out | ios::trunc);
+
 	for(long int i = 0; i < n; i++){
 	
-		cout<<i<<" "<<dist[i]<<endl;
+		pdegdist<<i<<" "<<dist[i]<<endl;
+	
 	}
+
+	pdegdist.close();
 
 }
