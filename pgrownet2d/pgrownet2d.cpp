@@ -21,6 +21,7 @@ PositiveChargeGrowingNetwork2D::PositiveChargeGrowingNetwork2D(long int n, long 
 	this->gamma = gamma;
 	this->tolerance = tolerance;
 	this->maxItr = maxItr;
+	this->m = m;
 	radius = 1;
 	alpha = .01; //electron electron force constant
 	beta = alpha*n; //electron cloud force constant
