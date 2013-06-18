@@ -14,8 +14,6 @@
  * for specifications of the coordinate system,
  * please see doc.odt
  */
-#define N nodes.size()
-#define DIM (3)
 #define X(node) node->position[0]
 #define Y(node) node->position[1]
 #define Z(node) node->position[2]
@@ -32,6 +30,7 @@ class GrowingNetwork3D : public GrowingNetwork{
 	
 public:
 
+	const static long int DIM = 3;
 	double radius;
 	double baseGam;
 	double baseTol;

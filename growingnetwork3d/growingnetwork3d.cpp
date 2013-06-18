@@ -1,4 +1,5 @@
 #include "../growingnetwork3d/growingnetwork3d.h"
+#include <iostream>
 
 using namespace std;
 

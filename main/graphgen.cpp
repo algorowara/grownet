@@ -8,11 +8,10 @@ int main(){
 	
 	long int m = 3;
 	double gamma = 1.0, tolerance = 0.001;
-	long int maxItr = 1000;
+	long int maxItr = 100;
 	long int sample_size = 4;
-	time_t start, end;
 	
-	for(long int n = 50; n <= 2000; n += 50){
+	for(long int n = 50; n <= 1000; n += 50){
 		
 		for(long int i = 0; i < sample_size; i++){
 			
