@@ -324,10 +324,9 @@ void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long 
 	
 	double* netForce[N];	// local array to store the net forces on each node
 	double previousPotential = DBL_MAX;	// local field to store the previous known potential
-	double minPot = calculateMinimumPotential();	// storage of the minimum potential for this N
-	double tolerance = minPot * baseTolerance;	// actual value of tolerance
+	double toleratedPotential = calculateMinimumPotential(N) + baseTol * calculateMinimumPotentialDifference(N-1, N);
 	
-	while(previousPotential - minPot > tolerance && maxItr > 0){
+	while(previousPotential > toleratedPotential && maxItr > 0){
 
 		#pragma omp parallel shared(netForce)
 		{
@@ -362,21 +361,31 @@ void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long 
 			}
 			
 		}
-	
 		previousPotential = calculatePotential();	// update the record of the latest potential
 		maxItr--;	// move one iteration closer to ending regardless of the potential energy
 	
 	}
 	
+	cout<<N<<" "<<(baseItr - maxItr)<<endl;
+	
 }
 
 /**
- * return the potential energy as a function of N
+ * return the potential energy as a function of 
  * as calculated from the equation given in the design document
  */
-double GrowingNetwork3D::calculateMinimumPotential(){
+double GrowingNetwork3D::calculateMinimumPotential(long int n){
 	
 	return 0.063594969640041382 * sqrt(N) + -0.55213813866389005 * pow(N, 1.5) + 0.49998893897252450 * (N * N);
+	
+}
+
+/**
+ * return the difference between the minimum potentials at two different values of n
+ */
+double GrowingNetwork3D::calculateMinimumPotentialDifference(long int init_n, long int final_n){
+	
+	return calculateMinimumPotential(final_n) - calculateMinimumPotential(init_n);
 	
 }
 

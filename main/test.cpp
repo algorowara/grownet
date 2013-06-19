@@ -10,7 +10,17 @@ int main(){
 	double gamma = 1.0, tolerance = 0.001;
 	long int itr = 1000;
 	long int sample_size = 20;
-	double dr_min = 0.002;
+	long int num_boxes = 1000;
+	double dr_box[num_boxes];	// histogram "boxes" from 0 to 1.0, in increments of 0.001
+							// range[i] = i/1000 to (i+1)/1000
+							// index[value] = (long int)(1000 * value)
+	double dr_max = 1.0;
+	
+	for(long int i = 0; i < num_boxes; i++){
+		
+		dr_box[i] = 0;
+		
+	}
 	
 	for(long int s = 0; s < sample_size; s++){
 		
@@ -39,18 +49,24 @@ int main(){
 				double dz = net->getNode(j)->position[2] - init[j][2];
 				double dr = sqrt(dx * dx + dy * dy + dz * dz);
 				
-				if(dr > dr_min){
-				
-					cout<<sqrt(dx * dx + dy * dy + dz * dz)<<endl;
-							
+					if(dr < dr_max){
+						
+						dr_box[(long int)(num_boxes * dr)]++;
+						
+					}
+						
 				}
 				
 			}
 			
+			delete net;
+			
 		}
-			
-		delete net;
-			
-	}
 	
+	for(long int i = 0; i < num_boxes; i++){
+		
+		cout<<(2 * i + 1)/((double)2 * num_boxes)<<" "<<dr_box[i]<<endl;
+		
+	}
+			
 }
