@@ -7,11 +7,13 @@ class NSphere : public GrowingNetwork3D {
 
 	public:
 	
-		final long int DIM;
+		const long int DIM;
 		
 		double* randomLocation();
 		double distanceSquared(SpatialVertex* a, SpatialVertex* b);
 		double distance(SpatialVertex* a, SpatialVertex* b);
+		double* sumForces(SpatialVertex* node);
+		void normalizeRadius(SpatialVertex* node);
 	
 }
 

@@ -41,13 +41,14 @@ double NSphere::distanceSquared(SpatialVertex* a, SpatialVertex* b){
 	
 	double square_sum = 0;
 	
-	for(long int i = 0; i < DIM; i++){
+	for(long int i = 0; i < DIM; i++){	// for all components of the two position vectors
 		
-		square_sum += (a->position[i] - b->position[i]) * (a->position[i] - b->position[i]);
+		square_sum += (a->position[i] - b->position[i]) * (a->position[i] - b->position[i]);	// add the square
+																								// of the difference
 		
 	}
 	
-	return square_sum;
+	return square_sum;	// return the resulting sum
 	
 }
 
@@ -59,5 +60,76 @@ double NSphere::distanceSquared(SpatialVertex* a, SpatialVertex* b){
 double NSphere::distance(SpatialVertex* a, SpatialVertex* b){
 	
 	return sqrt(distanceSquared(a, b));
+	
+}
+
+/**
+ * calculates the sum of the forces on a particular SpatialVertex
+ * currently uses a force law of 1/r^(DIM-1)
+ * returns a dynamically allocated array (force vector) which must be deleted after use
+ */
+double* sumForces(SpatialVertex* node){
+	
+	double* force = new double[DIM];	// allocate a new force vector of a size appropriate to the space
+	SpatialVertex* other;	// local placeholder for the other node in two-body interactions
+	double magnitude, dist;	// local fields to hold the magnitude of the force and distance between two nodes
+	
+	for(long int i = 0; i < DIM; i++){	// first, ensure that all components of the force vector are zero
+		
+		force[i] = 0;
+		
+	}
+	
+	for(long int i = 0; i < N; i++){	// for all nodes on the NSphere
+		
+		if(node == getNode(i)){	// except the node for which force is being calculated
+			
+			continue;	// seriously, skip the infinite self-force
+			
+		}
+		
+		other = getNode(i);
+		dist = distance(node, other);
+		magnitude = 1.0 / pow(dist, DIM-1);	// calculate the magnitude of the force as 1/r^(DIM-1)
+		
+		for(long int j = 0; j < DIM; j++){	// for each dimension, add the component of force from this interaction
+			
+			double unitComponent = (node->position[j] - other->position[j]) / dist;	// the component of the unit
+																						// vector is r(j)/|r|
+			force[j] += unitComponent * magnitude;	// the component of the force in the direction of dimension j
+													// is the value of the component of the unit vector
+													// multiplied by the magnitude of the force vector
+													// unit vector * magnitude = vector
+			
+		}
+		
+	}
+	
+	return force;
+	
+}
+
+/**
+ * method to normalize the radial distance of a given node to the radius of the NSphere
+ */
+void NSphere::normalizeRadius(SpatialVertex* node){
+	
+	double actual_radius_squared = 0;
+	double ratio;	// the ratio of the desired radius to the actual radius
+	
+	for(long int i = 0; i < DIM; i++){	// for each dimension
+		
+		actual_radius_squared += node->position[i] * node->position[i];	// sum the square of the appropriate component
+		
+	}
+	
+	ratio = radius / sqrt(radius_squared);
+	
+	for(long int i = 0; i < DIM; i++){	// for each dimension
+		
+		node->position[i] *= ratio;	// multiply the appropriate component by the ratio of radii
+									// |vector * scalar/|vector|| = |vector/|vector| * scalar| = |unit vector * scalar| = scalar
+		
+	}
 	
 }
