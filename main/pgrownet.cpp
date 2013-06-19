@@ -3,12 +3,12 @@
 #include <fstream>
 
 using namespace std;
-double a = 0;
+double a = 1;
 
 int main(){
   if(a == 1){	
 	//make the network
-	long int n = 1000, m = 3, nodeage = 0;
+	long int n = 100, m = 3, nodeage = 0;
 	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m,.05,.0001,10000);
 	
 	//save the position of the points as validation
@@ -49,9 +49,52 @@ int main(){
 		pdegdist<<i<<" "<<dist[i]<<endl;
 	
 	}
-
+	
 	pdegdist.close();
 
+	//get the degree vs. age distribution
+	long int age, degree;
+	ofstream pagedeg;
+	pagedeg.open("pagedeg.txt", ios::out | ios::trunc);	
+
+	for(long int i = 0; i < n; i++){
+		
+		age = (net->getTime() - net->getNode(i)->getStartTime());
+		degree = net->getNode(i)->neighbors.size();
+
+		pagedeg<<age<<" "<<degree<<endl;
+
+	}		
+	
+	//get the real distance vs. network distance information
+	long int netdist;
+	double realdist;
+	ofstream pdistance;
+	pdistance.open("pdistance.txt", ios::out | ios::trunc);
+
+	for(long int i = 0; i < n; i++){ //for all the nodes in the network
+		
+		net->memoize(net->getNode(i));
+
+		for(long int j = 0; j < n; j++){ //for all of the other nodes
+
+			if(i == j){
+				continue;
+			}
+			
+			realdist = net->linearDistance(net->getNode(i), net->getNode(j)); //the physical distance
+			netdist = net->getNode(j)->distanceFromInitial; //the shortest path
+			
+			pdistance<<netdist<<" "<<realdist<<endl;			
+	
+		}
+		
+		net->clean(net->getNode(i));
+
+	}	
+	
+	pdistance.close();
+		
   }
   //instead grow the network node at a time and get the clustering coefficient and characteristic path length at each timestep
   else { 
