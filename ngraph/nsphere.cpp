@@ -1,4 +1,26 @@
+#include "nsphere.h"
+
 using namespace std;
+
+NSphere::NSphere(long int dim, long int n, long int m, long int growtype, double baseGam, double baseTol, long int baseItr){
+	
+	static bool randSeeded = false;
+	
+	if(!randSeeded){	// if the random number generator has not yet been seeded
+		
+		srand(std::time(NULL));	// do so with the current time as the seed
+		randSeeded = true;	// make a note for future initializations
+		
+	}
+	
+	this->DIM = dim;
+	this->radius = 1;
+	this->m = m;
+	this->baseGam = baseGam;
+	this->baseTol = baseTol;
+	this->baseItr = baseItr;
+	
+}
 
 /**
  * uses the Box-Muller transform to randomly generate a position on the surface of an NSphere
@@ -13,7 +35,7 @@ double* NSphere::randomLocation(){
 	for(long int i = 0; i < DIM; i++){	// for every dimension
 		
 		double u = ((double)rand())/RAND_MAX, v = ((double)rand())/RAND_MAX;	// pick two values from a uniform distribution (0, 1)
-		position[i] = sqrt(-2 * ln(u)) * cos(2 * M_PI * v);	// set position component in dimension i to the result of the transform, distributed on N(0, 1)
+		position[i] = sqrt(-2 * log(u)) * cos(2 * M_PI * v);	// set position component in dimension i to the result of the transform, distributed on N(0, 1)
 		actual_radius += position[i] * position[i];	// track the actual radial distance of the position
 		
 	}
@@ -68,7 +90,7 @@ double NSphere::distance(SpatialVertex* a, SpatialVertex* b){
  * currently uses a force law of 1/r^(DIM-1)
  * returns a dynamically allocated array (force vector) which must be deleted after use
  */
-double* sumForces(SpatialVertex* node){
+double* NSphere::sumForces(SpatialVertex* node){
 	
 	double* force = new double[DIM];	// allocate a new force vector of a size appropriate to the space
 	SpatialVertex* other;	// local placeholder for the other node in two-body interactions
@@ -123,7 +145,7 @@ void NSphere::normalizeRadius(SpatialVertex* node){
 		
 	}
 	
-	ratio = radius / sqrt(radius_squared);
+	ratio = radius / sqrt(actual_radius_squared);
 	
 	for(long int i = 0; i < DIM; i++){	// for each dimension
 		
@@ -131,5 +153,57 @@ void NSphere::normalizeRadius(SpatialVertex* node){
 									// |vector * scalar/|vector|| = |vector/|vector| * scalar| = |unit vector * scalar| = scalar
 		
 	}
+	
+}
+
+/**
+ * method to create a new SpatialVertex
+ * within some distance on the surface of the sphere
+ * of some preexisting SpatialVertex
+ */
+SpatialVertex* NSphere::bud(SpatialVertex* source, double dist){
+	
+	double disp[DIM];	// vector to represent the displacement of the new node from its source
+	double unit_normal[DIM];	// vector to represent the unit normal of the sphere at the location of the source node
+	double disp_mag = 0;	// vector to represent the magnitude of the displacement vector when it is randomly generated
+	double normal_mag = 0;	// vector to represent the normal component of the displacement vector when it is randomly generated
+	double* new_pos = new double[DIM];	// dynamically allocated vector to represent the position of the new node, the sum of source->position and disp
+	SpatialVertex* new_node;	// pointer to the newly budded node, which will incoporate new_pos, removing the need to deallocate it separately
+	
+	// randomly generate a displacement vector of undetermined magnitude which points in a random direction
+	// and calculate the unit normal vector
+	for(long int i = 0; i < DIM; i++){	// for each component of the displacement and normal vector
+	
+		double u = ((double)rand())/RAND_MAX, v = ((double)rand())/RAND_MAX;
+		
+		disp[i] = sqrt(-2 * log(u)) * sin(2 * M_PI * v);	// randomly assign a value to the displacement vector
+														// from the distribution N(0, 1);
+		unit_normal[i] = source->position[i]/radius;	// assign a normalized value to the unit vector
+		disp_mag += disp[i] * disp[i];	// track the growing magnitude of the displacement vector
+		
+	}
+	
+	disp_mag = sqrt(disp_mag);	// take the square root of the sum of squares to find the magnitude
+	
+	for(long int i = 0; i < DIM; i++){	// for each component of the displacement and normal vectors
+		
+		disp[i] /= disp_mag;	// normalize the displacement vector into a unit vector
+		normal_mag += disp[i] * unit_normal[i];	// add the product of matching components of the displacement and normal vectors
+												// to their dot product
+		
+	}
+	
+	for(long int i = 0; i < DIM; i++){	// for each component of the displacement, normal, and new position
+		
+		disp[i] -= disp[i] * normal_mag;	// subtract the normal component from the displacement vector
+											// leaving only the tangential component
+		disp[i] *= dist;	// scale the displacement vector to the distance parameter given
+		new_pos[i] = source->position[i] + disp[i];	// assign the sum of source position and displacement to new position
+		
+	}
+	
+	new_node = new SpatialVertex(DIM, new_pos, getTime());	// generate the new node
+	normalizeRadius(new_node);	// normalize its radius
+	return new_node;	// and return it
 	
 }

@@ -17,6 +17,8 @@ main/graphgen.o: main/graphgen.cpp growingnetwork2d/growingnetwork2d.cpp growing
 	g++ $(FLAGS)  -c main/graphgen.cpp -o main/graphgen.o 
 main/pgrownet.o: main/pgrownet.cpp pgrownet2d/pgrownet2d.cpp pgrownet2d/pgrownet2d.h
 	g++ $(FLAGS)  -c main/pgrownet.cpp -o main/pgrownet.o 
+ngraph/nsphere.o: ngraph/nsphere.cpp ngraph/nsphere.h growingnetwork3d/growingnetwork3d.cpp growingnetwork3d/growingnetwork3d.h growingnetwork3d/spatialvertex.cpp growingnetwork3d/spatialvertex.h graph/growingnetwork.cpp graph/growingnetwork.h graph/graph.cpp graph/graph.h graph/vertex.cpp graph/vertex.h
+	g++ $(FLAGS) -c ngraph/nsphere.cpp -o ngraph/nsphere.o
 growingnetwork3d/growingnetwork3d.o: growingnetwork3d/growingnetwork3d.cpp growingnetwork3d/growingnetwork3d.h graph/*.cpp graph/*.h
 	g++ $(FLAGS)  -c growingnetwork3d/growingnetwork3d.cpp -o growingnetwork3d/growingnetwork3d.o 
 growingnetwork3d/spatialvertex.o: growingnetwork3d/spatialvertex.cpp growingnetwork3d/spatialvertex.h graph/vertex.cpp graph/vertex.h
@@ -31,8 +33,8 @@ graph/vertex.o: graph/vertex.cpp graph/vertex.h
 	g++ $(FLAGS)  -c graph/vertex.cpp -o graph/vertex.o 
 pgrownet2d/pgrownet2d.o: pgrownet2d/pgrownet2d.cpp pgrownet2d/pgrownet2d.h growingnetwork3d/spatialvertex.cpp growingnetwork3d/spatialvertex.h graph/*.cpp graph/*.h
 	g++ $(FLAGS)  -c pgrownet2d/pgrownet2d.cpp -o pgrownet2d/pgrownet2d.o
-backup: graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h main/*.cpp main/*.m makefile README doc.odt
-	zip ../backup.zip graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h main/*.cpp main/*.m makefile README doc.odt
+backup: graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h ngraph/*.cpp ngraph/*.h main/*.cpp main/*.m makefile README doc.odt
+	zip ../backup.zip graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h ngraph/*.cpp ngraph/*.h main/*.cpp main/*.m makefile README doc.odt
 clean:
 	rm -vf main/pgrownet
 	rm -vf main/parametertune

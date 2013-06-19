@@ -28,7 +28,7 @@ class GrowingNetwork3D : public GrowingNetwork{
 	
 public:
 
-	const static long int DIM = 3;
+	long int DIM;
 	double radius;
 	double baseGam;
 	double baseTol;

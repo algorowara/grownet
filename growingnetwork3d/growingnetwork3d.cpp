@@ -14,6 +14,7 @@ GrowingNetwork3D::GrowingNetwork3D(long int n, long int m, double gam, double to
 		
 	}
 	
+	this->DIM = 3;
 	this->radius = 1;
 	this->m = m;
 	baseGam = gam;
@@ -292,7 +293,7 @@ void GrowingNetwork3D::equalize(){
 	// externally provided solutions to the Thompson problem show Energy proportional to N^2
 	// force and average separation should both be proportional to 1/N, so gamma should be proportional to 1/N^2
 	
-	gradientDescent(baseGam/(N * N), baseTol, baseItr);
+	gradientDescent(baseGam/(N * sqrt(N)), baseTol * sqrt(N), baseItr);
 	
 }
 
@@ -303,24 +304,6 @@ void GrowingNetwork3D::equalize(){
  * and maxItr is the maximum number of iterations allowed before the function exits, regardless of tolerance
  */
 void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long int maxItr){
-
-	if(gamma < 0){	// check for negative gamma, which would turn gradient descent into gradient ascent
-	
-		gamma *= -1;	// fix if necessary, assume the negative sign is in error
-		
-	}
-	
-	if(baseTolerance < 0){	// check for negative tolerance, which would demand an energy below the minimum
-		
-		baseTolerance *= -1;	// fix if necessary, assume the negative sign is in error
-		
-	}
-	
-	if(maxItr < 0){	// check for negative iterations, which is just silly
-		
-		maxItr *= -1;	// fix the darn thing
-		
-	}
 	
 	double* netForce[N];	// local array to store the net forces on each node
 	double previousPotential = DBL_MAX;	// local field to store the previous known potential
@@ -361,6 +344,7 @@ void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long 
 			}
 			
 		}
+		
 		previousPotential = calculatePotential();	// update the record of the latest potential
 		maxItr--;	// move one iteration closer to ending regardless of the potential energy
 	
@@ -376,7 +360,7 @@ void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long 
  */
 double GrowingNetwork3D::calculateMinimumPotential(long int n){
 	
-	return 0.063594969640041382 * sqrt(N) + -0.55213813866389005 * pow(N, 1.5) + 0.49998893897252450 * (N * N);
+	return 0.063594969640041382 * sqrt(n) + -0.55213813866389005 * pow(n, 1.5) + 0.49998893897252450 * (n * n);
 	
 }
 
