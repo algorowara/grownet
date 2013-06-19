@@ -17,11 +17,9 @@
 #define X(node) node->position[0]
 #define Y(node) node->position[1]
 #define Z(node) node->position[2]
-#define DISTANCE_SQUARED(a, b) ((X(b) - X(a)) * (X(b) - X(a)) + (Y(b) - Y(a)) * (Y(b) - Y(a)) + (Z(b) - Z(a)) * (Z(b) - Z(a)))
-#define DISTANCE(a, b) sqrt(DISTANCE_SQUARED(a, b))
 
 #define DEFAULT_GAMMA 1.0
-#define DEFAULT_TOLERANCE 0.1
+#define DEFAULT_TOLERANCE 0.01
 #define DEFAULT_ITR 36
 
 using namespace std;
@@ -40,6 +38,8 @@ public:
 	SpatialVertex* getNode(long int i);
 	void grow(long int n);
 	double* randomLocation();
+	double distanceSquared(SpatialVertex* a, SpatialVertex* b);
+	double distance(SpatialVertex* a, SpatialVertex* b);
 	double linearDistance(Vertex* a, Vertex* b);
 	double* sumForces(SpatialVertex* node);
 	SpatialVertex** findMNearestNeighbors(SpatialVertex* start);

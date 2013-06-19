@@ -94,9 +94,34 @@ double* GrowingNetwork3D::randomLocation(){
 }
 
 /**
+ * method to quickly calculate the square of the distance between two SpatialVertices in three dimensions
+ * used either to compare distance for ordering or for inverse-square forces
+ * for uses which actually require distance, use the distance method
+ * if a and b are not both three-dimensional, this method's behavior is undefined
+ */
+double GrowingNetwork3D::distanceSquared(SpatialVertex* a, SpatialVertex* b){
+	
+	return ((X(a) - X(b)) * (X(a) - X(b)) + (Y(a) - Y(b)) * (Y(a) - Y(b)) + (Z(a) - Z(b)) * (Z(a) - Z(b)));
+	
+}
+
+/**
+ * method to calculate the distance (as a scalar) between two SpatialVertices in three dimensions
+ * if a and b are not both three-dimensional, this method's behavior is undefined
+ * relies on the distanceSquared method
+ */
+double GrowingNetwork3D::distance(SpatialVertex* a, SpatialVertex* b){
+	
+	return sqrt(distanceSquared(a, b));
+	
+}
+
+/**
  * method to calculate the linear distance between two nodes
  * if the nodes are not of a type to have a position in space
  * return 0, as they are unknown
+ * this method exists solely to satisfy the requirements of base classes
+ * for all other uses, use the distance method
  */
 double GrowingNetwork3D::linearDistance(Vertex* a, Vertex* b){
 	
@@ -105,7 +130,7 @@ double GrowingNetwork3D::linearDistance(Vertex* a, Vertex* b){
 		SpatialVertex* a_loc = (SpatialVertex*)a;
 		SpatialVertex* b_loc = (SpatialVertex*)b;
 	
-		return DISTANCE(a_loc, b_loc);
+		return distance(a_loc, b_loc);
 	
 	}
 	
@@ -122,7 +147,7 @@ double* GrowingNetwork3D::sumForces(SpatialVertex* node){
 	
 	double* force = new double[DIM];	// allocate a new array for the force vector
 	SpatialVertex* other;	// local placeholder for any other node in two-body interactions
-	double magnitude, distance;	// local placeholders for the magnitude of a force and the distance between two nodes
+	double magnitude, dist;	// local placeholders for the magnitude of a force and the distance between two nodes
 	
 	for(int i = 0; i < DIM; i++){	// ensure all components are set to zero first
 		
@@ -139,12 +164,12 @@ double* GrowingNetwork3D::sumForces(SpatialVertex* node){
 		}
 		
 		other = getNode(i);
-		magnitude = 1.0 / DISTANCE_SQUARED(node, other);	// calculate the unitless magnitude of the repulsive force
-		distance = DISTANCE(node, other);
+		magnitude = 1.0 / distanceSquared(node, other);	// calculate the unitless magnitude of the repulsive force
+		dist = distance(node, other);
 		
-		force[0] += magnitude * (X(node) - X(other))/distance;	// multiply the magnitude
-		force[1] += magnitude * (Y(node) - Y(other))/distance;	// by the unit vector
-		force[2] += magnitude * (Z(node) - Z(other))/distance;	// of the displacement
+		force[0] += magnitude * (X(node) - X(other))/dist;	// multiply the magnitude
+		force[1] += magnitude * (Y(node) - Y(other))/dist;	// by the unit vector
+		force[2] += magnitude * (Z(node) - Z(other))/dist;	// of the displacement
 		
 	}
 	
@@ -175,7 +200,7 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 			
 		}
 	
-		double square = DISTANCE_SQUARED(start, getNode(i));	// calculate the square of the distance
+		double square = distanceSquared(start, getNode(i));	// calculate the square of the distance
 																// as minimizing distance squared is the same
 																// as minimizing distance (as a signless scalar)
 		
@@ -247,7 +272,7 @@ double GrowingNetwork3D::calculatePotential(){
 				
 				a = getNode(i);
 				b = getNode(j);				
-				localSum += 1.0/DISTANCE(a, b);	// add their potential energy to the local sum
+				localSum += 1.0/distance(a, b);	// add their potential energy to the local sum
 								
 			}
 			
