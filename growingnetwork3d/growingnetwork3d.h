@@ -18,8 +18,9 @@
 #define Y(node) node->position[1]
 #define Z(node) node->position[2]
 
+#define DEFAULT_RADIUS 1.0
 #define DEFAULT_GAMMA 1.0
-#define DEFAULT_TOLERANCE 0.01
+#define DEFAULT_TOLERANCE 1.0
 #define DEFAULT_ITR 36
 
 using namespace std;
@@ -34,6 +35,7 @@ public:
 	double baseTol;
 	long int baseItr;
 
+	GrowingNetwork3D();
 	GrowingNetwork3D(long int n, long int m, double gam = DEFAULT_GAMMA, double tol = DEFAULT_TOLERANCE, long int itr = DEFAULT_ITR);
 	SpatialVertex* getNode(long int i);
 	void grow(long int n);

@@ -2,7 +2,7 @@
 
 using namespace std;
 
-NSphere::NSphere(long int dim, long int n, long int m, long int growtype, double baseGam, double baseTol, long int baseItr){
+NSphere::NSphere(long int DIM, long int n, long int m, long int growtype, double baseGam, double baseTol, long int baseItr) : GrowingNetwork3D(){
 	
 	static bool randSeeded = false;
 	
@@ -13,12 +13,34 @@ NSphere::NSphere(long int dim, long int n, long int m, long int growtype, double
 		
 	}
 	
-	this->DIM = dim;
-	this->radius = 1;
+	this->time = 0;
+	this->radius = DEFAULT_RADIUS;
+	this->DIM = DIM;
 	this->m = m;
+	this->growtype = growtype;
 	this->baseGam = baseGam;
 	this->baseTol = baseTol;
 	this->baseItr = baseItr;
+	
+	for(long int i = 0; i < m+1; i++){	// for the first m+1 nodes, which form a clique
+	
+		SpatialVertex* newNode = new SpatialVertex(DIM, randomLocation(), getTime());	// generate a new node in DIM dimensions
+		addNode(newNode);
+		
+		for(long int j = 0; j < nodes.size()-1; j++){	// link it to all previously created nodes
+			
+			newNode->addNeighbor(getNode(j));
+			
+		}
+		
+		
+		equalize();	// equalize the distribution of nodes
+		tick();
+		n--;
+		
+	}
+	
+	grow(n);	// grow the remaining nodes normally
 	
 }
 

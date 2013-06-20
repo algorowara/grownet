@@ -3,7 +3,14 @@
 
 using namespace std;
 
-GrowingNetwork3D::GrowingNetwork3D(long int n, long int m, double gam, double tol, long int itr){
+/**
+ * empty constructor which exists solely for derived classes to use without conflict
+ */
+GrowingNetwork3D::GrowingNetwork3D(){
+	
+}
+
+GrowingNetwork3D::GrowingNetwork3D(long int n, long int m, double gam, double tol, long int itr) : DIM(3){
 	
 	static bool randSeeded = false;
 	
@@ -14,8 +21,8 @@ GrowingNetwork3D::GrowingNetwork3D(long int n, long int m, double gam, double to
 		
 	}
 	
-	this->DIM = 3;
-	this->radius = 1;
+	this->time = 0;
+	this->radius = DEFAULT_RADIUS;
 	this->m = m;
 	baseGam = gam;
 	baseTol = tol;
@@ -290,9 +297,6 @@ double GrowingNetwork3D::calculatePotential(){
 
 void GrowingNetwork3D::equalize(){
 	
-	// externally provided solutions to the Thompson problem show Energy proportional to N^2
-	// force and average separation should both be proportional to 1/N, so gamma should be proportional to 1/N^2
-	
 	gradientDescent(baseGam/(N * sqrt(N)), baseTol * sqrt(N), baseItr);
 	
 }
@@ -306,7 +310,7 @@ void GrowingNetwork3D::equalize(){
 void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long int maxItr){
 	
 	double* netForce[N];	// local array to store the net forces on each node
-	double previousPotential = DBL_MAX;	// local field to store the previous known potential
+	double previousPotential = calculatePotential();	// local field to store the previous known potential
 	double toleratedPotential = calculateMinimumPotential(N) + baseTol * calculateMinimumPotentialDifference(N-1, N);
 	
 	while(previousPotential > toleratedPotential && maxItr > 0){
@@ -349,8 +353,6 @@ void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long 
 		maxItr--;	// move one iteration closer to ending regardless of the potential energy
 	
 	}
-	
-	cout<<N<<" "<<(baseItr - maxItr)<<endl;
 	
 }
 

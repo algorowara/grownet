@@ -7,14 +7,14 @@ using namespace std;
 int main(){
 	
 	long int n = 1000, n_max = 1050, m = 3, dim = 3;
-	double gamma = 1.0, tolerance = 0.001;
 	long int itr = 1000;
 	long int sample_size = 20;
 	long int num_boxes = 1000;
-	double dr_box[num_boxes];	// histogram "boxes" from 0 to 1.0, in increments of 0.001
-							// range[i] = i/1000 to (i+1)/1000
-							// index[value] = (long int)(1000 * value)
-	double dr_max = 1.0;
+	double dr_box[num_boxes];	// histogram "boxes" from 0 to 0.1, in increments of 0.0001
+							// range[i] = dr_max * i/1000 to dr_max * (i+1)/1000
+							// index[value] = (long int)(1000 * value/dr_max)
+	double dr_max = 0.005;
+	long int num_data = 0;
 	
 	for(long int i = 0; i < num_boxes; i++){
 		
@@ -24,7 +24,7 @@ int main(){
 	
 	for(long int s = 0; s < sample_size; s++){
 		
-		GrowingNetwork3D* net = new GrowingNetwork3D(n, m, gamma, tolerance, itr);
+		GrowingNetwork3D* net = new GrowingNetwork3D(n, m);
 		
 		for(int i = n; i < n_max; i++){
 			
@@ -51,7 +51,8 @@ int main(){
 				
 					if(dr < dr_max){
 						
-						dr_box[(long int)(num_boxes * dr)]++;
+						dr_box[(long int)(num_boxes * dr/(dr_max - 0.000000001))]++;
+						num_data++;
 						
 					}
 						
@@ -65,7 +66,7 @@ int main(){
 	
 	for(long int i = 0; i < num_boxes; i++){
 		
-		cout<<(2 * i + 1)/((double)2 * num_boxes)<<" "<<dr_box[i]<<endl;
+		cout<<(dr_max * (2.0 * i + 1))/(2.0 * num_boxes)<<" "<<dr_box[i]<<endl;
 		
 	}
 			

@@ -13,7 +13,7 @@ class NSphere : public GrowingNetwork3D {
 		long int DIM;
 		long int growtype;
 		
-		NSphere(long int dim, long int n, long int m, long int growtype = GROWTYPE_RANDOM, double baseGam = 1.0, double baseTol = 0.01, long int baseItr = 100);
+		NSphere(long int DIM, long int n, long int m, long int growtype = GROWTYPE_RANDOM, double baseGam = 1.0, double baseTol = 0.1, long int baseItr = 100);
 		double* randomLocation();
 		double distanceSquared(SpatialVertex* a, SpatialVertex* b);
 		double distance(SpatialVertex* a, SpatialVertex* b);
