@@ -3,12 +3,13 @@
 #include <fstream>
 
 using namespace std;
-double a = 1;
+int a = 1; //1 if we want to grow whole network, 0 if we want step by step
+int dcare = 0; //1 if we want distance information, else 0
 
 int main(){
   if(a == 1){	
 	//make the network
-	long int n = 100, m = 3, nodeage = 0;
+	long int n = 1000, m = 3, nodeage;
 	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m,.05,.0001,10000);
 	
 	//save the position of the points as validation
@@ -67,6 +68,8 @@ int main(){
 	}		
 	
 	//get the real distance vs. network distance information
+	if(dcare == 1){ //if we want this information
+
 	long int netdist;
 	double realdist;
 	ofstream pdistance;
@@ -82,7 +85,8 @@ int main(){
 				continue;
 			}
 			
-			realdist = net->linearDistance(net->getNode(i), net->getNode(j)); //the physical distance
+			//realdist = net->linearDistance(net->getNode(i), net->getNode(j)); //the physical distance
+			realdist = DISTANCE_2D(net->getNode(i), net->getNode(j));
 			netdist = net->getNode(j)->distanceFromInitial; //the shortest path
 			
 			pdistance<<netdist<<" "<<realdist<<endl;			
@@ -94,6 +98,22 @@ int main(){
 	}	
 	
 	pdistance.close();
+
+	}
+	//get the edge age vs. edge betweenness information
+	
+	ofstream eagebetw;
+	eagebetw.open("eagebetw.txt", ios::out | ios::trunc);
+
+	double* edgeinfo = net->edgeAgeVsBetweenness();
+
+	for(long int i = 0; i < n; i++){
+
+		eagebetw<<i<<" "<<edgeinfo[i]<<endl;
+
+	}
+
+	eagebetw.close();		
 		
   }
   //instead grow the network node at a time and get the clustering coefficient and characteristic path length at each timestep
