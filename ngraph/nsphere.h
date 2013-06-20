@@ -6,6 +6,8 @@
 #define GROWTYPE_RANDOM 0
 #define GROWTYPE_BUD 1
 
+using namespace std;
+
 class NSphere : public GrowingNetwork3D {
 
 	public:
@@ -20,6 +22,7 @@ class NSphere : public GrowingNetwork3D {
 		double* sumForces(SpatialVertex* node);
 		void normalizeRadius(SpatialVertex* node);
 		SpatialVertex* bud(SpatialVertex* source, double dist);
+		static calculateMinimumPotential(long int n, long int d);
 	
 };
 

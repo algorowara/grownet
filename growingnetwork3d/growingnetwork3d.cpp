@@ -310,8 +310,8 @@ void GrowingNetwork3D::equalize(){
 void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long int maxItr){
 	
 	double* netForce[N];	// local array to store the net forces on each node
-	double previousPotential = calculatePotential();	// local field to store the previous known potential
-	double toleratedPotential = calculateMinimumPotential(N) + baseTol * calculateMinimumPotentialDifference(N-1, N);
+	double previousPotential = DBL_MAX;	// local field to store the previous known potential; set to an arbitrary maximum to ensure that at least one iteration occurs
+	double toleratedPotential = calculateMinimumPotential(N, DIM) + baseTol * calculateMinimumPotentialDifference(N-1, N, DIM);
 	
 	while(previousPotential > toleratedPotential && maxItr > 0){
 
@@ -321,7 +321,7 @@ void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long 
 			#pragma omp for schedule(guided)
 			for(int i = 0; i < N; i++){	// for every node
 				
-				netForce[i] = sumForces(getNode(i));	// store the net force on the node
+				netForce[i] = this->sumForces(getNode(i));	// store the net force on the node
 														// thread safety is not an issue here
 														// because the values of i are divided among threads
 														// and no two will ever write to the same index
@@ -360,7 +360,7 @@ void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long 
  * return the potential energy as a function of 
  * as calculated from the equation given in the design document
  */
-double GrowingNetwork3D::calculateMinimumPotential(long int n){
+double GrowingNetwork3D::calculateMinimumPotential(long int n, long int d){
 	
 	return 0.063594969640041382 * sqrt(n) + -0.55213813866389005 * pow(n, 1.5) + 0.49998893897252450 * (n * n);
 	
@@ -369,9 +369,9 @@ double GrowingNetwork3D::calculateMinimumPotential(long int n){
 /**
  * return the difference between the minimum potentials at two different values of n
  */
-double GrowingNetwork3D::calculateMinimumPotentialDifference(long int init_n, long int final_n){
+double GrowingNetwork3D::calculateMinimumPotentialDifference(long int init_n, long int final_n, long int d){
 	
-	return calculateMinimumPotential(final_n) - calculateMinimumPotential(init_n);
+	return calculateMinimumPotential(final_n, d) - calculateMinimumPotential(init_n, d);
 	
 }
 
