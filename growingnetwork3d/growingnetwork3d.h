@@ -39,18 +39,18 @@ public:
 	GrowingNetwork3D(long int n, long int m, double gam = DEFAULT_GAMMA, double tol = DEFAULT_TOLERANCE, long int itr = DEFAULT_ITR);
 	SpatialVertex* getNode(long int i);
 	void grow(long int n);
-	double* randomLocation();
-	double distanceSquared(SpatialVertex* a, SpatialVertex* b);
-	double distance(SpatialVertex* a, SpatialVertex* b);
+	virtual double* randomLocation();
+	virtual double distanceSquared(SpatialVertex* a, SpatialVertex* b);
+	virtual double distance(SpatialVertex* a, SpatialVertex* b);
 	double linearDistance(Vertex* a, Vertex* b);
-	double* sumForces(SpatialVertex* node);
+	virtual double* sumForces(SpatialVertex* node);
 	SpatialVertex** findMNearestNeighbors(SpatialVertex* start);
-	void normalizeRadius(SpatialVertex* node);
+	virtual void normalizeRadius(SpatialVertex* node);
 	double calculatePotential();
 	void equalize();
 	void gradientDescent(double gamma, double baseTolerance, long int maxItr);
-	static double calculateMinimumPotential(long int n);
-	static double calculateMinimumPotentialDifference(long int init_n, long int final_n);
+	virtual static double calculateMinimumPotential(long int n, long int d);
+	static double calculateMinimumPotentialDifference(long int init_n, long int final_n, long int d);
 	~GrowingNetwork3D();
 	
 };

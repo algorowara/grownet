@@ -229,3 +229,9 @@ SpatialVertex* NSphere::bud(SpatialVertex* source, double dist){
 	return new_node;	// and return it
 	
 }
+
+double calculateMinimumPotential(long int n, long int d){
+	
+	return 0;
+	
+}
