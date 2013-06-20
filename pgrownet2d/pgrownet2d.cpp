@@ -24,7 +24,12 @@ PositiveChargeGrowingNetwork2D::PositiveChargeGrowingNetwork2D(long int n, long 
 	this->m = m;
 	radius = 1;
 	alpha = .01; //electron electron force constant
-	beta = alpha*n; //electron cloud force constant
+	if(N == 0){
+		beta = alpha; //electron cloud force constant
+	}
+	else {
+		beta = alpha*N;
+	}
 
 	for(long int i = 0; i < m+1; i++){	//for the first m+1 nodes, which form a clique
 
@@ -74,10 +79,9 @@ void PositiveChargeGrowingNetwork2D::grow(long int n){
 		delete[] nearNeighbors;
 		tick();
 		n--;
+		beta = alpha*N;
 
 	}
-
-	beta = alpha*N;
 
 }
 
