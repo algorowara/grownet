@@ -23,6 +23,8 @@
 #define DEFAULT_TOLERANCE 1.0
 #define DEFAULT_ITR 36
 
+#define GUIDED_N 16
+
 using namespace std;
 
 class GrowingNetwork3D : public GrowingNetwork{

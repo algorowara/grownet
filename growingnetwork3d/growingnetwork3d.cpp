@@ -1,5 +1,4 @@
 #include "../growingnetwork3d/growingnetwork3d.h"
-#include <iostream>
 
 using namespace std;
 
@@ -11,15 +10,6 @@ GrowingNetwork3D::GrowingNetwork3D(){
 }
 
 GrowingNetwork3D::GrowingNetwork3D(long int n, long int m, double gam, double tol, long int itr) : DIM(3){
-	
-	static bool randSeeded = false;
-	
-	if(!randSeeded){	// if the random number generator has not yet been seeded
-		
-		srand(std::time(NULL));	// do so with the current time as the seed
-		randSeeded = true;	// make a note for future initializations
-		
-	}
 	
 	this->time = 0;
 	this->radius = DEFAULT_RADIUS;
@@ -132,17 +122,11 @@ double GrowingNetwork3D::distance(SpatialVertex* a, SpatialVertex* b){
  * for all other uses, use the distance method
  */
 double GrowingNetwork3D::linearDistance(Vertex* a, Vertex* b){
-	
-	if(sizeof(a) == sizeof(SpatialVertex) && sizeof(b) == sizeof(SpatialVertex)){
-	
-		SpatialVertex* a_loc = (SpatialVertex*)a;
-		SpatialVertex* b_loc = (SpatialVertex*)b;
-	
-		return distance(a_loc, b_loc);
-	
-	}
-	
-	return 0;
+
+	SpatialVertex* a_loc = (SpatialVertex*)a;
+	SpatialVertex* b_loc = (SpatialVertex*)b;
+		
+	return distance(a_loc, b_loc);
 	
 }
 
@@ -311,7 +295,11 @@ void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long 
 	
 	double* netForce[N];	// local array to store the net forces on each node
 	double previousPotential = DBL_MAX;	// local field to store the previous known potential; set to an arbitrary maximum to ensure that at least one iteration occurs
-	double toleratedPotential = calculateMinimumPotential(N, DIM) + baseTol * calculateMinimumPotentialDifference(N-1, N, DIM);
+	double toleratedPotential = 0;
+	
+	if(N > GUIDED_N){
+		toleratedPotential = calculateMinimumPotential(N, DIM) + baseTol * calculateMinimumPotentialDifference(N-1, N, DIM);
+	}
 	
 	while(previousPotential > toleratedPotential && maxItr > 0){
 

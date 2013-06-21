@@ -15,6 +15,7 @@ public:
 	double* edgeAgeVsBetweenness();
 	virtual double linearDistance(Vertex* a, Vertex* b) = 0;
 	double* edgeAgeVsLinearDistance();
+	double* nodeAgeVsDegree();
 	
 protected:
 
