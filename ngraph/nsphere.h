@@ -22,7 +22,7 @@ class NSphere : public GrowingNetwork3D {
 		double* sumForces(SpatialVertex* node);
 		void normalizeRadius(SpatialVertex* node);
 		SpatialVertex* bud(SpatialVertex* source, double dist);
-		static calculateMinimumPotential(long int n, long int d);
+		double calculateMinimumPotential(long int n, long int d);
 	
 };
 

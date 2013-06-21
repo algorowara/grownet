@@ -49,8 +49,8 @@ public:
 	double calculatePotential();
 	void equalize();
 	void gradientDescent(double gamma, double baseTolerance, long int maxItr);
-	virtual static double calculateMinimumPotential(long int n, long int d);
-	static double calculateMinimumPotentialDifference(long int init_n, long int final_n, long int d);
+	virtual double calculateMinimumPotential(long int n, long int d);
+	double calculateMinimumPotentialDifference(long int init_n, long int final_n, long int d);
 	~GrowingNetwork3D();
 	
 };

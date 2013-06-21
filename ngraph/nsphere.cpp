@@ -134,7 +134,7 @@ double* NSphere::sumForces(SpatialVertex* node){
 		
 		other = getNode(i);
 		dist = distance(node, other);
-		magnitude = 1.0 / pow(dist, DIM-1);	// calculate the magnitude of the force as 1/r^(DIM-1)
+		magnitude = 1.0 / pow(dist, (double)(DIM-1));	// calculate the magnitude of the force as 1/r^(DIM-1)
 		
 		for(long int j = 0; j < DIM; j++){	// for each dimension, add the component of force from this interaction
 			
@@ -230,7 +230,7 @@ SpatialVertex* NSphere::bud(SpatialVertex* source, double dist){
 	
 }
 
-double calculateMinimumPotential(long int n, long int d){
+double NSphere::calculateMinimumPotential(long int n, long int d){
 	
 	return 0;
 	
