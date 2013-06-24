@@ -117,8 +117,8 @@ double* NBall::randomLocation(){
 	}
 	
 	if(r_squared > radius * radius){	// if the position lies outside the NBall
-		
-		delete pos;	// throw it out
+	
+		delete[] pos;	// throw it out
 		return randomLocation();	// try again
 		
 	}
@@ -314,7 +314,7 @@ double NBall::calculatePotential(){
  */
 void NBall::equalize(){
 	
-	gradientDescent(baseGamma / (N * pow(N, 1.0/DIM)), baseTolerance, baseItr);
+	gradientDescent(baseGamma / (N /** pow(N, 1.0/DIM)*/), baseTolerance, baseItr);
 	
 }
 
@@ -323,6 +323,8 @@ void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
 	double* netForce[N];	// a record of the net force on each node
 	double previousPotential = DBL_MAX;	// record of the previous potential; set to an impossibly large value to ensure that at least one iteration occurs
 	double toleratedPotential;	// if the potential is above this value, continue iterating
+	
+	memset(netForce, 0, N * sizeof(double*));
 	
 	if(N > GUIDED_N){	// if the graph size is large enough that an estimate of the minimum possible potential is reasonably accurate
 		
@@ -338,24 +340,23 @@ void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
 	
 	while(previousPotential > toleratedPotential && maxItr > 0){	// while there remains some excess energy above tolerance
 																	// and the hard limit of iterations has not been passed
+		//#pragma omp parallel shared(netForce)
+		//{
 		
-		#pragma omp parallel shared(netForce)
-		{
-		
-			#pragma omp for schedule(guided)
+			//#pragma omp for schedule(guided)
 			for(long int i = 0; i < N; i++){	// for each node
 				
-				netForce[i] = sumForces(getNode(i));	// store the current net force on each node
+				netForce[i] = this->sumForces(getNode(i));	// store the current net force on each node
 				
 			}
 			
 			
-		}
+		//}
 		
-		#pragma omp parallel shared(netForce)
-		{
+		//#pragma omp parallel shared(netForce)
+		//{
 			
-			#pragma omp for schedule(guided)
+			//#pragma omp for schedule(guided)
 			for(long int i = 0; i < N; i++){	// for every node
 				
 				for(long int j = 0; j < DIM; j++){	// for every dimension
@@ -369,7 +370,7 @@ void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
 				
 			}
 			
-		}
+		//}
 		
 		previousPotential = calculatePotential();	// update the record of the potential
 		maxItr--;	// move one iteration closer to stopping regardless of potential
