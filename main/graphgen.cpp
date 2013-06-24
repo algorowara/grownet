@@ -10,7 +10,7 @@ using namespace std;
 int main(){
 	
 	long int n = 1000, m = 3;
-	long int sample_size = 1;
+	long int sample_size = 36;
 	double edgeAgeVsBetweenness[n];
 	double edgeAgeVsDistance[n];
 	double nodeAgeVsDegree[n];
