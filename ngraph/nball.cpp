@@ -1,4 +1,11 @@
 #include "nball.h"
+#include "../growingnetwork3d/spatialvertex.h"
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
+#include <cfloat>
+#include <cstring>
+#include <iostream>
 
 NBall::NBall(long int d, long int n, long int m, double r, double a, double g, double t, long int i) : DIM(d) {
 	
@@ -6,15 +13,15 @@ NBall::NBall(long int d, long int n, long int m, double r, double a, double g, d
 	
 	if(!randSeeded){	// if it has not
 		
-		srand(time(NULL));	// do so
+		srand(std::time(NULL));	// do so
 		randSeeded = true;	// and reflect this by setting the variable to true
 		
 	}
 	
 	if(n < m+1){
 		
-		cerr<<"No growing network may be initialized with fewer than m+1 nodes; otherwise, no node may have degree m."<<endl;
-		return NULL;
+		cerr<<"No growing network may be initialized with fewer than m+1 nodes; otherwise, no node could have degree m."<<endl;
+		throw NUM_NODES_ERR;
 		
 	}
 	
@@ -42,6 +49,8 @@ NBall::NBall(long int d, long int n, long int m, double r, double a, double g, d
 		equalize();	// ensure that the nodes are spaced appropriately
 		tick();	// move forward in time
 		
+		cout<<"Successfully added node "<<N<<"!"<<endl;
+		
 	}
 	
 	grow(n - (m+1));	// grow the remaining nodes normally
@@ -53,7 +62,7 @@ NBall::NBall(long int d, long int n, long int m, double r, double a, double g, d
  */
 SpatialVertex* NBall::getNode(long int i){
 	
-	return nodes.at(i);
+	return (SpatialVertex*)nodes.at(i);
 	
 }
 
@@ -133,11 +142,24 @@ double NBall::linearDistance(Vertex* a, Vertex* b){
 	
 	for(long int i = 0; i < DIM; i++){
 		
-		d_squared += pow(((SpatialVertex*)a_loc)->position[i] - ((SpatialVertex*)b_loc)->position[i], 2);
+		d_squared += pow(((SpatialVertex*)a)->position[i] - ((SpatialVertex*)b)->position[i], 2);
 		
 	}
 	
 	return sqrt(d_squared);
+	
+}
+
+/**
+ * method to determine the distance from the center to a given node
+ * relies on the linearDistance method
+ */
+double NBall::radialDistance(SpatialVertex* node){
+	
+	static double* centerPosition = new double[DIM];	
+	static SpatialVertex* centralNode = new SpatialVertex(DIM, centerPosition, -1);
+	
+	return linearDistance(node, centralNode);
 	
 }
 
@@ -178,7 +200,7 @@ SpatialVertex** NBall::findMNearestNeighbors(SpatialVertex* start){
 				}	
 			
  				dist[j] = d;	// put the data for this new nearest neighbor 
-				near[j] = getNode(i)	// in the spot previously occupied by neighbor j
+				near[j] = getNode(i);	// in the spot previously occupied by neighbor j
 				break;	// stop looking for others
 
 			}
@@ -188,5 +210,182 @@ SpatialVertex** NBall::findMNearestNeighbors(SpatialVertex* start){
 	}
 
 	return near;
+	
+}
+
+/**
+ * method to calculate the electrostatic force on a given node (1/r^(DIM-1))
+ * using the inter-node repulsive forces and the attractive cloud force
+ * allocates and returns an array which should be subsequently deallocated
+ */
+double* NBall::sumForces(SpatialVertex* node){
+	
+	double* force = new double[DIM];
+	SpatialVertex* other;	// placeholder for a pointer to some other node in two-body interactions
+	double mag, dist;	// local fields to hold the force magnitude and distance of a two-body interaction
+	
+	memset(force, 0, DIM * sizeof(double));	// ensure that the components of force are set to zero
+	
+	for(long int i = 0; i < N; i++){	// for every node in the graph
+		
+		other = getNode(i);
+		
+		if(other == node){	// except this one
+			
+			continue;	// the self-force is not considered here
+			
+		}
+		
+		dist = linearDistance(node, other);	// remember the distance
+		mag = alpha / pow(dist, DIM-1);	// and the magnitude of the electrostatic repulsive force
+		
+		for(long int j = 0; j < DIM; j++){	// for every dimension
+			
+			force[i] += mag * (node->position[j] - other->position[j])/dist;	// multiply the magnitude by the appropriate component of the unit displacement vector
+																				// where each component is the difference in position normalized by the total distance
+			
+		}
+		
+	}
+	
+	dist = radialDistance(node);	// calculate the attractive cloud force
+	mag = (-1.0 / N) * beta * dist;	// since the force is attractive, it will be negative with respect to the radially outwards vector
+	
+	for(long int i = 0; i < DIM; i++){
+		
+		force[i] += mag * ((node->position[i]) / dist);	// here, the unit displacement vector is the unit position vector
+		
+	}
+	
+	return force;
+	
+}
+
+/**
+ * method to calculate the potential of the NBall
+ * with the convention that potential from repulsive forces is negative
+ * and potential from the attractive cloud is positive
+ */
+double NBall::calculatePotential(){
+	
+	double pot = 0;
+	
+	#pragma omp parallel shared(pot)
+	{
+		
+		double localSum = 0;
+		
+		#pragma omp for schedule(guided)
+		for(long int i = 0; i < N; i++){	// for all nodes
+			
+			for(long int j = i+1; j < N; j++){	// for all two-body interactions and all N * (N-1) / 2 possible order-independent pairs
+				
+				if(DIM != 2){	// if the dimension is not equal to two, integrating the electrostatic force over distance is simple
+					
+					localSum += -1 * alpha / pow(linearDistance(getNode(i), getNode(j)), DIM-2);
+					
+				}
+				
+				else if(DIM == 2){	// if the dimension is equal to two, the potential is logarithmic, because the force goes as 1/r
+					
+					localSum += -1 * alpha * log(linearDistance(getNode(i), getNode(j)));
+					
+				}
+				
+			}
+			
+			localSum += (beta / (2.0 * DIM)) * pow(radialDistance(getNode(i)), 2);	// calculate the 
+			
+		}
+		
+		#pragma omp atomic
+		pot += localSum;
+		
+	}
+	
+	return pot;
+	
+}
+
+/**
+ * method which properly tunes the relevant parameters before passing them to gradientDescent
+ * gamma scales with 1/(N^(1 + 1/D)) because the number of nodes, and therefore the force, will increase as N,
+ * and the average separation between nodes will decrease with N^(1/D), as the D-dimensional volume per unit decreases with N
+ */
+void NBall::equalize(){
+	
+	gradientDescent(baseGamma / (N * pow(N, 1.0/DIM)), baseTolerance, baseItr);
+	
+}
+
+void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
+	
+	double* netForce[N];	// a record of the net force on each node
+	double previousPotential = DBL_MAX;	// record of the previous potential; set to an impossibly large value to ensure that at least one iteration occurs
+	double toleratedPotential;	// if the potential is above this value, continue iterating
+	
+	if(N > GUIDED_N){	// if the graph size is large enough that an estimate of the minimum possible potential is reasonably accurate
+		
+		toleratedPotential = 0;	/* TODO: find a general solution for the minimum possible potential */
+		
+	}
+	
+	else{	// otherwise, if there are few enough nodes that the minimum potential is uncertain
+		
+		toleratedPotential = 0;	// go through the maximum number of iterations anyway
+		
+	}
+	
+	while(previousPotential > toleratedPotential && maxItr > 0){	// while there remains some excess energy above tolerance
+																	// and the hard limit of iterations has not been passed
+		
+		#pragma omp parallel shared(netForce)
+		{
+		
+			#pragma omp for schedule(guided)
+			for(long int i = 0; i < N; i++){	// for each node
+				
+				netForce[i] = sumForces(getNode(i));	// store the current net force on each node
+				
+			}
+			
+			
+		}
+		
+		#pragma omp parallel shared(netForce)
+		{
+			
+			#pragma omp for schedule(guided)
+			for(long int i = 0; i < N; i++){	// for every node
+				
+				for(long int j = 0; j < DIM; j++){	// for every dimension
+					
+					getNode(i)->position[j] += gamma * netForce[i][j];	// displace the node in that dimension
+																		// according to the force on it and the timestep size
+					
+				}
+				
+				delete[] netForce[i];	// deallocate the now-outdated force vector
+				
+			}
+			
+		}
+		
+		previousPotential = calculatePotential();	// update the record of the potential
+		maxItr--;	// move one iteration closer to stopping regardless of potential
+		
+	}
+	
+	return;	// return statement placed here for clarity only
+	
+}
+
+NBall::~NBall(){
+	
+	for(long int i = 0; i < N; i++){
+		
+		delete getNode(i);
+		
+	}
 	
 }

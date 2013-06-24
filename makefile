@@ -3,15 +3,15 @@ FLAGS = -fopenmp -O3 -ffast-math
 all: main/test main/graphgen main/parametertune main/pgrownet
 main/parametertune: main/parametertune.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o
 	g++ $(FLAGS) main/parametertune.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/parametertune 
-main/test: main/test.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o
-	g++ $(FLAGS) main/test.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/test 
+main/test: main/test.o ngraph/nball.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o
+	g++ $(FLAGS) main/test.o ngraph/nball.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/test 
 main/graphgen: main/graphgen.o ngraph/nsphere.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o
 	g++ $(FLAGS) main/graphgen.o ngraph/nsphere.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/graphgen 
 main/pgrownet: main/pgrownet.o pgrownet2d/pgrownet2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o growingnetwork3d/spatialvertex.o
 	g++ $(FLAGS) main/pgrownet.o pgrownet2d/pgrownet2d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/pgrownet 
 main/parametertune.o: main/parametertune.cpp growingnetwork3d/growingnetwork3d.cpp growingnetwork3d/growingnetwork3d.h
 	g++ $(FLAGS) -c main/parametertune.cpp -o main/parametertune.o 
-main/test.o: main/test.cpp growingnetwork3d/growingnetwork3d.cpp growingnetwork3d/growingnetwork3d.h
+main/test.o: main/test.cpp ngraph/nball.cpp ngraph/nball.h growingnetwork3d/growingnetwork3d.cpp growingnetwork3d/growingnetwork3d.h
 	g++ $(FLAGS) -c main/test.cpp -o main/test.o 
 main/graphgen.o: main/graphgen.cpp growingnetwork2d/growingnetwork2d.cpp growingnetwork2d/growingnetwork2d.h
 	g++ $(FLAGS) -c main/graphgen.cpp -o main/graphgen.o 
