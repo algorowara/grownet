@@ -1,4 +1,4 @@
-FLAGS = -fopenmp -O3 -ffast-math
+FLAGS = -fopenmp -ffast-math -O3
 
 all: main/test main/graphgen main/parametertune main/pgrownet
 main/parametertune: main/parametertune.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o
