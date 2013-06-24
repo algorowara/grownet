@@ -46,4 +46,6 @@ clean:
 	rm -vf main/parametertune
 	rm -vf main/test
 	rm -vf main/graphgen
+	rm -vf main/lineppnet
 	rm -vf */*.o
+	
