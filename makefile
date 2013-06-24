@@ -9,6 +9,8 @@ main/graphgen: main/graphgen.o ngraph/nsphere.o growingnetwork3d/growingnetwork3
 	g++ $(FLAGS) main/graphgen.o ngraph/nsphere.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/graphgen 
 main/pgrownet: main/pgrownet.o pgrownet2d/pgrownet2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o growingnetwork3d/spatialvertex.o
 	g++ $(FLAGS) main/pgrownet.o pgrownet2d/pgrownet2d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/pgrownet 
+main/lineppnet: main/lineppnet.o pp1d/pp1d.o graph/growingnetwork.o graph/graph.o graph/vertex.o growingnetwork3d/spatialvertex.o
+	g++ $(FLAGS) main/lineppnet.o pp1d/pp1d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/lineppnet
 main/parametertune.o: main/parametertune.cpp growingnetwork3d/growingnetwork3d.cpp growingnetwork3d/growingnetwork3d.h
 	g++ $(FLAGS) -c main/parametertune.cpp -o main/parametertune.o 
 main/test.o: main/test.cpp ngraph/nball.cpp ngraph/nball.h growingnetwork3d/growingnetwork3d.cpp growingnetwork3d/growingnetwork3d.h
@@ -17,6 +19,8 @@ main/graphgen.o: main/graphgen.cpp growingnetwork2d/growingnetwork2d.cpp growing
 	g++ $(FLAGS) -c main/graphgen.cpp -o main/graphgen.o 
 main/pgrownet.o: main/pgrownet.cpp pgrownet2d/pgrownet2d.cpp pgrownet2d/pgrownet2d.h
 	g++ $(FLAGS) -c main/pgrownet.cpp -o main/pgrownet.o
+main/lineppnet.o: main/lineppnet.cpp pp1d/pp1d.cpp pp1d/pp1d.h
+	g++ $(FLAGS) -c main/lineppnet.cpp -o main/lineppnet.o
 ngraph/nball.o: ngraph/nball.cpp ngraph/nball.h growingnetwork3d/spatialvertex.cpp growingnetwork3d/spatialvertex.h graph/growingnetwork.cpp graph/growingnetwork.h graph/graph.cpp graph/graph.h graph/vertex.cpp graph/vertex.h
 	g++ $(FLAGS) -c ngraph/nball.cpp -o ngraph/nball.o
 ngraph/nsphere.o: ngraph/nsphere.cpp ngraph/nsphere.h growingnetwork3d/growingnetwork3d.cpp growingnetwork3d/growingnetwork3d.h growingnetwork3d/spatialvertex.cpp growingnetwork3d/spatialvertex.h graph/growingnetwork.cpp graph/growingnetwork.h graph/graph.cpp graph/graph.h graph/vertex.cpp graph/vertex.h
