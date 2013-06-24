@@ -233,7 +233,7 @@ double PositiveChargeGrowingNetwork2D::calculatePotential(){
 
 		for(int i = 0; i < N; i++){	//for every node
 
-			for(int j = 0; j < N; j++){	//for every pair of nodes
+			for(int j = i+1; j < N; j++){	//for every pair of nodes
 
 				a = getNode(i);
 				b = getNode(j);
