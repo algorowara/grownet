@@ -50,7 +50,7 @@ PPGrowingNetwork1D::PPGrowingNetwork1D(long int n, long int m, double gamma, dou
 
 	}
 
-	grow(n) //grow the remaining nodes normall
+	grow(n);  //grow the remaining nodes normall
 
 }
 
@@ -64,7 +64,7 @@ void PPGrowingNetwork1D::grow(long int n){
 
 	while(n > 0){
 
-		SpatialVertex* newNode = new SpatialVertex(DIM, randomLocation(); getTime());
+		SpatialVertex* newNode = new SpatialVertex(DIM, randomLocation(), getTime());
 		SpatialVertex** nearNeighbors = findMNearestNeighbors(newNode);
 
 		for(int i = 0; i < m; i++){
@@ -102,13 +102,30 @@ double* PPGrowingNetwork1D::randomLocation(){
 }
 
 /**
+ * method to find linear distance, I don't use it but it is needed in here to compile properly
+*/
+double PPGrowingNetwork1D::linearDistance(Vertex* a, Vertex* b){
+	if(sizeof(a) == sizeof(SpatialVertex) && sizeof(b) == sizeof(SpatialVertex)){
+
+		SpatialVertex* a_loc = (SpatialVertex*)a;
+		SpatialVertex* b_loc = (SpatialVertex*)b;
+
+		return DISTANCE_1D(a_loc, b_loc);
+
+	}
+	
+	return 0;
+
+}
+
+/**
  * calculate the repulsive force between two nodes based on their displacement. It dynamically allocated an array which should be deleted by caller after use
 */
 double* PPGrowingNetwork1D::sumForces(SpatialVertex* node){
 
 	double* force = new double[DIM]; //allocate an array for the force vector
 	SpatialVertex* other; //local placeholder for any other node in 2 body interactions
-	double magnitude, distance, pmagnitude, pdistance //local placeholders for magnitude of force and location of nodes for electron - electron interactions and electron cloud interactions
+	double magnitude, distance, pmagnitude, pdistance; //local placeholders for magnitude of force and location of nodes for electron - electron interactions and electron cloud interactions
 
 	for(int i = 0; i < DIM; i++){ //set the forces initially to 0
 
