@@ -1,4 +1,4 @@
-#include "../ngraph/nsphere.h"
+#include "../growingnetwork2d/growingnetwork2d.h"
 #include <iostream>
 #include <fstream>
 #include <ctime>
@@ -9,66 +9,34 @@ using namespace std;
 
 int main(){
 	
-	long int n = 1000, m = 3;
-	long int sample_size = 36;
-	double edgeAgeVsBetweenness[n];
-	double edgeAgeVsDistance[n];
-	double nodeAgeVsDegree[n];
-	ofstream between, distance, degree;
-	
-	between.open("edge_age_vs_betweenness_n1000_m3.txt", ios::out | ios::trunc);
-	distance.open("edge_age_vs_distance_n1000_m3.txt", ios::out | ios::trunc);
-	degree.open("node_age_vs_degree_n1000_m3.txt", ios::out | ios::trunc);
+	long int n = 1000, m = 2;
+	double degree[n];
+	long int sample = 16;
 	
 	for(long int i = 0; i < n; i++){
 		
-		edgeAgeVsBetweenness[i] = 0;
-		edgeAgeVsDistance[i] = 0;
-		nodeAgeVsDegree[i] = 0;
+		degree[i] = 0;
 		
 	}
 	
-	for(long int i = 0; i < sample_size; i++){
+	for(long int i = 0; i < sample; i++){
 		
-		GrowingNetwork3D* net = new GrowingNetwork3D(n, m);
+		GrowingNetwork2D* net = new GrowingNetwork2D(n, m);
 		
-		double* localBetweenness = net->edgeAgeVsBetweenness();
-		double* localDistance = net->edgeAgeVsLinearDistance();
-		double* localDegree = net->nodeAgeVsDegree();
-		
-		for(long int j = 0; j < n; j++){
+		for(long int i = 0; i < n; i++){
 			
-			edgeAgeVsBetweenness[j] += localBetweenness[j];
-			edgeAgeVsDistance[j] += localDistance[j];
-			nodeAgeVsDegree[j] += localDegree[j];
+			degree[net->getTime() - net->getNode(i)->getStartTime() - 1] += (net->K(i))/((double)sample);
 			
 		}
 		
-		delete localBetweenness;
-		delete localDistance;
-		delete localDegree;
 		delete net;
 		
 	}
 	
 	for(long int i = 0; i < n; i++){
 		
-		edgeAgeVsBetweenness[i] /= sample_size;
-		edgeAgeVsDistance[i] /= sample_size;
-		nodeAgeVsDegree[i] /= sample_size;
+		cout<<i<<" "<<degree[i]<<endl;
 		
 	}
-	
-	for(long int i = 0; i < n; i++){
-		
-		between<<i<<" "<<edgeAgeVsBetweenness[i]<<endl;
-		distance<<i<<" "<<edgeAgeVsDistance[i]<<endl;
-		degree<<i<<" "<<nodeAgeVsDegree[i]<<endl;
-		
-	}
-	
-	between.close();
-	distance.close();
-	degree.close();
 	
 }

@@ -49,8 +49,6 @@ NBall::NBall(long int d, long int n, long int m, double r, double a, double g, d
 		equalize();	// ensure that the nodes are spaced appropriately
 		tick();	// move forward in time
 		
-		cout<<"Successfully added node "<<N<<"!"<<endl;
-		
 	}
 	
 	grow(n - (m+1));	// grow the remaining nodes normally
@@ -241,7 +239,7 @@ double* NBall::sumForces(SpatialVertex* node){
 		
 		for(long int j = 0; j < DIM; j++){	// for every dimension
 			
-			force[i] += mag * (node->position[j] - other->position[j])/dist;	// multiply the magnitude by the appropriate component of the unit displacement vector
+			force[j] += mag * (node->position[j] - other->position[j])/dist;	// multiply the magnitude by the appropriate component of the unit displacement vector
 																				// where each component is the difference in position normalized by the total distance
 			
 		}
@@ -314,7 +312,7 @@ double NBall::calculatePotential(){
  */
 void NBall::equalize(){
 	
-	gradientDescent(baseGamma / (N /** pow(N, 1.0/DIM)*/), baseTolerance, baseItr);
+	gradientDescent(baseGamma / (N * pow(N, 1.0/DIM)), baseTolerance, baseItr);
 	
 }
 
@@ -340,10 +338,10 @@ void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
 	
 	while(previousPotential > toleratedPotential && maxItr > 0){	// while there remains some excess energy above tolerance
 																	// and the hard limit of iterations has not been passed
-		//#pragma omp parallel shared(netForce)
-		//{
+		#pragma omp parallel shared(netForce)
+		{
 		
-			//#pragma omp for schedule(guided)
+			#pragma omp for schedule(guided)
 			for(long int i = 0; i < N; i++){	// for each node
 				
 				netForce[i] = this->sumForces(getNode(i));	// store the current net force on each node
@@ -351,12 +349,12 @@ void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
 			}
 			
 			
-		//}
+		}
 		
-		//#pragma omp parallel shared(netForce)
-		//{
+		#pragma omp parallel shared(netForce)
+		{
 			
-			//#pragma omp for schedule(guided)
+			#pragma omp for schedule(guided)
 			for(long int i = 0; i < N; i++){	// for every node
 				
 				for(long int j = 0; j < DIM; j++){	// for every dimension
@@ -370,7 +368,7 @@ void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
 				
 			}
 			
-		//}
+		}
 		
 		previousPotential = calculatePotential();	// update the record of the potential
 		maxItr--;	// move one iteration closer to stopping regardless of potential
@@ -382,11 +380,5 @@ void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
 }
 
 NBall::~NBall(){
-	
-	for(long int i = 0; i < N; i++){
-		
-		delete getNode(i);
-		
-	}
 	
 }
