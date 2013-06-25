@@ -9,7 +9,7 @@ using namespace std;
 
 int main(){
 	
-	long int n = 1000, m = 0, d = 3;
+	long int n = 400, m = 0, d = 3;
 	
 	NBall* nb = new NBall(n, m, d);
 	

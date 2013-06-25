@@ -45,7 +45,7 @@ NBall::NBall(long int n, long int m, long int d, double r, double a, double g, d
 		}
 		
 		addNode(newNode);	// add the new node to the graph
-		beta = alpha * N;	// update the attractive cloud force constant
+		beta = (alpha * N)/pow(radius, (double)DIM);	// update the attractive cloud force constant
 		equalize();	// ensure that the nodes are spaced appropriately
 		tick();	// move forward in time
 		
@@ -85,7 +85,7 @@ void NBall::grow(long int n){
 		
 		delete[] nearNeighbors;
 	
-		beta = alpha * N;	// update the attractive cloud force constant
+		beta = (alpha * N)/pow(radius, (double)DIM);	// update the attractive cloud force constant
 		tick();
 		n--;
 		
@@ -140,7 +140,7 @@ double NBall::linearDistance(Vertex* a, Vertex* b){
 	
 	for(long int i = 0; i < DIM; i++){
 		
-		d_squared += pow(((SpatialVertex*)a)->position[i] - ((SpatialVertex*)b)->position[i], 2);
+		d_squared += pow(((SpatialVertex*)a)->position[i] - ((SpatialVertex*)b)->position[i], 2.0);
 		
 	}
 	
@@ -235,7 +235,7 @@ double* NBall::sumForces(SpatialVertex* node){
 		}
 		
 		dist = linearDistance(node, other);	// remember the distance
-		mag = alpha / pow(dist, DIM-1);	// and the magnitude of the electrostatic repulsive force
+		mag = alpha / pow(dist, (double)DIM-1);	// and the magnitude of the electrostatic repulsive force
 		
 		for(long int j = 0; j < DIM; j++){	// for every dimension
 			
@@ -247,7 +247,7 @@ double* NBall::sumForces(SpatialVertex* node){
 	}
 	
 	dist = radialDistance(node);	// calculate the attractive cloud force
-	mag = (-1.0 / N) * beta * dist;	// since the force is attractive, it will be negative with respect to the radially outwards vector
+	mag = -beta * dist;	// since the force is attractive, it will be negative with respect to the radially outwards vector
 	
 	for(long int i = 0; i < DIM; i++){
 		
@@ -280,7 +280,7 @@ double NBall::calculatePotential(){
 				
 				if(DIM != 2){	// if the dimension is not equal to two, integrating the electrostatic force over distance is simple
 					
-					localSum += -1 * alpha / pow(linearDistance(getNode(i), getNode(j)), DIM-2);
+					localSum += -1 * alpha / pow(linearDistance(getNode(i), getNode(j)), (double)DIM-2);
 					
 				}
 				
@@ -292,7 +292,7 @@ double NBall::calculatePotential(){
 				
 			}
 			
-			localSum += (beta / (2.0 * DIM)) * pow(radialDistance(getNode(i)), 2);	// calculate the 
+			localSum += (beta / 2.0) * pow(radialDistance(getNode(i)), 2.0);	// calculate the potential due to the attractive cloud
 			
 		}
 		
@@ -321,6 +321,7 @@ void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
 	double* netForce[N];	// a record of the net force on each node
 	double previousPotential = DBL_MAX;	// record of the previous potential; set to an impossibly large value to ensure that at least one iteration occurs
 	double toleratedPotential;	// if the potential is above this value, continue iterating
+	double temp_minimum_potential = DBL_MAX;
 	
 	memset(netForce, 0, N * sizeof(double*));
 	
@@ -372,11 +373,18 @@ void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
 		}
 		
 		previousPotential = calculatePotential();	// update the record of the potential
+		
+		if(previousPotential < temp_minimum_potential){
+			
+			temp_minimum_potential = previousPotential;
+			
+		}
+		
 		maxItr--;	// move one iteration closer to stopping regardless of potential
 		
 	}
 	
-	cout<<N<<" "<<calculatePotential()<<endl;
+	//cout<<N<<" "<<temp_minimum_potential<<endl;
 	
 	return;	// return statement placed here for clarity only
 	
