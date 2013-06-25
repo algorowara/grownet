@@ -10,7 +10,7 @@
 #include <omp.h>
 #include <iostream>
 
-#define DIM 1
+#define DIM (long int)1
 #define X(node) node->position[0]
 #define DISTANCE_1D(a,b) abs(X(a) - X(b))
 

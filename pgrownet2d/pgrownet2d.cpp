@@ -230,17 +230,16 @@ double PositiveChargeGrowingNetwork2D::calculatePotential(){
 		SpatialVertex* b;
 
 		#pragma omp for schedule(guided)
-
 		for(int i = 0; i < N; i++){	//for every node
+
+			a = getNode(i);
 
 			for(int j = i+1; j < N; j++){	//for every pair of nodes
 
-				a = getNode(i);
 				b = getNode(j);
 	
 				if(a != b){	//if they are not the same
 					localSum += -alpha*log(DISTANCE_2D(a, b)); //add their potential energy to the local sum
-
 				}
 
 			}
@@ -250,7 +249,6 @@ double PositiveChargeGrowingNetwork2D::calculatePotential(){
 		}	
 
 		#pragma omp atomic
-
 		potential += localSum;	// add the local sums together
 
 	}

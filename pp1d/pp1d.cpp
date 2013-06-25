@@ -37,6 +37,8 @@ PPGrowingNetwork1D::PPGrowingNetwork1D(long int n, long int m, double gamma, dou
 
 		addNode(newNode);
 
+		beta = alpha*N; //update beta so positive and negative  charges are balanced
+
 		for(long int j = 0; j < nodes.size()-1; j++){ //link to the others in this clique
 
 			newNode->addNeighbor(getNode(j));
@@ -69,6 +71,7 @@ void PPGrowingNetwork1D::grow(long int n){
 
 		for(int i = 0; i < m; i++){
 
+			cout<<nearNeighbors[i]<<endl;
 			newNode->addNeighbor(nearNeighbors[i]);
 
 		}
@@ -90,7 +93,7 @@ void PPGrowingNetwork1D::grow(long int n){
 */
 double* PPGrowingNetwork1D::randomLocation(){
 
-	double* position = new double[DIM];
+	double* position = new double[DIM]; 
 	
 	double p_radius = radius*radius * (((double)rand())/RAND_MAX);
 	long int p_sign = (rand() % 2) - 1;
@@ -123,15 +126,11 @@ double PPGrowingNetwork1D::linearDistance(Vertex* a, Vertex* b){
 */
 double* PPGrowingNetwork1D::sumForces(SpatialVertex* node){
 
-	double* force = new double[DIM]; //allocate an array for the force vector
+	double* force = new double[DIM]; //allocate a double for the force vector
 	SpatialVertex* other; //local placeholder for any other node in 2 body interactions
 	double magnitude, distance, pmagnitude, pdistance; //local placeholders for magnitude of force and location of nodes for electron - electron interactions and electron cloud interactions
 
-	for(int i = 0; i < DIM; i++){ //set the forces initially to 0
-
-		force[i] = 0;
-
-	}
+	force[0] = 0; //force is initially 0
 
 	for(int i = 0; i < N; i++){  //for each node in the graph
 
@@ -193,6 +192,7 @@ SpatialVertex** PPGrowingNetwork1D::findMNearestNeighbors(SpatialVertex* start){
 
 				dnormal[j] = dist;  //put the data for this new nearest neighbor in the spot previously occupied by neighbor j
 				near[j] = getNode(i);
+
 				break;  //stop looking for others
 
 			}	
@@ -223,9 +223,11 @@ double PPGrowingNetwork1D::calculatePotential(){
 
 		for(int i = 0; i < N; i++){  //for each node
 
+		
+			a = getNode(i);
+
 			for(int j = i+1; j < N; j++){  //for each pair of nodes
 
-				a = getNode(i);
 				b = getNode(j);
 
 				if(a != b){  //if they are not the same
@@ -283,11 +285,7 @@ void PPGrowingNetwork1D::gradientDescent(double gamma, double tolerance, long in
 			#pragma omp for schedule(guided)
 			for(int i = 0; i < N; i++){  //for every node
 
-				for(int j = 0; j < DIM; j++){  //for every dimension (only one here)
-
-					getNode(i)->position[j] += gamma * netForce[i][j];  //displace the node by gamma * netForce
-
-				}
+					getNode(i)->position[0] += gamma * netForce[i][0];  //displace the node by gamma * netForce
 
 				delete[] netForce[i]; //clear netForce to avoid memory leak
 
