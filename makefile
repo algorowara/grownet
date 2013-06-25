@@ -1,12 +1,12 @@
 FLAGS = -fopenmp -ffast-math -O3
 
-all: main/test main/graphgen main/parametertune main/pgrownet
+all: main/test main/graphgen main/parametertune main/pgrownet main/lineppnet
 main/parametertune: main/parametertune.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o
 	g++ $(FLAGS) main/parametertune.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/parametertune 
 main/test: main/test.o ngraph/nball.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o
 	g++ $(FLAGS) main/test.o ngraph/nball.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/test 
-main/graphgen: main/graphgen.o ngraph/nsphere.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o
-	g++ $(FLAGS) main/graphgen.o ngraph/nsphere.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/graphgen 
+main/graphgen: main/graphgen.o ngraph/nball.o ngraph/nsphere.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o
+	g++ $(FLAGS) main/graphgen.o ngraph/nball.o ngraph/nsphere.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/graphgen 
 main/pgrownet: main/pgrownet.o pgrownet2d/pgrownet2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o growingnetwork3d/spatialvertex.o
 	g++ $(FLAGS) main/pgrownet.o pgrownet2d/pgrownet2d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/pgrownet 
 main/lineppnet: main/lineppnet.o pp1d/pp1d.o graph/growingnetwork.o graph/graph.o graph/vertex.o growingnetwork3d/spatialvertex.o
@@ -39,8 +39,8 @@ graph/vertex.o: graph/vertex.cpp graph/vertex.h
 	g++ $(FLAGS) -c graph/vertex.cpp -o graph/vertex.o 
 pgrownet2d/pgrownet2d.o: pgrownet2d/pgrownet2d.cpp pgrownet2d/pgrownet2d.h growingnetwork3d/spatialvertex.cpp growingnetwork3d/spatialvertex.h graph/*.cpp graph/*.h
 	g++ $(FLAGS) -c pgrownet2d/pgrownet2d.cpp -o pgrownet2d/pgrownet2d.o
-backup: graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h ngraph/*.cpp ngraph/*.h main/*.cpp main/*.m makefile README doc.odt
-	zip ../backup.zip graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h ngraph/*.cpp ngraph/*.h main/*.cpp main/*.m makefile README doc.odt
+backup: graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h pgrownet2d/*.cpp pgrownet2d/*.h ngraph/*.cpp ngraph/*.h pp1d/*.cpp pp1d/*.h main/*.cpp main/*.m makefile README doc.odt
+	zip ../backup.zip graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h pgrownet2d/*.cpp pgrownet2d/*.h ngraph/*.cpp ngraph/*.h pp1d/*.cpp pp1d/*.h main/*.cpp main/*.m makefile README doc.odt design.odt
 clean:
 	rm -vf main/pgrownet
 	rm -vf main/parametertune

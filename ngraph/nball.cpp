@@ -7,7 +7,7 @@
 #include <cstring>
 #include <iostream>
 
-NBall::NBall(long int d, long int n, long int m, double r, double a, double g, double t, long int i) : DIM(d) {
+NBall::NBall(long int n, long int m, long int d, double r, double a, double g, double t, long int i) : DIM(d) {
 	
 	static bool randSeeded = false;	// static variable to check if the pseudorandom number generator has been seeded yet
 	
@@ -326,18 +326,19 @@ void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
 	
 	if(N > GUIDED_N){	// if the graph size is large enough that an estimate of the minimum possible potential is reasonably accurate
 		
-		toleratedPotential = 0;	/* TODO: find a general solution for the minimum possible potential */
+		toleratedPotential = -DBL_MAX;	/* TODO: find a general solution for the minimum possible potential */
 		
 	}
 	
 	else{	// otherwise, if there are few enough nodes that the minimum potential is uncertain
 		
-		toleratedPotential = 0;	// go through the maximum number of iterations anyway
+		toleratedPotential = -DBL_MAX;	// go through the maximum number of iterations anyway
 		
 	}
 	
 	while(previousPotential > toleratedPotential && maxItr > 0){	// while there remains some excess energy above tolerance
 																	// and the hard limit of iterations has not been passed
+
 		#pragma omp parallel shared(netForce)
 		{
 		
@@ -374,6 +375,8 @@ void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
 		maxItr--;	// move one iteration closer to stopping regardless of potential
 		
 	}
+	
+	cout<<N<<" "<<calculatePotential()<<endl;
 	
 	return;	// return statement placed here for clarity only
 	
