@@ -23,7 +23,7 @@ PPGrowingNetwork1D::PPGrowingNetwork1D(long int n, long int m, double gamma, dou
 	this->maxItr = maxItr;
 	this->m = m;
 	radius = 1;
-	alpha = .01;
+	alpha = .1;
 	if(N == 0){
 		beta = alpha;
 	}
@@ -71,7 +71,6 @@ void PPGrowingNetwork1D::grow(long int n){
 
 		for(int i = 0; i < m; i++){
 
-			cout<<nearNeighbors[i]<<endl;
 			newNode->addNeighbor(nearNeighbors[i]);
 
 		}
@@ -95,10 +94,13 @@ double* PPGrowingNetwork1D::randomLocation(){
 
 	double* position = new double[DIM]; 
 	
-	double p_radius = radius*radius * (((double)rand())/RAND_MAX);
+	double p_radius = radius * (((double)rand())/RAND_MAX);
 	long int p_sign = (rand() % 2) - 1;
+		if(p_sign == 0){
+			p_sign = 1;
+		}
 
-	position[0] = sqrt(p_radius) * p_sign;
+	position[0] = p_radius * p_sign;
 
 	return position;
 
@@ -180,7 +182,6 @@ SpatialVertex** PPGrowingNetwork1D::findMNearestNeighbors(SpatialVertex* start){
 		double dist = DISTANCE_1D(start, getNode(i));
 
 		for(int j = 0; j < m; j++){  //iterate through all distance records
-
 			if(dist < dnormal[j]){  //if this node is closer than the nearest neighbor j
 
 				for (int k = m-1; k > j; k--){  //shift everything from j to m one position back
@@ -267,6 +268,9 @@ void PPGrowingNetwork1D::gradientDescent(double gamma, double tolerance, long in
 
 	while(abs(previousPotential - calculatePotential()) > tolerance && maxItr > 0){
 
+		
+		previousPotential = calculatePotential();
+
 		#pragma omp parallel shared(netForce)
 		{
 
@@ -292,9 +296,7 @@ void PPGrowingNetwork1D::gradientDescent(double gamma, double tolerance, long in
 			}
 
 		}
-
-		previousPotential = calculatePotential();
-
+		
 		maxItr--;
 
 	}
