@@ -7,7 +7,7 @@ using namespace std;
 
 int main(){
 	
-	long int d = 3, n = 1000, m = 3;
+	long int d = 3, n = 800, m = 3;
 	NBall* b = new NBall(d, n, m);
 	delete b;
 			

@@ -1,4 +1,4 @@
-#include "../growingnetwork2d/growingnetwork2d.h"
+#include "../ngraph/nball.h"
 #include <iostream>
 #include <fstream>
 #include <ctime>
@@ -9,34 +9,10 @@ using namespace std;
 
 int main(){
 	
-	long int n = 1000, m = 2;
-	double degree[n];
-	long int sample = 16;
+	long int n = 1000, m = 0, d = 3;
 	
-	for(long int i = 0; i < n; i++){
-		
-		degree[i] = 0;
-		
-	}
+	NBall* nb = new NBall(n, m, d);
 	
-	for(long int i = 0; i < sample; i++){
-		
-		GrowingNetwork2D* net = new GrowingNetwork2D(n, m);
-		
-		for(long int i = 0; i < n; i++){
-			
-			degree[net->getTime() - net->getNode(i)->getStartTime() - 1] += (net->K(i))/((double)sample);
-			
-		}
-		
-		delete net;
-		
-	}
-	
-	for(long int i = 0; i < n; i++){
-		
-		cout<<i<<" "<<degree[i]<<endl;
-		
-	}
+	delete nb;
 	
 }

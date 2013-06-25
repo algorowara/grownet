@@ -10,7 +10,7 @@
 #define DEFAULT_GAMMA 1.0
 #define DEFAULT_ALPHA 0.1
 #define DEFAULT_TOLERANCE 1.0
-#define DEFAULT_ITERATIONS 36
+#define DEFAULT_ITERATIONS 100
 
 #define GUIDED_N 16
 
@@ -26,7 +26,7 @@ class NBall : public GrowingNetwork {
 		double baseTolerance;	// tolerance of the GradientDescent method
 		long int baseItr;	// maximum number of iterations allowed for the GradientDescent method
 		
-		NBall(long int d, long int n, long int m, double r = DEFAULT_RADIUS, double a = DEFAULT_ALPHA, double g = DEFAULT_GAMMA, double t = DEFAULT_TOLERANCE, long int i = DEFAULT_ITERATIONS);
+		NBall(long int n, long int m, long int d, double r = DEFAULT_RADIUS, double a = DEFAULT_ALPHA, double g = DEFAULT_GAMMA, double t = DEFAULT_TOLERANCE, long int i = DEFAULT_ITERATIONS);
 		SpatialVertex* getNode(long int i);
 		void grow(long int n);
 		double* randomLocation();
