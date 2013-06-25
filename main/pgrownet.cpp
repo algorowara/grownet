@@ -3,14 +3,14 @@
 #include <fstream>
 
 using namespace std;
-int a = 3; //1 if we want to grow whole network, 2 if we want step by step, 3 if we want ClustCoeff 
+int a = 1; //1 if we want to grow whole network, 2 if we want step by step, 3 if we want ClustCoeff 
 int dcare = 0; //1 if we want distance information, else 0
 
 int main(){
   if(a == 1){	
 	//make the network
-	long int n = 1000, m = 3, nodeage;
-	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m,.05,.001,1000);
+	long int n = 10, m = 3, nodeage;
+	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m,.05,.00001,1000);
 	
 	//save the position of the points as validation
 	//with this we also want to look at the node ages

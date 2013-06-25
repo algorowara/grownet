@@ -273,6 +273,7 @@ void PositiveChargeGrowingNetwork2D::gradientDescent(double gamma, double tolera
 
         while(abs(previousPotential - calculatePotential()) > tolerance && maxItr > 0){
 
+		previousPotential = calculatePotential();
                 #pragma omp parallel shared(netForce)
                 {
 
@@ -302,9 +303,7 @@ void PositiveChargeGrowingNetwork2D::gradientDescent(double gamma, double tolera
                         }
 
                 }
-
-		previousPotential = calculatePotential();
-
+		
                 maxItr--;
 
         }

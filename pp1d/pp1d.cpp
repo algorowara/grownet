@@ -23,7 +23,7 @@ PPGrowingNetwork1D::PPGrowingNetwork1D(long int n, long int m, double gamma, dou
 	this->maxItr = maxItr;
 	this->m = m;
 	radius = 1;
-	alpha = .01;
+	alpha = .1;
 	if(N == 0){
 		beta = alpha;
 	}
@@ -268,6 +268,9 @@ void PPGrowingNetwork1D::gradientDescent(double gamma, double tolerance, long in
 
 	while(abs(previousPotential - calculatePotential()) > tolerance && maxItr > 0){
 
+		
+		previousPotential = calculatePotential();
+
 		#pragma omp parallel shared(netForce)
 		{
 
@@ -293,9 +296,7 @@ void PPGrowingNetwork1D::gradientDescent(double gamma, double tolerance, long in
 			}
 
 		}
-
-		previousPotential = calculatePotential();
-
+		
 		maxItr--;
 
 	}
