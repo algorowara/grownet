@@ -10,7 +10,7 @@ int main(){
   if(a == 1){	
 	//make the network
 	long int n = 10, m = 3, nodeage;
-	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m,.05,.00001,1000);
+	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m,.1,.0001,36);
 	
 	//save the position of the points as validation
 	//with this we also want to look at the node ages
@@ -121,7 +121,7 @@ int main(){
 	long int n = 1000, m = 3;
 	double cc = 0; //clustering coefficient
 	double cpl = 0; //characteristic path length
-	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(4,m,.05,.0001,10000);
+	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(4,m,.05,.0001,36);
 	
 	ofstream pclust;
 	pclust.open("pclust.txt", ios::out | ios::trunc);
@@ -156,7 +156,7 @@ int main(){
 
 		for(long int j = 0; j < 4; j++){ //four data points at each size	
 
-			PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(i,m,.05,.001,1000);
+			PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(i,m,.05,.001,36);
 			//cc = net->averageClusteringCoefficient();
 			//pclust2<<i<<" "<<cc<<endl;		
 
