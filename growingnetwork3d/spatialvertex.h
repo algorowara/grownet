@@ -12,6 +12,7 @@ public:
 
 	SpatialVertex(long int dimension, double* position, long int startTime);
 	SpatialVertex* getNeighbor(long int i);
+	double radialDistance();
 	~SpatialVertex();
 	
 };

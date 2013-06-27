@@ -1,4 +1,5 @@
 #include "spatialvertex.h"
+#include <cmath>
 
 SpatialVertex::SpatialVertex(long int dimension, double* position, long int startTime){
 	
@@ -11,6 +12,20 @@ SpatialVertex::SpatialVertex(long int dimension, double* position, long int star
 SpatialVertex* SpatialVertex::getNeighbor(long int i){
 	
 	return (SpatialVertex*)(neighbors.at(i));
+	
+}
+
+double SpatialVertex::radialDistance(){
+	
+	double rsq = 0;
+	
+	for(long int i = 0; i < dimension; i++){
+		
+		rsq += pow(position[i], 2.0);
+		
+	}
+	
+	return sqrt(rsq);
 	
 }
 

@@ -149,19 +149,6 @@ double NBall::linearDistance(Vertex* a, Vertex* b){
 }
 
 /**
- * method to determine the distance from the center to a given node
- * relies on the linearDistance method
- */
-double NBall::radialDistance(SpatialVertex* node){
-	
-	static double* centerPosition = new double[DIM];	
-	static SpatialVertex* centralNode = new SpatialVertex(DIM, centerPosition, -1);
-	
-	return linearDistance(node, centralNode);
-	
-}
-
-/**
  * method to find the m nearest neighbors to a given SpatialVertex*,
  * where m is not given as a parameter but instead is taken from the field in NBall
  * allocates memory for an array of m pointers which should be subsequently deallocated
@@ -246,7 +233,7 @@ double* NBall::sumForces(SpatialVertex* node){
 		
 	}
 	
-	dist = radialDistance(node);	// calculate the attractive cloud force
+	dist = node->radialDistance();	// calculate the attractive cloud force
 	mag = -beta * dist;	// since the force is attractive, it will be negative with respect to the radially outwards vector
 	
 	for(long int i = 0; i < DIM; i++){
@@ -292,7 +279,7 @@ double NBall::calculatePotential(){
 				
 			}
 			
-			localSum += (beta / 2.0) * pow(radialDistance(getNode(i)), 2.0);	// calculate the potential due to the attractive cloud
+			localSum += (beta / 2.0) * pow(getNode(i)->radialDistance(), 2.0);	// calculate the potential due to the attractive cloud
 			
 		}
 		
@@ -302,6 +289,16 @@ double NBall::calculatePotential(){
 	}
 	
 	return pot;
+	
+}
+
+/**
+ * method to calculate the minimum potential, given N and DIM
+ * currently supports only DIM == 3; returns 0 in all other cases
+ */
+double NBall::calculateMinimumPotential(){
+	
+	
 	
 }
 
@@ -321,7 +318,6 @@ void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
 	double* netForce[N];	// a record of the net force on each node
 	double previousPotential = DBL_MAX;	// record of the previous potential; set to an impossibly large value to ensure that at least one iteration occurs
 	double toleratedPotential;	// if the potential is above this value, continue iterating
-	double temp_minimum_potential = DBL_MAX;
 	
 	memset(netForce, 0, N * sizeof(double*));
 	
@@ -372,19 +368,10 @@ void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
 			
 		}
 		
-		previousPotential = calculatePotential();	// update the record of the potential
-		
-		if(previousPotential < temp_minimum_potential){
-			
-			temp_minimum_potential = previousPotential;
-			
-		}
-		
+		previousPotential = calculatePotential();	// update the record of the potential		
 		maxItr--;	// move one iteration closer to stopping regardless of potential
 		
 	}
-	
-	//cout<<N<<" "<<temp_minimum_potential<<endl;
 	
 	return;	// return statement placed here for clarity only
 	

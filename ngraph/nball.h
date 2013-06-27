@@ -31,10 +31,10 @@ class NBall : public GrowingNetwork {
 		void grow(long int n);
 		double* randomLocation();
 		double linearDistance(Vertex* a, Vertex* b);
-		double radialDistance(SpatialVertex* node);
 		SpatialVertex** findMNearestNeighbors(SpatialVertex* start);
 		double* sumForces(SpatialVertex* node);
 		double calculatePotential();
+		double calculateMinimumPotential();
 		void equalize();
 		void gradientDescent(double gamma, double tolerance, long int maxItr);
 		~NBall();
