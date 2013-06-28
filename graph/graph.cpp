@@ -22,22 +22,56 @@ double Graph::averagePathLength(){
 	long double sum = 0;
 	long int num = 0;
 	
-	for(int i = 0; i < N; i++){
-	
-		memoize(getNode(i));
+	#pragma omp parallel shared(sum, num)
+	{
 		
-		for(int j = 0; j < N; j++){
+		#pragma omp for schedule(guided)
+		for(long int i = 0; i < N; i++){	// for each node
+		
+			Graph* dup = new Graph();	// create a duplicate graph
 			
-			sum += getNode(j)->distanceFromInitial;
-			num++;
+			for(long int j = 0; j < N; j++){	// with N duplicate nodes
+				
+				dup->addNode(new Vertex());
+				
+			}
+			
+			for(long int j = 0; j < N; j++){	// for each duplicate node
+				
+				for(long int k = 0; k < K(j); k++){	// for each neighbor
+					
+					long int index = this->indexOf(this->getNode(j)->getNeighbor(k));	// find the index of that neighbor
+					dup->getNode(j)->addNeighbor(dup->getNode(index));	// link the appropriate duplicates
+					
+				}
+				
+			}
+		
+			memoize(dup->getNode(i));	// memoize the duplicate graph, starting from node i
+			
+			for(long int j = 0; j < N; j++){	// for each duplicate node
+			
+				if(j == i){	// if the duplicate node is the same as the starting node
+					
+					continue;	// skip it; the shortest path of zero is irrelevant
+					
+				}
+				
+				#pragma omp atomic
+				sum += dup->getNode(j)->distanceFromInitial;	// add the length of the shortest path
+								
+				#pragma omp atomic
+				num++;	// note that one additional node has been counted
+				
+			}
+			
+			delete dup;	// destroy the duplicate
 			
 		}
 		
-		clean(getNode(i));
-		
 	}
 	
-	return sum/num;
+	return sum/num;	// return the sum of the shortest path lengths divided by the number of such paths
 	
 }
 
@@ -128,9 +162,14 @@ double Graph::averageClusteringCoefficient(){
 	
 	double sum = 0;
 	
-	for(int i = 0; i < N; i++){
+	#pragma omp parallel shared(sum)
+	{
 	
-		sum += getNode(i)->clusteringCoefficient();
+		for(int i = 0; i < N; i++){
+		
+			sum += getNode(i)->clusteringCoefficient();
+			
+		}
 		
 	}
 	

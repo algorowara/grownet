@@ -40,7 +40,6 @@ double Vertex::clusteringCoefficient(){
 					if(getNeighbor(a)->getNeighbor(b) == getNeighbor(c)){	// if the neighbor's neighbor is also a neighbor
 					
 						q++;	// increment the number of known neighbor-to-neighbor edges
-						break;	// just in case a neighbor is included twice
 						
 					}
 				
