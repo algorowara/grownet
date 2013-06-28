@@ -377,39 +377,13 @@ void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
 			
 				double oldPos[DIM];
 				
-				cout<<i<<": ";
-				
 				for(long int j = 0; j < DIM; j++){	// for every dimension
 				
 					oldPos[j] = getNode(i)->position[j];	// store the old position
 					getNode(i)->position[j] += gamma * netForce[i][j];	// displace the node in that dimension
 																		// according to the force on it and the timestep size
 					
-					cout<<oldPos[j]<<" to "<<getNode(i)->position[j];
-					
-					if(j < DIM-1){
-						
-						cout<<", ";
-						
-					}
-					
 				}
-				
-				cout<<" due to force ";
-				
-				for(long int j = 0; j < DIM; j++){
-					
-					cout<<netForce[i][j];
-					
-					if(j < DIM-1){
-						
-						cout<<", ";
-						
-					}
-					
-				}
-				
-				cout<<endl;
 				
 				double disp = linearDistance(oldPos, getNode(i)->position);	// calculate the displacement
 																				// between the old and current positions
