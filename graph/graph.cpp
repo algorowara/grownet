@@ -165,9 +165,13 @@ double Graph::averageClusteringCoefficient(){
 	#pragma omp parallel shared(sum)
 	{
 	
+		#pragma omp for schedule(guided)
 		for(int i = 0; i < N; i++){
 		
-			sum += getNode(i)->clusteringCoefficient();
+			double coef = getNode(i)->clusteringCoefficient();
+			
+			#pragma omp atomic
+			sum += coef;
 			
 		}
 		

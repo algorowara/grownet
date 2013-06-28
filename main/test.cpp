@@ -10,7 +10,7 @@ using namespace std;
 
 int main(){
 	
-	long int nmin = 100, nmax = 500, nstep = 10;
+	long int nmin = 10, nmax = 6000, nfactor = 2;
 	long int d = 3, m = d+1;
 	
 	ofstream lfile, cfile, kfile;
@@ -24,12 +24,12 @@ int main(){
 	
 	NBall* nb = new NBall(nmin, m, d);
 	
-	for(long int n = nmin; n <= nmax; n += nstep){
+	for(long int n = nmin; n < nmax; n *= nfactor){
 		
 		lfile<<n<<" "<<nb->averagePathLength()<<endl;
 		cfile<<n<<" "<<nb->averageClusteringCoefficient()<<endl;
 		
-		nb->grow(nstep);
+		nb->grow(n * (nfactor -1));
 		
 	}
 	
