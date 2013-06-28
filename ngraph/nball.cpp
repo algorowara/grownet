@@ -73,7 +73,7 @@ void NBall::grow(long int n){
 		
 		SpatialVertex* newNode = new SpatialVertex(DIM, randomLocation(), getTime());	// generate a new node at a random location
 		SpatialVertex** nearNeighbors = findMNearestNeighbors(newNode);	// find its m nearest neighbors
-		
+				
 		for(long int i = 0; i < m; i++){	// for each of those nearest neighbors
 			
 			newNode->addNeighbor(nearNeighbors[i]);	// link it to the new node
@@ -136,11 +136,21 @@ double* NBall::randomLocation(){
  */
 double NBall::linearDistance(Vertex* a, Vertex* b){
 	
+	return linearDistance(((SpatialVertex*)a)->position, ((SpatialVertex*)b)->position);
+	
+}
+
+/**
+ * method to determine the scalar distance between two position vectors
+ * assumed to be of the same dimension as the NBall; unsafe/undefined otherwise
+ */
+double NBall::linearDistance(double* a, double* b){
+	
 	double d_squared = 0;
 	
 	for(long int i = 0; i < DIM; i++){
 		
-		d_squared += pow(((SpatialVertex*)a)->position[i] - ((SpatialVertex*)b)->position[i], 2.0);
+		d_squared += pow(a[i] - b[i], 2.0);
 		
 	}
 	
@@ -222,6 +232,13 @@ double* NBall::sumForces(SpatialVertex* node){
 		}
 		
 		dist = linearDistance(node, other);	// remember the distance
+		
+		if(dist == 0){	// if these nodes are right on top of each other
+			
+			continue;	// skip to avoid the divide-by-zero error
+			
+		}
+		
 		mag = alpha / pow(dist, (double)DIM-1);	// and the magnitude of the electrostatic repulsive force
 		
 		for(long int j = 0; j < DIM; j++){	// for every dimension
@@ -236,9 +253,13 @@ double* NBall::sumForces(SpatialVertex* node){
 	dist = node->radialDistance();	// calculate the attractive cloud force
 	mag = -beta * dist;	// since the force is attractive, it will be negative with respect to the radially outwards vector
 	
-	for(long int i = 0; i < DIM; i++){
-		
-		force[i] += mag * ((node->position[i]) / dist);	// here, the unit displacement vector is the unit position vector
+	if(dist > 0){	// if this node is not at the origin, in which case finding the unit vector will result in a nan
+
+		for(long int i = 0; i < DIM; i++){
+			
+			force[i] += mag * ((node->position[i]) / dist);	// here, the unit displacement vector is the unit position vector
+			
+		}
 		
 	}
 	
@@ -294,11 +315,11 @@ double NBall::calculatePotential(){
 
 /**
  * method to calculate the minimum potential, given N and DIM
- * currently supports only DIM == 3; returns 0 in all other cases
+ * currently returns 0 as a placeholder
  */
 double NBall::calculateMinimumPotential(){
 	
-	
+	return 0;
 	
 }
 
@@ -316,27 +337,25 @@ void NBall::equalize(){
 void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
 	
 	double* netForce[N];	// a record of the net force on each node
-	double previousPotential = DBL_MAX;	// record of the previous potential; set to an impossibly large value to ensure that at least one iteration occurs
-	double toleratedPotential;	// if the potential is above this value, continue iterating
+	double prevMaxDisp = DBL_MAX;	// record of the maximum scalar displacement of a node on the previous iteration
+									// initially set to an impossibly large value to ensure at least one iteration occurs
+	double tolMaxDisp = radius * pow(N, 1.0/DIM) * tolerance;	// the maximum tolerated displacement
+																// if the maximum displacement is above this value, continue iterating
 	
 	memset(netForce, 0, N * sizeof(double*));
 	
-	if(N > GUIDED_N){	// if the graph size is large enough that an estimate of the minimum possible potential is reasonably accurate
+	if(N < GUIDED_N){	// if the graph size is too small for nodes to be tightly packed
 		
-		toleratedPotential = -DBL_MAX;	/* TODO: find a general solution for the minimum possible potential */
-		
-	}
-	
-	else{	// otherwise, if there are few enough nodes that the minimum potential is uncertain
-		
-		toleratedPotential = -DBL_MAX;	// go through the maximum number of iterations anyway
+		tolMaxDisp = 0;
 		
 	}
 	
-	while(previousPotential > toleratedPotential && maxItr > 0){	// while there remains some excess energy above tolerance
-																	// and the hard limit of iterations has not been passed
+	while(prevMaxDisp > tolMaxDisp && maxItr > 0){	// while there remains some excess energy above tolerance
+													// and the hard limit of iterations has not been passed
 
-		#pragma omp parallel shared(netForce)
+		double maxDisp = 0;
+
+		#pragma omp parallel shared(netForce, maxDisp)
 		{
 		
 			#pragma omp for schedule(guided)
@@ -353,12 +372,56 @@ void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
 		{
 			
 			#pragma omp for schedule(guided)
+			
 			for(long int i = 0; i < N; i++){	// for every node
+			
+				double oldPos[DIM];
+				
+				cout<<i<<": ";
 				
 				for(long int j = 0; j < DIM; j++){	// for every dimension
-					
+				
+					oldPos[j] = getNode(i)->position[j];	// store the old position
 					getNode(i)->position[j] += gamma * netForce[i][j];	// displace the node in that dimension
 																		// according to the force on it and the timestep size
+					
+					cout<<oldPos[j]<<" to "<<getNode(i)->position[j];
+					
+					if(j < DIM-1){
+						
+						cout<<", ";
+						
+					}
+					
+				}
+				
+				cout<<" due to force ";
+				
+				for(long int j = 0; j < DIM; j++){
+					
+					cout<<netForce[i][j];
+					
+					if(j < DIM-1){
+						
+						cout<<", ";
+						
+					}
+					
+				}
+				
+				cout<<endl;
+				
+				double disp = linearDistance(oldPos, getNode(i)->position);	// calculate the displacement
+																				// between the old and current positions
+				
+				#pragma omp critial (maximumDisplacement)	// encase this comparison in a critical region
+				{
+					
+					if(disp > maxDisp){	// if the displacement of this particular node is larger than the largest seen this iteration
+						
+						maxDisp = disp;	// declare this displacement the largest of the iteration
+						
+					}
 					
 				}
 				
@@ -368,10 +431,12 @@ void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
 			
 		}
 		
-		previousPotential = calculatePotential();	// update the record of the potential		
+		prevMaxDisp = maxDisp;	// record the largest displacement encountered here	
 		maxItr--;	// move one iteration closer to stopping regardless of potential
 		
 	}
+	
+	//cout<<N<<" "<<(baseItr - maxItr)<<endl;
 	
 	return;	// return statement placed here for clarity only
 	

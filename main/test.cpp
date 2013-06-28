@@ -10,48 +10,25 @@ using namespace std;
 
 int main(){
 	
-	long int nmin = 10, nmax = 6000, nfactor = 2;
-	long int d = 3, m = d+1;
+	long int n = 10, m = 3, d = 2;
+	NBall* b = new NBall(n, m, d);
 	
-	ofstream lfile, cfile, kfile;
-	stringstream lname, cname, kname;
-	
-	lname<<"l_vs_n_"<<d<<"ball_n"<<nmin<<"_to_n"<<nmax<<".txt";
-	cname<<"c_vs_n_"<<d<<"ball_n"<<nmin<<"_to_n"<<nmax<<".txt";
-	
-	lfile.open(lname.str().c_str(), ios::out | ios::trunc);
-	cfile.open(cname.str().c_str(), ios::out | ios::trunc);
-	
-	NBall* nb = new NBall(nmin, m, d);
-	
-	for(long int n = nmin; n < nmax; n *= nfactor){
+	for(long int i = 0; i < n; i++){
 		
-		lfile<<n<<" "<<nb->averagePathLength()<<endl;
-		cfile<<n<<" "<<nb->averageClusteringCoefficient()<<endl;
-		
-		nb->grow(n * (nfactor -1));
-		
-	}
-	
-	lfile.close();
-	cfile.close();
-	
-	kname<<"k_dist_"<<d<<"ball_n"<<nmax<<".txt";
-	kfile.open(kname.str().c_str(), ios::out | ios::trunc);
-	double* deg = nb->degreeDistribution();
-	
-	for(long int i = 0; i < nmax; i++){
-		
-		if(deg[i] > 0){
+		for(long int j = 0; j < d; j++){
 			
-			kfile<<i<<" "<<deg[i]<<endl;
+			cout<<b->getNode(i)->position[j];
+			
+			if(j < d-1){
+				
+				cout<<" ";
+			
+			}
 			
 		}
 		
+		cout<<endl;
+		
 	}
-	
-	kfile.close();
-	delete deg;
-	delete nb;
 	
 }
