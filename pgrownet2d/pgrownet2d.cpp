@@ -146,18 +146,27 @@ double* PositiveChargeGrowingNetwork2D::sumForces(SpatialVertex* node){
 		}
 
 		other = getNode(i);
-		magnitude = alpha / DISTANCE_2D(node, other);	//calculate the unitless magnitude of the repulsive electron-electron force
 		distance = DISTANCE_2D(node, other);
 
-		force[0] += magnitude * (X(node) - X(other))/distance; 
-		force[1] += magnitude * (Y(node) - Y(other))/distance;  //multiply the magnitude by the unit vector of the distancement
+		if(distance > 0){
+			
+			magnitude = alpha / distance;	//calculate the unitless magnitude of the repulsive electron-electron force
+			force[0] += magnitude * (X(node) - X(other))/distance; 
+			force[1] += magnitude * (Y(node) - Y(other))/distance;  //multiply the magnitude by the unit vector of the distancement
+			
+		}
 
 	}
+	
 	pdistance = sqrt((X(node) * X(node)) + (Y(node) * Y(node)));	//this is the distance from the origin to the node (i.e. radius of node)
 	pmagnitude = - beta * pdistance;	//calcualte the unitless magnitude of the attractive electron-positive charge force
 	
-	force[0] += pmagnitude * (X(node) / pdistance);
-	force[1] += pmagnitude * (Y(node) / pdistance);	//multiple the magnitude by a vector pointing radially outwards
+	if(pdistance > 0){
+		
+		force[0] += pmagnitude * (X(node) / pdistance);
+		force[1] += pmagnitude * (Y(node) / pdistance);	//multiple the magnitude by a vector pointing radially outwards
+		
+	}
 
 	return force;
 
@@ -238,7 +247,7 @@ double PositiveChargeGrowingNetwork2D::calculatePotential(){
 
 				b = getNode(j);
 	
-				if(a != b){	//if they are not the same
+				if(a != b && DISTANCE_2D(a, b) > 0){	//if they are not the same
 					localSum += -alpha*log(DISTANCE_2D(a, b)); //add their potential energy to the local sum
 				}
 

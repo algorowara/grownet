@@ -7,12 +7,12 @@
 #define NUM_NODES_ERR 13
 
 #define DEFAULT_RADIUS 1.0
-#define DEFAULT_GAMMA 0.1
+#define DEFAULT_GAMMA 1.0
 #define DEFAULT_ALPHA 1.0
-#define DEFAULT_TOLERANCE 1.0
+#define DEFAULT_TOLERANCE 0.01
 #define DEFAULT_ITERATIONS 100
 
-#define GUIDED_N 16
+#define GUIDED_N pow(2.0, DIM)
 
 class NBall : public GrowingNetwork {
 	
@@ -31,6 +31,7 @@ class NBall : public GrowingNetwork {
 		void grow(long int n);
 		double* randomLocation();
 		double linearDistance(Vertex* a, Vertex* b);
+		double linearDistance(double* a, double* b);
 		SpatialVertex** findMNearestNeighbors(SpatialVertex* start);
 		double* sumForces(SpatialVertex* node);
 		double calculatePotential();
