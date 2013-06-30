@@ -2,6 +2,10 @@
 #include "graph.h"
 #include <vector>
 #include <climits>
+#include <cstring>
+#include <list>
+#include <queue>
+#include <stack>
 
 using namespace std;
 
@@ -84,6 +88,106 @@ void Graph::insertNode(Vertex* node, long int position){
 	itr += position;
 	
 	nodes.insert(itr, node);
+
+}
+
+/**
+ * method to find the betweenness centrality of a given node. Returns the unitless value of betweenness
+ * which is defined as the sum over node pairs of the ratio of shortest paths passing through this node
+ * to all such shortest paths between pairs
+ */
+double* Graph::nodeBetweenness(){
+
+	double* betweennessCentrality = new double[N];	//a dynamically allocated array giving the betweennesscentrality of each node
+	memset(betweennessCentrality, 0, N*sizeof(double));	//start with 0 everywhere
+	
+
+	for(long int i = 0; i < N; i++){	//for all of the nodes (we're finding betweeneness centrality of node i), it's s in the pseudocode
+	
+		stack<Vertex*>* stackS = new stack<Vertex*>;	//in the pseudocode this is S
+
+		list<Vertex*>* vertices = new list<Vertex*>[N];	//in the pseudocode this is P[w], and it actually needs to be an array of lists indexed by w
+
+		long int* sigma = new long int[N];	//in the pseudocode this is sigma
+		long int* dist = new long int[N];	//in the pseudocode this is d
+	
+		for(long int j = 0; j < N; j++){	//for the other nodes (we're comparing to node j), it's t in the pseudocode
+
+			if (j == i){	//if this is the node we're on, set it to one
+
+				sigma[j] = 1;
+				dist[j] = 0;
+	
+			}
+			else {	//otherwise sigma = 0
+
+				sigma[j] = 0;
+				dist[j] = -1;
+
+			}	
+
+		}
+
+		queue<Vertex*>* myQ = new queue<Vertex*>;	//this is Q in the pseudocode
+		(*myQ).push(getNode(i));	//put node s in the Q						
+		
+		while(!(*myQ).empty()){
+
+			Vertex* vertex = (*myQ).front();	//retrieve the first member in the Q (this is v in pseudocode)
+			(*myQ).pop();	//and remove it from the Q
+			
+			(*stackS).push(vertex);	//add vertex to S
+
+			for(long int k = 0; k < vertex->neighbors.size(); k++){	//for the neighbors of vertex
+
+				Vertex* neighbor = vertex->getNeighbor(k);	//this is w in the pseudocode
+
+				if(dist[indexOf(neighbor)] < 0){	//if w was found for the first time
+
+					(*myQ).push(neighbor);	//add w to the Q
+
+					dist[indexOf(neighbor)] = dist[indexOf(vertex)] + 1;	//d[w] = d[v] + 1
+
+				}
+
+				if(dist[indexOf(neighbor)] == dist[indexOf(vertex)] + 1){	//shortest path to w via v?
+
+					sigma[indexOf(neighbor)] += sigma[indexOf(vertex)];	//add this node to the current tally
+	
+					vertices[indexOf(neighbor)].push_back(vertex);	//add v to the list P[w]					
+				}
+
+			}
+
+		}
+
+		long int* delta = new long int[N];	//initialize the delta array
+
+		while(!(*stackS).empty()){	//while S is not empty
+
+			Vertex* top = (*stackS).top();	//this is w again in pseudocode
+
+			(*stackS).pop();	//remove w from the stack
+
+			for(long int l = 0; l < vertices[indexOf(top)].size(); l++){	//for each element in the list P[w]	
+				Vertex* vert = vertices[indexOf(top)].back();	//this is v here
+				vertices[indexOf(top)].pop_back();	//remove this element (v) from the list				
+
+				delta[indexOf(vert)] += (sigma[indexOf(vert)]/sigma[indexOf(top)]) * (1+delta[indexOf(top)]);	//delta[v] = delta[v] + sigma[v]/sigma[w] * (1+delta[w])
+		
+			}
+
+			if(top != getNode(i)){	//if w != s
+
+				betweennessCentrality[indexOf(top)] += delta[indexOf(top)];	//Cb[w] = Cb[w] + delta[w]
+
+			}
+
+		}
+
+	}	
+
+	return betweennessCentrality;
 
 }
 
