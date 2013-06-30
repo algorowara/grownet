@@ -271,7 +271,7 @@ double PositiveChargeGrowingNetwork2D::calculatePotential(){
  */
 void PositiveChargeGrowingNetwork2D::equalize(){
 
-	gradientDescent(gamma/(N^2), tolerance*N, maxItr);
+	gradientDescent(gamma/(N*N), tolerance*N, maxItr);
 
 }
 
