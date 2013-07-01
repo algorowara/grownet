@@ -1,4 +1,5 @@
 #include "../pgrownet2d/pgrownet2d.h"
+#include "../growingnetwork3d/growingnetwork3d.h"
 #include <iostream>
 #include <fstream>
 
@@ -175,7 +176,7 @@ int main(){
 	long int m = 3, n = 1000, age, nodeage;
 	double* nodeBetw;	
 
-	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m,1,.00001,64);
+	GrowingNetwork3D* net = new GrowingNetwork3D(n,m);
 
 	nodeBetw = net->nodeBetweenness();	//test the node betweenness method
 
@@ -196,29 +197,35 @@ int main(){
 	pdegbetw.close();
 	pagebetw.close();
 	
-	ofstream pgrowdata;
-	pgrowdata.open("pgrowdata.txt", ios::out | ios::trunc);
+        //get the degree distribution
+        double* dist = net->degreeDistribution();
 
-	for(long int i = 0; i < n; i++){
+        ofstream ldegdist;
+        pdegdist.open("pdegdist.txt", ios::out | ios::trunc);
 
-		for(long int j = 0; j < net->DIM; j++){
+        for(long int i = 0; i < n; i++){
 
-			pgrowdata<<net->getNode(i)->position[j];
+                pdegdist<<i<<" "<<dist[i]<<endl;
 
-			if(j < (net->DIM)-1){
+        }
 
-				pgrowdata<<" ";
+        pdegdist.close();
 
-			}
+        //get the age vs degree distribution
+        long int degree;
+        ofstream pagedeg;
+        pagedeg.open("pagedeg.txt", ios::out | ios::trunc);
 
-		}
-		
-		nodeage = (net->getTime() - net->getNode(i)->getStartTime()); //get the age of the node (current time - node birthday)
-		pgrowdata<<" "<<nodeage<<endl;
+        for(long int i = 0; i < n; i++){
 
-	}
+                age = (net->getTime() - net->getNode(i)->getStartTime());
+                degree = net->getNode(i)->neighbors.size();
 
-	pgrowdata.close();
+                pagedeg<<age<<" "<<degree<<endl;
+
+        }
+
+        pagedeg.close();
 
   }	
 
