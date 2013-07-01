@@ -105,7 +105,6 @@ double* Graph::nodeBetweenness(){
 	for(long int i = 0; i < N; i++){	//for all of the nodes (we're finding betweeneness centrality of node i), it's s in the pseudocode
 	
 		stack<Vertex*>* stackS = new stack<Vertex*>;	//in the pseudocode this is S
-
 		list<Vertex*>* vertices = new list<Vertex*>[N];	//in the pseudocode this is P[w], and it actually needs to be an array of lists indexed by w
 
 		long int* sigma = new long int[N];	//in the pseudocode this is sigma
@@ -129,14 +128,14 @@ double* Graph::nodeBetweenness(){
 		}
 
 		queue<Vertex*>* myQ = new queue<Vertex*>;	//this is Q in the pseudocode
-		(*myQ).push(getNode(i));	//put node s in the Q						
+		myQ->push(getNode(i));	//put node s in the Q						
 		
-		while(!(*myQ).empty()){
+		while(!myQ->empty()){
 
-			Vertex* vertex = (*myQ).front();	//retrieve the first member in the Q (this is v in pseudocode)
-			(*myQ).pop();	//and remove it from the Q
+			Vertex* vertex = myQ->front();	//retrieve the first member in the Q (this is v in pseudocode)
+			myQ->pop();	//and remove it from the Q
 			
-			(*stackS).push(vertex);	//add vertex to S
+			stackS->push(vertex);	//add vertex to S
 
 			for(long int k = 0; k < vertex->neighbors.size(); k++){	//for the neighbors of vertex
 
@@ -144,13 +143,13 @@ double* Graph::nodeBetweenness(){
 
 				if(dist[indexOf(neighbor)] < 0){	//if w was found for the first time
 
-					(*myQ).push(neighbor);	//add w to the Q
+					myQ->push(neighbor);	//add w to the Q
 
 					dist[indexOf(neighbor)] = dist[indexOf(vertex)] + 1;	//d[w] = d[v] + 1
 
 				}
 
-				if(dist[indexOf(neighbor)] == dist[indexOf(vertex)] + 1){	//shortest path to w via v?
+				if(dist[indexOf(neighbor)] == (dist[indexOf(vertex)] + 1)){	//shortest path to w via v?
 
 					sigma[indexOf(neighbor)] += sigma[indexOf(vertex)];	//add this node to the current tally
 	
@@ -162,12 +161,13 @@ double* Graph::nodeBetweenness(){
 		}
 
 		long int* delta = new long int[N];	//initialize the delta array
+		memset(delta, 0, N*sizeof(long int));	//make sure it's empty
 
-		while(!(*stackS).empty()){	//while S is not empty
+		while(!stackS->empty()){	//while S is not empty
 
-			Vertex* top = (*stackS).top();	//this is w again in pseudocode
+			Vertex* top = stackS->top();	//this is w again in pseudocode
 
-			(*stackS).pop();	//remove w from the stack
+			stackS->pop();	//remove w from the stack
 
 			for(long int l = 0; l < vertices[indexOf(top)].size(); l++){	//for each element in the list P[w]	
 				Vertex* vert = vertices[indexOf(top)].back();	//this is v here
