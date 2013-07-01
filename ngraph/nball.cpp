@@ -33,6 +33,7 @@ NBall::NBall(long int n, long int m, long int d, double r, double a, double g, d
 	this->baseGamma = g;
 	this->baseTolerance = t;
 	this->baseItr = i;
+	this->iterationWeights = 0;
 	
 	for(long int i = 0; i < m+1; i++){	// add the first m+1 nodes, which will form a clique, each node having m links
 		
@@ -334,21 +335,15 @@ void NBall::equalize(){
 	
 }
 
-void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
+void NBall::gradientDescent(const double gamma, const double tolerance, long int maxItr){
 	
 	double* netForce[N];	// a record of the net force on each node
 	double prevMaxDisp = DBL_MAX;	// record of the maximum scalar displacement of a node on the previous iteration
 									// initially set to an impossibly large value to ensure at least one iteration occurs
 	double tolMaxDisp = radius * pow(N, 1.0/DIM) * tolerance;	// the maximum tolerated displacement
 																// if the maximum displacement is above this value, continue iterating
-	
+
 	memset(netForce, 0, N * sizeof(double*));
-	
-	if(N < GUIDED_N){	// if the graph size is too small for nodes to be tightly packed
-		
-		tolMaxDisp = 0;
-		
-	}
 	
 	while(prevMaxDisp > tolMaxDisp && maxItr > 0){	// while there remains some excess energy above tolerance
 													// and the hard limit of iterations has not been passed
@@ -410,7 +405,7 @@ void NBall::gradientDescent(double gamma, double tolerance, long int maxItr){
 		
 	}
 	
-	//cout<<N<<" "<<(baseItr - maxItr)<<endl;
+	this->iterationWeights += (baseItr - maxItr) * N * N;
 	
 	return;	// return statement placed here for clarity only
 	

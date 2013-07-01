@@ -68,25 +68,50 @@ double* GrowingNetwork::edgeAgeVsBetweenness(){
 		
 	}
 	
-	for(long int i = 0; i < N; i++){	// for every node, construct the shortest paths from that node
+	#pragma omp parallel shared(betweenness)
+	{
 	
-		memoize(getNode(i));
+		#pragma omp for schedule(guided)
+		for(long int i = 0; i < N; i++){	// for every node, construct the shortest paths from that node
 		
-		for(long int j = 0; j < N; j++){	// for every node, use its shortest path from the root
+			GrowingNetwork* dup = new GrowingNetwork();	// create a duplicate network which can be memoized
 			
-			for(int k = 1; k < getNode(j)->pathFromInitial.size(); k++){	// for every node in the shortest path except the first
-																			// note that starting at k = 1 ensures that node i is not included
-																			
-				Vertex* a = getNode(j)->pathFromInitial.at(k-1);	// use the previous node
-				Vertex* b = getNode(j)->pathFromInitial.at(k);	// and the current node
+			for(long int j = 0; j < N; j++){	// with N duplicate nodes
 				
-				betweenness[edgeAge(a, b)]++;	// to determine the age of the edge, and increment the count accordingly
-			
+				dup->addNode(new Vertex(this->getNode(j)->getStartTime());	// with the same start time as the original
+				
 			}
 			
-		}
+			for(long int j = 0; j < N; j++){	// for each duplicate node
+				
+				for(long int k = 0; k < K(j); k++){	// for each neighbor
+					
+					long int index = this->indexOf(this->getNode(j)->getNeighbor(k));	// find the index of that neighbor
+					dup->getNode(j)->addNeighbor(dup->getNode(index));	// link the appropriate duplicates
+					
+				}
+				
+			}
 		
-		clean(getNode(i));
+			memoize(dup->getNode(i));	// with the duplicate constructed, memoize its nodes
+			
+			for(long int j = 0; j < N; j++){	// for every node, use its shortest path from the root
+				
+				for(int k = 1; k < dup->getNode(j)->pathFromInitial.size(); k++){	// for every node in the shortest path except the first
+																				// note that starting at k = 1 ensures that node i is not included
+																				
+					Vertex* a = dup->getNode(j)->pathFromInitial.at(k-1);	// use the previous node
+					Vertex* b = dup->getNode(j)->pathFromInitial.at(k);	// and the current node
+					
+					betweenness[dup->edgeAge(a, b)]++;	// to determine the age of the edge, and increment the count accordingly
+				
+				}
+				
+			}
+			
+			delete dup;	// destroy the duplicate GrowingNetwork once the need for it is over
+			
+		}
 		
 	}
 	

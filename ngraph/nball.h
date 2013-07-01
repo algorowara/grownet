@@ -6,13 +6,11 @@
 
 #define NUM_NODES_ERR 13
 
-#define DEFAULT_RADIUS 1.0
-#define DEFAULT_GAMMA 1.0
-#define DEFAULT_ALPHA 1.0
-#define DEFAULT_TOLERANCE 0.01
-#define DEFAULT_ITERATIONS 100
-
-#define GUIDED_N pow(2.0, DIM)
+#define NBALL_DEFAULT_RADIUS 1.0
+#define NBALL_DEFAULT_GAMMA 1.0
+#define NBALL_DEFAULT_ALPHA 1.0
+#define NBALL_DEFAULT_TOLERANCE 0.01
+#define NBALL_DEFAULT_ITERATIONS 100
 
 class NBall : public GrowingNetwork {
 	
@@ -25,8 +23,9 @@ class NBall : public GrowingNetwork {
 		double baseGamma;	// size of timestep per iteration of GradientDescent
 		double baseTolerance;	// tolerance of the GradientDescent method
 		long int baseItr;	// maximum number of iterations allowed for the GradientDescent method
+		double iterationWeights;
 		
-		NBall(long int n, long int m, long int d, double r = DEFAULT_RADIUS, double a = DEFAULT_ALPHA, double g = DEFAULT_GAMMA, double t = DEFAULT_TOLERANCE, long int i = DEFAULT_ITERATIONS);
+		NBall(long int n, long int m, long int d, double r = NBALL_DEFAULT_RADIUS, double a = NBALL_DEFAULT_ALPHA, double g = NBALL_DEFAULT_GAMMA, double t = NBALL_DEFAULT_TOLERANCE, long int i = NBALL_DEFAULT_ITERATIONS);
 		SpatialVertex* getNode(long int i);
 		void grow(long int n);
 		double* randomLocation();
