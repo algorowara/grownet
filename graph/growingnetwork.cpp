@@ -74,11 +74,11 @@ double* GrowingNetwork::edgeAgeVsBetweenness(){
 		#pragma omp for schedule(guided)
 		for(long int i = 0; i < N; i++){	// for every node, construct the shortest paths from that node
 		
-			GrowingNetwork* dup = new GrowingNetwork();	// create a duplicate network which can be memoized
+			Graph* dup = new Graph();	// create a duplicate network which can be memoized
 			
 			for(long int j = 0; j < N; j++){	// with N duplicate nodes
 				
-				dup->addNode(new Vertex(this->getNode(j)->getStartTime());	// with the same start time as the original
+				dup->addNode(new Vertex(this->getNode(j)->getStartTime()));	// with the same start time as the original
 				
 			}
 			
@@ -100,11 +100,12 @@ double* GrowingNetwork::edgeAgeVsBetweenness(){
 				for(int k = 1; k < dup->getNode(j)->pathFromInitial.size(); k++){	// for every node in the shortest path except the first
 																				// note that starting at k = 1 ensures that node i is not included
 																				
-					Vertex* a = dup->getNode(j)->pathFromInitial.at(k-1);	// use the previous node
-					Vertex* b = dup->getNode(j)->pathFromInitial.at(k);	// and the current node
+					long int a = dup->indexOf(dup->getNode(j)->pathFromInitial.at(k-1));	// use the previous node's index
+					long int b = dup->indexOf(dup->getNode(j)->pathFromInitial.at(k));	// and the current node's index
 					
-					betweenness[dup->edgeAge(a, b)]++;	// to determine the age of the edge, and increment the count accordingly
-				
+					betweenness[this->edgeAge(this->getNode(a), this->getNode(b))]++;	// to determine the age of the edge, and increment the count accordingly
+																						// because the duplicate cannot be made a GrowingNetwork (which is a virtual class)
+																						// the ages must be referenced from this GrowingNetwork
 				}
 				
 			}

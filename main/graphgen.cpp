@@ -15,7 +15,7 @@ int main(){
 	NBall* b;
 	timeval start, end;
 	long int n = 512;
-	long int sample = 4;
+	long int sample = 1;
 	long int dmin = 2, dmax = 8;
 	double gammin = 0.2, gammax = 5.0, gamstep = 0.2;
 	
