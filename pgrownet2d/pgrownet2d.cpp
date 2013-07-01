@@ -23,7 +23,7 @@ PositiveChargeGrowingNetwork2D::PositiveChargeGrowingNetwork2D(long int n, long 
 	this->maxItr = maxItr;
 	this->m = m;
 	radius = 1;
-	alpha = .01; //electron electron force constant
+	alpha = 1; //electron electron force constant
 	if(N == 0){
 		beta = alpha; //electron cloud force constant
 	}

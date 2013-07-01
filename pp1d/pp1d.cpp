@@ -23,7 +23,7 @@ PPGrowingNetwork1D::PPGrowingNetwork1D(long int n, long int m, double gamma, dou
 	this->maxItr = maxItr;
 	this->m = m;
 	radius = 1;
-	alpha = .1;
+	alpha = 1;
 	if(N == 0){
 		beta = alpha;
 	}
@@ -257,7 +257,7 @@ double PPGrowingNetwork1D::calculatePotential(){
  */
 void PPGrowingNetwork1D::equalize(){
 
-	gradientDescent(gamma, tolerance, maxItr);
+	gradientDescent(gamma/(N*N), tolerance*N, maxItr);
 
 }
 
