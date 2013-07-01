@@ -1,4 +1,5 @@
-#include "../growingnetwork2d/growingnetwork2d.h"
+#include "../growingnetwork3d/growingnetwork3d.h"
+#include "../pgrownet2d/pgrownet2d.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -10,14 +11,9 @@ using namespace std;
 
 int main(){
 	
-	GrowingNetwork2D* net = new GrowingNetwork2D(100, 3);
+	GrowingNetwork3D* net = new GrowingNetwork3D(100, 3);
+	long int d = net->DIM;
 	
-	for(long int i = 0; i < 100; i++){
-		
-		cout<<(net->getNode(i) != NULL);
-		
-	}
-	
-	cout<<endl;
+	cout<<(net->DIM)<<endl;
 	
 }

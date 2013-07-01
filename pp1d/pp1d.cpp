@@ -8,7 +8,7 @@
 
 using namespace std;
 
-PPGrowingNetwork1D::PPGrowingNetwork1D(long int n, long int m, double gamma, double tolerance, long int maxItr){
+PPGrowingNetwork1D::PPGrowingNetwork1D(long int n, long int m, double gamma, double tolerance, long int maxItr) : DIM(1){
 
 	static bool randSeeded = false;
 

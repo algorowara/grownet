@@ -8,7 +8,7 @@
 
 using namespace std;
 
-PositiveChargeGrowingNetwork2D::PositiveChargeGrowingNetwork2D(long int n, long int m, double gamma, double tolerance, long int maxItr){
+PositiveChargeGrowingNetwork2D::PositiveChargeGrowingNetwork2D(long int n, long int m, double gamma, double tolerance, long int maxItr) : DIM(2){
 
 	static bool randSeeded = false;
 

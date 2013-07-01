@@ -10,7 +10,6 @@
 #include <omp.h>
 #include <iostream>
 
-#define DIM (long int)1
 #define X(node) node->position[0]
 #define DISTANCE_1D(a,b) abs(X(a) - X(b))
 
@@ -20,6 +19,7 @@ class PPGrowingNetwork1D : public GrowingNetwork{
 
 public:
 
+	long int DIM;
 	double radius;
 	double alpha; //electron electron force constant
 	double beta; //electron cloud force constant

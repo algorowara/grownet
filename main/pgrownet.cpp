@@ -19,11 +19,11 @@ int main(){
 
 	for(long int i = 0; i < n; i++){
 
-		for(long int j = 0; j < DIM; j++){
+		for(long int j = 0; j < net->DIM; j++){
 
 			pgrowdata<<net->getNode(i)->position[j];
 
-			if(j < DIM-1){
+			if(j < (net->DIM)-1){
 
 				pgrowdata<<" ";
 
@@ -201,11 +201,11 @@ int main(){
 
 	for(long int i = 0; i < n; i++){
 
-		for(long int j = 0; j < DIM; j++){
+		for(long int j = 0; j < net->DIM; j++){
 
 			pgrowdata<<net->getNode(i)->position[j];
 
-			if(j < DIM-1){
+			if(j < (net->DIM)-1){
 
 				pgrowdata<<" ";
 

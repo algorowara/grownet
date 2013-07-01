@@ -10,7 +10,6 @@
 #include <omp.h>
 #include <iostream>
 
-#define DIM 2
 #define X(node) node->position[0]
 #define Y(node) node->position[1]
 #define DISTANCE_SQUARED_2D(a, b)  ((X(b) - X(a)) * (X(b) - X(a)) + (Y(b) - Y(a)) * (Y(b) - Y(a)))
@@ -22,6 +21,7 @@ class PositiveChargeGrowingNetwork2D : public GrowingNetwork{
 
 public:
 
+	long int DIM;
 	double radius;
 	double alpha; //electron-electron force constant
 	double beta; //electron-cloud force constant
