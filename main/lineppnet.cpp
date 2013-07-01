@@ -7,7 +7,7 @@ using namespace std;
 int main(){
 
 	long int n = 1000, m = 2;
-	PPGrowingNetwork1D* net = new PPGrowingNetwork1D(n,m,.01, .0001, 1000);
+	PPGrowingNetwork1D* net = new PPGrowingNetwork1D(n,m,1, .00001, 64);
 
 	ofstream linedata;
 	linedata.open("linedata.txt", ios::out | ios::trunc);

@@ -101,7 +101,10 @@ double* Graph::nodeBetweenness(){
 	double* betweennessCentrality = new double[N];	//a dynamically allocated array giving the betweennesscentrality of each node
 	memset(betweennessCentrality, 0, N*sizeof(double));	//start with 0 everywhere
 	
+	#pragma omp parallel shared(betweennessCentrality)
+	{
 
+	#pragma omp for schedule(guided)
 	for(long int i = 0; i < N; i++){	//for all of the nodes (we're finding betweeneness centrality of node i), it's s in the pseudocode
 	
 		stack<Vertex*>* stackS = new stack<Vertex*>;	//in the pseudocode this is S
@@ -179,11 +182,22 @@ double* Graph::nodeBetweenness(){
 
 			if(top != getNode(i)){	//if w != s
 
+				#pragma omp atomic
 				betweennessCentrality[indexOf(top)] += delta[indexOf(top)];	//Cb[w] = Cb[w] + delta[w]
 
 			}
 
 		}
+
+		//clear memory to avoid memleak
+		delete stackS;
+		delete[] vertices; 
+		delete[] sigma;
+		delete[] dist;
+		delete myQ;
+		delete[] delta;
+		
+	}
 
 	}	
 	//now we just need to normalize these results

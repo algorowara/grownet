@@ -3,14 +3,14 @@
 #include <fstream>
 
 using namespace std;
-int a = 1; //1 if we want to grow whole network, 2 if we want step by step, 3 if we want ClustCoeff 
-int dcare = 0; //1 if we want distance information, else 0
+int a = 4; //1 if we want to grow whole network, 2 if we want step by step, 3 if we want ClustCoeff 
+int dcare = 1; //1 if we want distance information, else 0
 
 int main(){
   if(a == 1){	
 	//make the network
-	long int n = 10, m = 3, nodeage;
-	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m,.1,.0001,36);
+	long int n = 5000, m = 3, nodeage;
+	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m,1,.00001,64);
 	
 	//save the position of the points as validation
 	//with this we also want to look at the node ages
@@ -121,7 +121,7 @@ int main(){
 	long int n = 1000, m = 3;
 	double cc = 0; //clustering coefficient
 	double cpl = 0; //characteristic path length
-	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(4,m,.05,.0001,36);
+	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(4,m,1,.00001,64);
 	
 	ofstream pclust;
 	pclust.open("pclust.txt", ios::out | ios::trunc);
@@ -145,7 +145,7 @@ int main(){
 
   }
   else if (a == 3) {
-	long int m = 3;
+	long int m = 10;
 	double cc = 0, cpl = 0;; //clustering coefficient and characteristic path length
 	ofstream pclust2;
 	pclust2.open("pclust2.txt", ios::out | ios::trunc);		
@@ -156,9 +156,9 @@ int main(){
 
 		for(long int j = 0; j < 4; j++){ //four data points at each size	
 
-			PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(i,m,.05,.001,36);
-			//cc = net->averageClusteringCoefficient();
-			//pclust2<<i<<" "<<cc<<endl;		
+			PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(i,m,1,.00001,64);
+			cc = net->averageClusteringCoefficient();
+			pclust2<<i<<" "<<cc<<endl;		
 
 			cpl = net->averagePathLength();
 			ppath2<<i<<" "<<cpl<<endl;
@@ -171,5 +171,55 @@ int main(){
 	ppath2.close();
 
   }
+  else if (a == 4) {	//node betweenness info & tests
+	long int m = 3, n = 1000, age, nodeage;
+	double* nodeBetw;	
+
+	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m,1,.00001,64);
+
+	nodeBetw = net->nodeBetweenness();	//test the node betweenness method
+
+	ofstream pdegbetw;
+	pdegbetw.open("pdegbetw.txt", ios::out | ios::trunc);
+	ofstream pagebetw;
+	pagebetw.open("pagebetw.txt", ios::out | ios::trunc);
+
+	for(long int i = 0; i < n; i++){
+	
+		age = (net->getTime() - net->getNode(i)->getStartTime());
+
+		pdegbetw<<net->K(i)<<" "<<nodeBetw[i]<<endl;	//node degree vs. betweenness centrality
+		pagebetw<<age<<" "<<nodeBetw[i]<<endl;	//node age vs. betweenness centrality
+
+	}
+
+	pdegbetw.close();
+	pagebetw.close();
+	
+	ofstream pgrowdata;
+	pgrowdata.open("pgrowdata.txt", ios::out | ios::trunc);
+
+	for(long int i = 0; i < n; i++){
+
+		for(long int j = 0; j < DIM; j++){
+
+			pgrowdata<<net->getNode(i)->position[j];
+
+			if(j < DIM-1){
+
+				pgrowdata<<" ";
+
+			}
+
+		}
+		
+		nodeage = (net->getTime() - net->getNode(i)->getStartTime()); //get the age of the node (current time - node birthday)
+		pgrowdata<<" "<<nodeage<<endl;
+
+	}
+
+	pgrowdata.close();
+
+  }	
 
 }
