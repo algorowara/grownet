@@ -3,14 +3,14 @@
 #include <fstream>
 
 using namespace std;
-int a = 1; //1 if we want to grow whole network, 2 if we want step by step, 3 if we want ClustCoeff 
-int dcare = 0; //1 if we want distance information, else 0
+int a = 4; //1 if we want to grow whole network, 2 if we want step by step, 3 if we want ClustCoeff 
+int dcare = 1; //1 if we want distance information, else 0
 
 int main(){
   if(a == 1){	
 	//make the network
-	long int n = 10, m = 3, nodeage;
-	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m,.1,.0001,36);
+	long int n = 5000, m = 3, nodeage;
+	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m,.05,.001,36);
 	
 	//save the position of the points as validation
 	//with this we also want to look at the node ages
@@ -145,7 +145,7 @@ int main(){
 
   }
   else if (a == 3) {
-	long int m = 3;
+	long int m = 10;
 	double cc = 0, cpl = 0;; //clustering coefficient and characteristic path length
 	ofstream pclust2;
 	pclust2.open("pclust2.txt", ios::out | ios::trunc);		
@@ -157,8 +157,8 @@ int main(){
 		for(long int j = 0; j < 4; j++){ //four data points at each size	
 
 			PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(i,m,.05,.001,36);
-			//cc = net->averageClusteringCoefficient();
-			//pclust2<<i<<" "<<cc<<endl;		
+			cc = net->averageClusteringCoefficient();
+			pclust2<<i<<" "<<cc<<endl;		
 
 			cpl = net->averagePathLength();
 			ppath2<<i<<" "<<cpl<<endl;
@@ -171,5 +171,25 @@ int main(){
 	ppath2.close();
 
   }
+  else if (a == 4) {	//node betweenness info & tests
+	long int m = 3, n = 20;
+	double* nodeBetw;	
+
+	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m,.05,.001,36);
+
+	nodeBetw = net->nodeBetweenness();	//test the node betweenness method
+
+	ofstream pnodebetw;
+	pnodebetw.open("pnodebetw.txt", ios::out | ios::trunc);
+
+	for(long int i = 0; i < n; i++){
+	
+		pnodebetw<<net->K(i)<<" "<<nodeBetw[i]<<endl;
+
+	}
+
+	pnodebetw.close();
+
+  }	
 
 }
