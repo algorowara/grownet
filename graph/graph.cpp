@@ -186,6 +186,12 @@ double* Graph::nodeBetweenness(){
 		}
 
 	}	
+	//now we just need to normalize these results
+	for(long int q = 0; q < N; q++){
+
+		betweennessCentrality[q] = betweennessCentrality[q] / ((N-1)*(N-2)/2);
+
+	}
 
 	return betweennessCentrality;
 
