@@ -295,7 +295,7 @@ double Graph::averageClusteringCoefficient(){
  * method to find the index of a given node in the vector<Vertex*> nodes
  * returns -1 if the given node is not in the data structure
  */
-long int Graph::indexOf(Vertex* node){
+long int Graph::indexOf(Vertex* node) const{
 	
 	for(int i = 0; i < N; i++){
 	
@@ -311,7 +311,7 @@ long int Graph::indexOf(Vertex* node){
 	
 }
 
-Vertex* Graph::getNode(long int i){
+Vertex* Graph::getNode(long int i) const{
 	
 	return nodes.at(i);
 	

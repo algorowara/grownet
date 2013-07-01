@@ -56,10 +56,46 @@ NBall::NBall(long int n, long int m, long int d, double r, double a, double g, d
 	
 }
 
+NBall::NBall(const NBall* obj) : DIM(obj->DIM){
+	
+	this->m = obj->m;
+	this->radius = obj->radius;
+	this->alpha = obj->alpha;
+	this->beta = obj->beta;
+	this->baseGamma = obj->baseGamma;
+	this->baseTolerance = obj->baseTolerance;
+	this->baseItr = obj->baseItr;
+	this->iterationWeights = obj->iterationWeights;
+	
+	for(long int i = 0; i < obj->N; i++){	// for all nodes in the original NBall
+	
+		double* copyPos = new double[DIM];	// create a duplicate position vector of the appropriate dimension
+		memcpy(copyPos, obj->getNode(i)->position, DIM * sizeof(double));	// and populate it
+		SpatialVertex* copyNode = new SpatialVertex(DIM, copyPos, obj->getNode(i)->getStartTime());	// create a new node with identical position and start time
+		this->addNode(copyNode);	// add it to the duplicate NBall
+		
+	}
+	
+	for(long int i = 0; i < this->N; i++){	// for all nodes in the duplicate NBall
+		
+		SpatialVertex* duplicate = this->getNode(i);	// for this duplicate node
+		SpatialVertex* original = obj->getNode(i);	// find the corresponding original node
+		
+		for(long int j = 0; j < original->neighbors.size(); j++){	// for all of the original node's neighbors
+			
+			long int index = obj->indexOf(original->getNeighbor(j));	// find their index in the original NBall
+			duplicate->addNeighbor(this->getNode(index));	// connect this duplicate node to the duplicate node of the appropriate index
+			
+		}
+		
+	}
+	
+}
+
 /**
  * accessor method to retrieve a node, automatically casting it to a SpatialVertex*
  */
-SpatialVertex* NBall::getNode(long int i){
+SpatialVertex* NBall::getNode(long int i) const{
 	
 	return (SpatialVertex*)nodes.at(i);
 	
@@ -340,8 +376,9 @@ void NBall::gradientDescent(const double gamma, const double tolerance, long int
 	double* netForce[N];	// a record of the net force on each node
 	double prevMaxDisp = DBL_MAX;	// record of the maximum scalar displacement of a node on the previous iteration
 									// initially set to an impossibly large value to ensure at least one iteration occurs
-	double tolMaxDisp = radius * pow(N, 1.0/DIM) * tolerance;	// the maximum tolerated displacement
-																// if the maximum displacement is above this value, continue iterating
+	double tolMaxDisp = (radius * pow(N, 1.0/DIM) * tolerance) * baseGamma;	// the maximum tolerated displacement
+																			// if the maximum displacement is above this value, continue iterating
+																			// scales with gamma to provide equal treatment across timestep sizes
 
 	memset(netForce, 0, N * sizeof(double*));
 	

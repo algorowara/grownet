@@ -103,6 +103,7 @@ double* GrowingNetwork::edgeAgeVsBetweenness(){
 					long int a = dup->indexOf(dup->getNode(j)->pathFromInitial.at(k-1));	// use the previous node's index
 					long int b = dup->indexOf(dup->getNode(j)->pathFromInitial.at(k));	// and the current node's index
 					
+					#pragma omp atomic
 					betweenness[this->edgeAge(this->getNode(a), this->getNode(b))]++;	// to determine the age of the edge, and increment the count accordingly
 																						// because the duplicate cannot be made a GrowingNetwork (which is a virtual class)
 																						// the ages must be referenced from this GrowingNetwork

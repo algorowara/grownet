@@ -12,19 +12,22 @@ using namespace std;
 
 int main(){
 	
-	NBall* b;
-	timeval start, end;
-	long int n = 512;
-	long int sample = 1;
-	long int dmin = 2, dmax = 8;
-	double gammin = 0.2, gammax = 5.0, gamstep = 0.2;
+	NBall* bestCurrent;
+	NBall* current;
+	NBall* base;
+	long int nmin = 200, nmax = 2000, nstep = 100;
+	long int sample = 16;
+	long int d = 3, m = 4;
+	double gammin = 0.05, gammax = 1.0, gamstep = 0.05;
 	
-	for(long int d = 2; d <= dmax; d++){
-		
-		cout<<"Starting calculations for d = "<<d<<"..."<<endl;
+	base = new NBall(nmin-nstep, m, d);
+	
+	for(long int n = nmin; n <= nmax; n += nstep){
 		
 		double best_gamma = 0;
-		double dimensional_minimum = DBL_MAX;
+		double worst_gamma = 0;
+		double minimum = DBL_MAX;
+		double maximum = DBL_MIN;
 		
 		for(double gamma = gammin; gamma <= gammax; gamma += gamstep){
 			
@@ -32,24 +35,35 @@ int main(){
 			
 			for(long int i = 0; i < sample; i++){
 				
-				b = new NBall(n, d+1, d);
-				
-				local_average += ((double)b->iterationWeights)/sample;
-				delete b;
+				current = new NBall(base);
+				current->baseGamma = gamma;
+				current->grow(nstep);
+								
+				local_average += ((double)(current->iterationWeights - base->iterationWeights))/sample;
+				delete current;
 				
 			}
 			
-			if(local_average < dimensional_minimum){
+			if(local_average < minimum){
 				
-				dimensional_minimum = local_average;
+				minimum = local_average;
 				best_gamma = gamma;
+				
+			}
+			
+			else if(local_average > maximum){
+				
+				maximum = local_average;
+				worst_gamma = gamma;
 				
 			}
 		
 		}
 		
-		cout<<"Best gamma for d = "<<d<<": "<<best_gamma<<", with an average of "<<dimensional_minimum<<" iteration-weights."<<endl;
-				
+		cout<<n<<" "<<best_gamma<<endl;
+		base->baseGamma = best_gamma;
+		base->grow(nstep);
+		
 	}
 	
 }

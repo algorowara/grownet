@@ -23,8 +23,8 @@ public:
 	double averageClusteringCoefficient();
 	double* nodeBetweenness();
 	void insertNode(Vertex* node, long int position);
-	long int indexOf(Vertex* node);
-	Vertex* getNode(long int i);	
+	long int indexOf(Vertex* node) const;
+	Vertex* getNode(long int i) const;	
 	static void memoize(Vertex* root);
 	static void memoize(Vertex* root, vector<Vertex*> path, long int distance);
 	static void clean(Vertex* root);

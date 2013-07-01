@@ -24,13 +24,6 @@ GrowingNetwork2D::GrowingNetwork2D(long int n, long int m){
 	
 	}
 	
-	else if(m%2 != 0){	// a two-dimensional growing network must have an even parameter m
-		
-	
-		cerr<<"The parameter m must be even.\n";
-		
-	}
-	
 	else{
 		
 		this->time = 0;	// set the time to zero
@@ -64,7 +57,7 @@ void GrowingNetwork2D::grow(long int n){
 	
 	while(n > 0){	// while there remain nodes to be added
 	
-		int pos = rand()%N;	// select a random interval between nodes
+		long int pos = rand()%N;	// select a random interval between nodes
 										// note that while this will never displace the zeroth node,
 										// it is still possible for new nodes to grow inside its interval
 	
@@ -74,9 +67,16 @@ void GrowingNetwork2D::grow(long int n){
 	
 		for(int i = 0; i < m/2; i++){	// for the m/2 nodes on either side of the interval
 			
-			newNode->addNeighbor(getNode(pos-i));	// connect the new node to its neighbor i nodes behind
+			newNode->addNeighbor(getNode((pos-i)%N));	// connect the new node to its neighbor i nodes behind
 			newNode->addNeighbor(getNode((pos+i+1)%N));	// and the other neighbor i+1 nodes ahead
 		
+		}
+		
+		if(m%2 > 0){	// if m is odd
+			
+			long int oddIndex = (rand()%2 == 0) ? (pos - m/2) : (pos + m/2 + 1);	// randomly select an additional node beyond those connected
+			newNode->addNeighbor(getNode((pos+oddIndex)%N));
+			
 		}
 	
 		insertNode(newNode, pos+1);	// place the new node in the middle of the interval, between pos and pos+1 (which is displaced)
