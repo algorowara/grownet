@@ -21,6 +21,7 @@ public:
 	double* degreeDistribution();
 	double averageDegree();
 	double averageClusteringCoefficient();
+	double* averageClusteringCoefficientWithError();
 	double* nodeBetweenness();
 	void insertNode(Vertex* node, long int position);
 	long int indexOf(Vertex* node) const;

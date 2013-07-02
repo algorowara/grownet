@@ -7,8 +7,8 @@ main/test: main/test.o ngraph/nball.o growingnetwork3d/growingnetwork3d.o growin
 	g++ $(FLAGS) main/test.o ngraph/nball.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o pgrownet2d/pgrownet2d.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/test 
 main/graphgen: main/graphgen.o ngraph/nball.o ngraph/nsphere.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o
 	g++ $(FLAGS) main/graphgen.o ngraph/nball.o ngraph/nsphere.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/graphgen 
-main/pgrownet: main/pgrownet.o pgrownet2d/pgrownet2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o growingnetwork3d/spatialvertex.o growingnetwork3d/growingnetwork3d.o
-	g++ $(FLAGS) main/pgrownet.o pgrownet2d/pgrownet2d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o growingnetwork3d/growingnetwork3d.o -o main/pgrownet 
+main/pgrownet: main/pgrownet.o ngraph/nball.o pgrownet2d/pgrownet2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o growingnetwork3d/spatialvertex.o growingnetwork3d/growingnetwork3d.o
+	g++ $(FLAGS) main/pgrownet.o ngraph/nball.o pgrownet2d/pgrownet2d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o growingnetwork3d/growingnetwork3d.o -o main/pgrownet 
 main/lineppnet: main/lineppnet.o pp1d/pp1d.o graph/growingnetwork.o graph/graph.o graph/vertex.o growingnetwork3d/spatialvertex.o growingnetwork2d/growingnetwork2d.o
 	g++ $(FLAGS) main/lineppnet.o pp1d/pp1d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o growingnetwork2d/growingnetwork2d.o -o main/lineppnet
 main/parametertune.o: main/parametertune.cpp growingnetwork3d/growingnetwork3d.cpp growingnetwork3d/growingnetwork3d.h

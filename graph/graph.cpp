@@ -3,6 +3,7 @@
 #include <vector>
 #include <climits>
 #include <cstring>
+#include <cmath>
 #include <list>
 #include <queue>
 #include <stack>
@@ -282,6 +283,9 @@ double Graph::averageDegree(){
 	
 }
 
+/**
+ * multithreaded method to calculate the average clustering coefficient of a graph
+ */
 double Graph::averageClusteringCoefficient(){
 	
 	double sum = 0;
@@ -302,6 +306,47 @@ double Graph::averageClusteringCoefficient(){
 	}
 	
 	return sum/N;
+	
+}
+
+/**
+ * mulithreaded method to determine the average clustering coefficient of a graph
+ * as well as the standard error of the measurement, the standard deviation over the square root of the sample size
+ * with the former being the 0th element of the array, and the latter being the 1st
+ */
+double* Graph::averageClusteringCoefficientWithError(){
+	
+	double sum = 0;
+	double sumOfSquares = 0;
+	double average, averageOfSquares;
+	double* ret = new double[2];	// array to hold return value
+	
+	#pragma omp parallel shared(sum, sumOfSquares)
+	{
+	
+		#pragma omp for schedule(guided)
+		for(int i = 0; i < N; i++){
+		
+			double coef = getNode(i)->clusteringCoefficient();
+			
+			#pragma omp critical
+			{
+				
+				sum += coef;
+				sumOfSquares += pow(coef, 2.0);
+				
+			}
+			
+		}
+		
+	}
+	
+	average = sum/N;
+	averageOfSquares = sumOfSquares/N;	
+	ret[0] = average;
+	ret[1] = sqrt(averageOfSquares - pow(average, 2.0)) / sqrt(N);	// where the variance is the expected squared value minus the squared expected value
+	
+	return ret;
 	
 }
 

@@ -1,5 +1,6 @@
 #include "../pgrownet2d/pgrownet2d.h"
 #include "../growingnetwork3d/growingnetwork3d.h"
+#include "../ngraph/nball.h"
 #include <iostream>
 #include <fstream>
 
@@ -173,10 +174,10 @@ int main(){
 
   }
   else if (a == 4) {	//node betweenness info & tests
-	long int m = 3, n = 1000, age, nodeage;
+	long int m = 9, n = 1000, age, nodeage;
 	double* nodeBetw;	
 
-	GrowingNetwork3D* net = new GrowingNetwork3D(n,m);
+	NBall* net = new NBall(n,m,3);
 
 	nodeBetw = net->nodeBetweenness();	//test the node betweenness method
 
@@ -200,7 +201,7 @@ int main(){
         //get the degree distribution
         double* dist = net->degreeDistribution();
 
-        ofstream ldegdist;
+        ofstream pdegdist;
         pdegdist.open("pdegdist.txt", ios::out | ios::trunc);
 
         for(long int i = 0; i < n; i++){
