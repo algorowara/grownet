@@ -5,7 +5,7 @@
 #include <fstream>
 
 using namespace std;
-int a = 4; //1 if we want to grow whole network, 2 if we want step by step, 3 if we want ClustCoeff 
+int a = 3; //1 if we want to grow whole network, 2 if we want step by step, 3 if we want ClustCoeff 
 int dcare = 1; //1 if we want distance information, else 0
 
 int main(){
@@ -147,18 +147,18 @@ int main(){
 
   }
   else if (a == 3) {
-	long int m = 10;
+	long int m = 3;
 	double cc = 0, cpl = 0;; //clustering coefficient and characteristic path length
 	ofstream pclust2;
 	pclust2.open("pclust2.txt", ios::out | ios::trunc);		
 	ofstream ppath2;
 	ppath2.open("ppath2.txt", ios::out | ios::trunc);
 
-	for(long int i = 50; i < 1001; i += 50){ //step from N = 50 to N = 1000
+	for(long int i = 10; i < 1001; i += 10){ //step from N = 50 to N = 1000
 
-		for(long int j = 0; j < 4; j++){ //four data points at each size	
+		for(long int j = 0; j < 5; j++){ //four data points at each size	
 
-			PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(i,m,1,.00001,64);
+			GrowingNetwork3D* net = new GrowingNetwork3D(i,m);
 			cc = net->averageClusteringCoefficient();
 			pclust2<<i<<" "<<cc<<endl;		
 
