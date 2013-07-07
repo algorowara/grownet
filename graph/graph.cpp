@@ -7,6 +7,8 @@
 #include <list>
 #include <queue>
 #include <stack>
+#include <algorithm>
+#include <iostream>
 
 using namespace std;
 
@@ -52,7 +54,7 @@ double Graph::averagePathLength(){
 				
 			}
 		
-			memoize(dup->getNode(i));	// memoize the duplicate graph, starting from node i
+			dup->memoize(dup->getNode(i));	// memoize the duplicate graph, starting from node i
 			
 			for(long int j = 0; j < N; j++){	// for each duplicate node
 			
@@ -378,38 +380,56 @@ Vertex* Graph::getNode(long int i) const{
 
 void Graph::memoize(Vertex* root){
 
-	vector<Vertex*>* path = new vector<Vertex*>;
-	root->pathFromInitial = *path;
-	memoize(root, *path, 0);
+	root->distanceFromInitial = 0;
 	
-}
+	vector<Vertex*> set = this->nodes;	// create a temporary container for all the nodes
+	
+	while(set.size() > 0){	// while there are elements in the set
+	
+		long int index = 0;;
+		long int minimumDistance = LONG_MAX;
+		
+		for(long int i = 0; i < set.size(); i++){
+			
+			if(set.at(i)->distanceFromInitial < minimumDistance){
+				
+				index = i;
+				minimumDistance = set.at(i)->distanceFromInitial;
+				
+			}
+			
+		}
 
-/*
- * memoize all vertices with distance notations
- */
-void Graph::memoize(Vertex* root, vector<Vertex*> path, long int distance){
-	
-	if(root->distanceFromInitial > distance){
+		Vertex* node = set.at(index);	// take the zeroth element
+		set.erase(set.begin() + index);
 		
-		root->distanceFromInitial = distance;
-		path.push_back(root);
-		root->pathFromInitial = path;
+		if(node->distanceFromInitial == LONG_MAX){	// if, somehow, the least distance is "infinite"
+			
+			break;	// stop running, as somehow an unconnected component has been encountered
+			
+		}
 		
-		for(long int i = 0; i < root->neighbors.size(); i++){
-		
-			memoize(root->getNeighbor(i), path, distance + 1);
-		
+		for(long int i = 0; i < node->neighbors.size(); i++){	// for each neighbor of this node
+			
+			long int alt = node->distanceFromInitial + 1;	// there is a path from the node which is one additional edge longer
+			
+			if(alt < node->getNeighbor(i)->distanceFromInitial){	// if this path is shorter than the one previously found
+				
+				node->getNeighbor(i)->distanceFromInitial = alt;	// use it instead
+				
+			}
+			
 		}
 		
 	}
-		
+	
 }
 
 /*
  * remove all distance notations from this connected graph
  * and all records of paths
  */
-void Graph::clean(Vertex* root){
+void clean(Vertex* root){
 	
 	if(root->distanceFromInitial != LONG_MAX){
 	
@@ -428,6 +448,12 @@ void Graph::clean(Vertex* root){
 		}
 		
 	}
+	
+}
+
+bool Graph::compareDistancesFromInitial(const Vertex* a, const Vertex* b){
+	
+	return a->distanceFromInitial < b->distanceFromInitial;
 	
 }
 

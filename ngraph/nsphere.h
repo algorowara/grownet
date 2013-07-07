@@ -3,26 +3,34 @@
 
 #include "../growingnetwork3d/growingnetwork3d.h"
 
-#define GROWTYPE_RANDOM 0
-#define GROWTYPE_BUD 1
+#define NSPHERE_DEFAULT_GAMMA 1.0
+#define NSPHERE_DEFAULT_TOLERANCE 0.01
+#define NSPHERE_DEFAULT_ITERATIONS 36
 
 using namespace std;
 
-class NSphere : public GrowingNetwork3D {
+class NSphere : public GrowingNetwork {
 
 	public:
 	
-		long int DIM;
-		long int growtype;
+		const long int DIM;
+		double radius;
+		double baseGam;
+		double baseTol;
+		double baseItr;
+		double iterationWeights;
 		
-		NSphere(long int DIM, long int n, long int m, long int growtype = GROWTYPE_RANDOM, double baseGam = 1.0, double baseTol = 0.1, long int baseItr = 100);
+		NSphere(long int n, long int m, long int d, double baseGam = NSPHERE_DEFAULT_GAMMA, double baseTol = NSPHERE_DEFAULT_TOLERANCE, long int baseItr = NSPHERE_DEFAULT_ITERATIONS);
+		SpatialVertex* getNode(long int i);
+		void grow(long int n);
 		double* randomLocation();
-		double distanceSquared(SpatialVertex* a, SpatialVertex* b);
-		double distance(SpatialVertex* a, SpatialVertex* b);
+		double linearDistance(Vertex* a, Vertex* b);
+		double linearDistance(double* a, double* b);
+		SpatialVertex** findMNearestNeighbors(SpatialVertex* start);
 		double* sumForces(SpatialVertex* node);
+		void equalize();
+		void gradientDescent(double gamma, double tolerance, long int maxItr);
 		void normalizeRadius(SpatialVertex* node);
-		SpatialVertex* bud(SpatialVertex* source, double dist);
-		double calculateMinimumPotential(long int n, long int d);
 	
 };
 

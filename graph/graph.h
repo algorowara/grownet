@@ -26,9 +26,9 @@ public:
 	void insertNode(Vertex* node, long int position);
 	long int indexOf(Vertex* node) const;
 	Vertex* getNode(long int i) const;	
-	static void memoize(Vertex* root);
-	static void memoize(Vertex* root, vector<Vertex*> path, long int distance);
+	void memoize(Vertex* root);
 	static void clean(Vertex* root);
+	static bool compareDistancesFromInitial(const Vertex* a, const Vertex* b);
 	~Graph();
 	
 };

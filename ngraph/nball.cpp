@@ -30,10 +30,12 @@ NBall::NBall(long int n, long int m, long int d, double r, double a, double g, d
 	this->radius = r;
 	this->alpha = a;
 	this->beta = a * N;
-	this->baseGamma = g;
-	this->baseTolerance = t;
+	this->baseGam = g;
+	this->baseTol = t;
 	this->baseItr = i;
 	this->iterationWeights = 0;
+	this->equalizationThreshold = NBALL_DEFAULT_THRESHOLD;
+	this->equalizationPeriod = NBALL_DEFAULT_PERIOD;
 	
 	for(long int i = 0; i < m+1; i++){	// add the first m+1 nodes, which will form a clique, each node having m links
 		
@@ -47,7 +49,7 @@ NBall::NBall(long int n, long int m, long int d, double r, double a, double g, d
 		
 		addNode(newNode);	// add the new node to the graph
 		beta = (alpha * N)/pow(radius, (double)DIM);	// update the attractive cloud force constant
-		equalize();	// ensure that the nodes are spaced appropriately
+		equalize();	
 		tick();	// move forward in time
 		
 	}
@@ -62,10 +64,12 @@ NBall::NBall(const NBall* obj) : DIM(obj->DIM){
 	this->radius = obj->radius;
 	this->alpha = obj->alpha;
 	this->beta = obj->beta;
-	this->baseGamma = obj->baseGamma;
-	this->baseTolerance = obj->baseTolerance;
+	this->baseGam = obj->baseGam;
+	this->baseTol = obj->baseTol;
 	this->baseItr = obj->baseItr;
 	this->iterationWeights = obj->iterationWeights;
+	this->equalizationThreshold = obj->equalizationThreshold;
+	this->equalizationPeriod = obj->equalizationPeriod;
 	
 	for(long int i = 0; i < obj->N; i++){	// for all nodes in the original NBall
 	
@@ -118,7 +122,12 @@ void NBall::grow(long int n){
 		}
 		
 		addNode(newNode);	// add the new node to the graph
-		equalize();
+		
+		if(N < this->equalizationThreshold || N%(this->equalizationPeriod) == 0){
+			
+			equalize();	// ensure that the nodes are spaced appropriately
+		
+		}
 		
 		delete[] nearNeighbors;
 	
@@ -305,69 +314,13 @@ double* NBall::sumForces(SpatialVertex* node){
 }
 
 /**
- * method to calculate the potential of the NBall
- * with the convention that potential from repulsive forces is negative
- * and potential from the attractive cloud is positive
- */
-double NBall::calculatePotential(){
-	
-	double pot = 0;
-	
-	#pragma omp parallel shared(pot)
-	{
-		
-		double localSum = 0;
-		
-		#pragma omp for schedule(guided)
-		for(long int i = 0; i < N; i++){	// for all nodes
-			
-			for(long int j = i+1; j < N; j++){	// for all two-body interactions and all N * (N-1) / 2 possible order-independent pairs
-				
-				if(DIM != 2){	// if the dimension is not equal to two, integrating the electrostatic force over distance is simple
-					
-					localSum += -1 * alpha / pow(linearDistance(getNode(i), getNode(j)), (double)DIM-2);
-					
-				}
-				
-				else if(DIM == 2){	// if the dimension is equal to two, the potential is logarithmic, because the force goes as 1/r
-					
-					localSum += -1 * alpha * log(linearDistance(getNode(i), getNode(j)));
-					
-				}
-				
-			}
-			
-			localSum += (beta / 2.0) * pow(getNode(i)->radialDistance(), 2.0);	// calculate the potential due to the attractive cloud
-			
-		}
-		
-		#pragma omp atomic
-		pot += localSum;
-		
-	}
-	
-	return pot;
-	
-}
-
-/**
- * method to calculate the minimum potential, given N and DIM
- * currently returns 0 as a placeholder
- */
-double NBall::calculateMinimumPotential(){
-	
-	return 0;
-	
-}
-
-/**
  * method which properly tunes the relevant parameters before passing them to gradientDescent
  * gamma scales with 1/(N^(1 + 1/D)) because the number of nodes, and therefore the force, will increase as N,
  * and the average separation between nodes will decrease with N^(1/D), as the D-dimensional volume per unit decreases with N
  */
 void NBall::equalize(){
 	
-	gradientDescent(baseGamma / (N * pow(N, 1.0/DIM)), baseTolerance, baseItr);
+	gradientDescent(baseGam /pow(N, 1 + 1.0/DIM), baseTol, baseItr);
 	
 }
 
@@ -376,7 +329,7 @@ void NBall::gradientDescent(const double gamma, const double tolerance, long int
 	double* netForce[N];	// a record of the net force on each node
 	double prevMaxDisp = DBL_MAX;	// record of the maximum scalar displacement of a node on the previous iteration
 									// initially set to an impossibly large value to ensure at least one iteration occurs
-	double tolMaxDisp = (radius * pow(N, 1.0/DIM) * tolerance) * baseGamma;	// the maximum tolerated displacement
+	double tolMaxDisp = (radius * pow(N, -1.0/DIM) * tolerance) * baseGam;	// the maximum tolerated displacement
 																			// if the maximum displacement is above this value, continue iterating
 																			// scales with gamma to provide equal treatment across timestep sizes
 

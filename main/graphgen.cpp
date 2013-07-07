@@ -1,3 +1,4 @@
+#include "../ngraph/nsphere.h"
 #include "../ngraph/nball.h"
 #include <iostream>
 #include <fstream>
@@ -12,57 +13,53 @@ using namespace std;
 
 int main(){
 	
-	NBall* bestCurrent;
-	NBall* current;
-	NBall* base;
-	long int nmin = 200, nmax = 2000, nstep = 100;
-	long int sample = 16;
-	long int d = 3, m = 4;
-	double gammin = 0.05, gammax = 1.0, gamstep = 0.05;
+	long int nstart = 500, nend = 1000, m = 3, d = 2;
+	NBall* nb = new NBall(nstart, m, d);
+	nb->equalizationPeriod = 10;
+	double init_pos[nstart][d], delta_pos[nstart][d];
 	
-	base = new NBall(nmin-nstep, m, d);
-	
-	for(long int n = nmin; n <= nmax; n += nstep){
+	for(long int i = 0; i < nstart; i++){
 		
-		double best_gamma = 0;
-		double worst_gamma = 0;
-		double minimum = DBL_MAX;
-		double maximum = DBL_MIN;
+		double* nodePos = nb->getNode(i)->position;
 		
-		for(double gamma = gammin; gamma <= gammax; gamma += gamstep){
+		for(long int j = 0; j < d; j++){
 			
-			double local_average = 0;
+			init_pos[i][j] = nodePos[j];
 			
-			for(long int i = 0; i < sample; i++){
-				
-				current = new NBall(base);
-				current->baseGamma = gamma;
-				current->grow(nstep);
-								
-				local_average += ((double)(current->iterationWeights - base->iterationWeights))/sample;
-				delete current;
-				
-			}
-			
-			if(local_average < minimum){
-				
-				minimum = local_average;
-				best_gamma = gamma;
-				
-			}
-			
-			else if(local_average > maximum){
-				
-				maximum = local_average;
-				worst_gamma = gamma;
-				
-			}
-		
 		}
 		
-		cout<<n<<" "<<best_gamma<<endl;
-		base->baseGamma = best_gamma;
-		base->grow(nstep);
+	}
+	
+	nb->grow(nend - nstart);
+	
+	for(long int i = 0; i < nstart; i++){
+		
+		double* nodePos = nb->getNode(i)->position;
+		
+		for(long int j = 0; j < d; j++){
+			
+			delta_pos[i][j] = nodePos[j] - init_pos[i][j];
+			
+		}
+		
+	}
+	
+	
+	for(long int i = 0; i < nstart; i++){
+		
+		for(long int j = 0; j < d; j++){
+			
+			cout<<init_pos[i][j]<<" ";
+			
+		}
+		
+		for(long int j = 0; j < d; j++){
+			
+			cout<<delta_pos[i][j]<<" ";
+			
+		}
+		
+		cout<<endl;
 		
 	}
 	
