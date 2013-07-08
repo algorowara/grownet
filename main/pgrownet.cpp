@@ -95,7 +95,7 @@ int main(){
 	
 		}
 		
-		clean(net->getNode(i));
+		net->clean();
 
 	}	
 	

@@ -27,7 +27,7 @@ public:
 	long int indexOf(Vertex* node) const;
 	Vertex* getNode(long int i) const;	
 	void memoize(Vertex* root);
-	static void clean(Vertex* root);
+	void clean();
 	static bool compareDistancesFromInitial(const Vertex* a, const Vertex* b);
 	~Graph();
 	
