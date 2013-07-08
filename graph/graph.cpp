@@ -434,21 +434,15 @@ void Graph::memoize(Vertex* root){
  * remove all distance notations from this connected graph
  * and all records of paths
  */
-void clean(Vertex* root){
+void Graph::clean(){
 	
-	if(root->distanceFromInitial != LONG_MAX){
-	
-		root->distanceFromInitial = LONG_MAX;
+	for(long int i = 0; i < N; i++){
 		
-		while(root->pathFromInitial.size() > 0){
+		getNode(i)->distanceFromInitial = LONG_MAX;
 		
-			root->pathFromInitial.pop_back();
+		while(getNode(i)->pathFromInitial.size() > 0){
 			
-		}
-		
-		for(long int i = 0; i < root->neighbors.size(); i++){
-		
-			clean(root->getNeighbor(i));
+			getNode(i)->pathFromInitial.pop_back();
 			
 		}
 		

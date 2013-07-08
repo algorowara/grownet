@@ -15,11 +15,17 @@ double* findNormalizedNearestNeighborDistances(NBall* net);
 
 int main(){
 	
-	long int nend = 1000, m = 3, d = 2;
-	long int s = 16, nstep = 100;
+	long int nend = 10000, m = 3, d = 2;
+	long int s = 16, nstep = 500;
 	double data[nend/nstep][s];
 	double mean[nend/nstep];
 	double variance[nend/nstep];
+	
+	for(long int i = 0; i < nend/nstep; i++){
+		
+		mean[i] = 0;
+		
+	}
 	
 	for(long int i = 0; i < s; i++){
 		
@@ -41,8 +47,11 @@ int main(){
 			}
 			
 			data[n/nstep][i] = net->averagePathLength();
+			//cout<<(n + nstep)<<" "<<i<<" "<<data[n/nstep][i]<<endl;
 		
 		}
+		
+		delete net;
 		
 	}
 	

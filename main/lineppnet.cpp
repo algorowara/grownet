@@ -114,7 +114,7 @@ int main(){
 
                 }
 
-                net->clean(net->getNode(i));
+                net->clean();
 
         }
 
