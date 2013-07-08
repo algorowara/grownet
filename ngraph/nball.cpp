@@ -7,7 +7,7 @@
 #include <cstring>
 #include <iostream>
 
-NBall::NBall(long int n, long int m, long int d, double r, double a, double g, double t, long int i) : DIM(d) {
+NBall::NBall(long int n, long int m, long int d, double r, double a, double g, double t, long int i, long int et, long int ep) : DIM(d) {
 	
 	static bool randSeeded = false;	// static variable to check if the pseudorandom number generator has been seeded yet
 	
@@ -33,9 +33,9 @@ NBall::NBall(long int n, long int m, long int d, double r, double a, double g, d
 	this->baseGam = g;
 	this->baseTol = t;
 	this->baseItr = i;
+	this->equalizationThreshold = et;
+	this->equalizationPeriod = ep;
 	this->iterationWeights = 0;
-	this->equalizationThreshold = NBALL_DEFAULT_THRESHOLD;
-	this->equalizationPeriod = NBALL_DEFAULT_PERIOD;
 	
 	for(long int i = 0; i < m+1; i++){	// add the first m+1 nodes, which will form a clique, each node having m links
 		

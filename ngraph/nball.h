@@ -25,11 +25,11 @@ class NBall : public GrowingNetwork {
 		double baseGam;	// size of timestep per iteration of GradientDescent
 		double baseTol;	// tolerance of the GradientDescent method
 		long int baseItr;	// maximum number of iterations allowed for the GradientDescent method
-		double iterationWeights;	// count of weighted iterations over this object's lifetime
 		long int equalizationThreshold;	// the number of nodes below which GradientDescent is called once per node added
 		long int equalizationPeriod;	// the number of nodes added per call to GradientDescent
+		double iterationWeights;	// count of weighted iterations over this object's lifetime
 		
-		NBall(long int n, long int m, long int d, double r = NBALL_DEFAULT_RADIUS, double a = NBALL_DEFAULT_ALPHA, double g = NBALL_DEFAULT_GAMMA, double t = NBALL_DEFAULT_TOLERANCE, long int i = NBALL_DEFAULT_ITERATIONS);
+		NBall(long int n, long int m, long int d, double r = NBALL_DEFAULT_RADIUS, double a = NBALL_DEFAULT_ALPHA, double g = NBALL_DEFAULT_GAMMA, double t = NBALL_DEFAULT_TOLERANCE, long int i = NBALL_DEFAULT_ITERATIONS, long int et = NBALL_DEFAULT_THRESHOLD, long int ep = NBALL_DEFAULT_PERIOD);
 		NBall(const NBall* obj);
 		SpatialVertex* getNode(long int i) const;
 		void grow(long int n);
