@@ -15,8 +15,8 @@ double* findNormalizedNearestNeighborDistances(NBall* net);
 
 int main(){
 	
-	long int nend = 10000, m = 3, d = 2;
-	long int s = 16, nstep = 500;
+	long int nend = 1000, m = 3, d = 2;
+	long int s = 16, nstep = 100;
 	double data[nend/nstep][s];
 	double mean[nend/nstep];
 	double variance[nend/nstep];

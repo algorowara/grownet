@@ -64,11 +64,13 @@ double Graph::averagePathLength(){
 					
 				}
 				
-				#pragma omp atomic
-				sum += dup->getNode(j)->distanceFromInitial;	// add the length of the shortest path
-								
-				#pragma omp atomic
-				num++;	// note that one additional node has been counted
+				#pragma omp critical (summing)
+				{
+					
+					sum += dup->getNode(j)->distanceFromInitial;	// add the length of the shortest path
+					num++;	// note that one additional node has been counted
+					
+				}
 				
 			}
 			
@@ -381,6 +383,7 @@ Vertex* Graph::getNode(long int i) const{
 void Graph::memoize(Vertex* root){
 
 	root->distanceFromInitial = 0;
+	root->pathFromInitial.push_back(root);
 	
 	vector<Vertex*> set = this->nodes;	// create a temporary container for all the nodes
 	
@@ -389,11 +392,11 @@ void Graph::memoize(Vertex* root){
 		long int index = 0;;
 		long int minimumDistance = LONG_MAX;
 		
-		for(long int i = 0; i < set.size(); i++){
+		for(long int i = 0; i < set.size(); i++){	// for all nodes
 			
-			if(set.at(i)->distanceFromInitial < minimumDistance){
+			if(set.at(i)->distanceFromInitial < minimumDistance){	// find the one with the shortest distance
 				
-				index = i;
+				index = i;	// and remember it
 				minimumDistance = set.at(i)->distanceFromInitial;
 				
 			}
@@ -401,7 +404,7 @@ void Graph::memoize(Vertex* root){
 		}
 
 		Vertex* node = set.at(index);	// take the zeroth element
-		set.erase(set.begin() + index);
+		set.erase(set.begin() + index);	// and remove it from the set
 		
 		if(node->distanceFromInitial == LONG_MAX){	// if, somehow, the least distance is "infinite"
 			
@@ -415,7 +418,9 @@ void Graph::memoize(Vertex* root){
 			
 			if(alt < node->getNeighbor(i)->distanceFromInitial){	// if this path is shorter than the one previously found
 				
-				node->getNeighbor(i)->distanceFromInitial = alt;	// use it instead
+				node->getNeighbor(i)->distanceFromInitial = alt;	// use it 
+				node->getNeighbor(i)->pathFromInitial = node->pathFromInitial;	// and remember the path
+				node->getNeighbor(i)->pathFromInitial.push_back(node->getNeighbor(i));	// from the previous node to this one
 				
 			}
 			
