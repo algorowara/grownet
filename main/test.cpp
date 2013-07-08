@@ -17,13 +17,14 @@ int main(){
 	
 	long int nend = 10000, m = 3, d = 2;
 	long int s = 16, nstep = 500;
-	double data[nend/nstep][s];
-	double mean[nend/nstep];
-	double variance[nend/nstep];
+	double lenData[nend/nstep][s], clustData[nend/nstep][s];
+	double lenMean[nend/nstep], clustMean[nend/nstep];
+	double lenVar[nend/nstep], clustVar[nend/nstep];
 	
 	for(long int i = 0; i < nend/nstep; i++){
 		
-		mean[i] = 0;
+		lenMean[i] = 0;
+		clustMean[i] = 0;
 		
 	}
 	
@@ -46,8 +47,8 @@ int main(){
 				
 			}
 			
-			data[n/nstep][i] = net->averagePathLength();
-			//cout<<(n + nstep)<<" "<<i<<" "<<data[n/nstep][i]<<endl;
+			lenData[n/nstep][i] = net->averagePathLength();
+			clustData[n/nstep][i] = net->averageClusteringCoefficient();
 		
 		}
 		
@@ -59,17 +60,20 @@ int main(){
 		
 		for(long int j = 0; j < s; j++){
 			
-			mean[n/nstep] += data[n/nstep][j]/s;
+			lenMean[n/nstep] += lenData[n/nstep][j]/s;
+			clustMean[n/nstep] += clustData[n/nstep][j]/s;
 			
 		}
 		
-		variance[n/nstep] = calculateVariance(data[n/nstep], s);
+		lenVar[n/nstep] = calculateVariance(lenData[n/nstep], s);
+		clustVar[n/nstep] = calculateVariance(clustData[n/nstep], s);
 		
 	}
 	
 	for(long int n = 0; n < nend; n += nstep){
 		
-		cout<<(n + nstep)<<" "<<mean[n/nstep]<<" "<<variance[n/nstep]<<endl;
+		cout<<(n + nstep)<<" "<<lenMean[n/nstep]<<" "<<sqrt(lenVar[n/nstep])<<endl;
+		cerr<<(n + nstep)<<" "<<clustMean[n/nstep]<<" "<<sqrt(clustVar[n/nstep])<<endl;
 		
 	}
 	

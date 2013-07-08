@@ -3,7 +3,7 @@
 
 using namespace std;
 
-NSphere::NSphere(long int n, long int m, long int d, double baseGam, double baseTol, long int baseItr) : DIM(d){
+NSphere::NSphere(long int n, long int m, long int d, double baseGam, double baseTol, long int baseItr, long int threshold, long int period) : DIM(d){
 	
 	static bool randSeeded = false;
 	
@@ -15,11 +15,13 @@ NSphere::NSphere(long int n, long int m, long int d, double baseGam, double base
 	}
 	
 	this->time = 0;
-	this->radius = DEFAULT_RADIUS;
+	this->radius = NSPHERE_DEFAULT_RADIUS;
 	this->m = m;
 	this->baseGam = baseGam;
 	this->baseTol = baseTol;
 	this->baseItr = baseItr;
+	this->equalizationThreshold = threshold;
+	this->equalizationPeriod = period;
 	this->iterationWeights = 0;
 	
 	for(long int i = 0; i < m+1; i++){	// for the first m+1 nodes, which form a clique
@@ -71,7 +73,12 @@ void NSphere::grow(long int n){
 		}
 		
 		addNode(newNode);	// add the new node to the NSphere
-		equalize();
+		
+		if(N < this->equalizationThreshold || N%(this->equalizationPeriod) == 0){
+			
+			equalize();	// equalize the sphere periodically
+			
+		}
 		
 		delete[] nearNeighbors;
 		
@@ -219,7 +226,7 @@ double* NSphere::sumForces(SpatialVertex* node){
 		}
 		
 		other = getNode(i);
-		dist = distance(node, other);
+		dist = linearDistance(node, other);
 		magnitude = 1.0 / pow(dist, (double)DIM);	// calculate the magnitude of the force as 1/r^DIM
 		
 		for(long int j = 0; j < DIM+1; j++){	// for each dimension, add the component of force from this interaction
@@ -283,7 +290,7 @@ void NSphere::gradientDescent(double gamma, double tolerance, long int maxItr){
 			
 				double oldPos[DIM];
 				
-				for(long int j = 0; j < DIM; j++){	// for every dimension
+				for(long int j = 0; j < DIM+1; j++){	// for every dimension
 				
 					oldPos[j] = getNode(i)->position[j];	// store the old position
 					getNode(i)->position[j] += gamma * netForce[i][j];	// displace the node in that dimension

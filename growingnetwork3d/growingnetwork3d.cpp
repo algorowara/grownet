@@ -141,7 +141,7 @@ double* GrowingNetwork3D::sumForces(SpatialVertex* node){
 	SpatialVertex* other;	// local placeholder for any other node in two-body interactions
 	double magnitude, dist;	// local placeholders for the magnitude of a force and the distance between two nodes
 	
-	for(int i = 0; i < DIM; i++){	// ensure all components are set to zero first
+	for(long int i = 0; i < DIM; i++){	// ensure all components are set to zero first
 		
 		force[i] = 0;
 		
