@@ -15,16 +15,35 @@ double* findNormalizedNearestNeighborDistances(NBall* net);
 
 int main(){
 	
-	long int n = 1000, m = 3;
-	GrowingNetwork3D* net = new GrowingNetwork3D(n, m);
+	long int n = 1000, m = 3, d = 2;
+	long int s = 16;
 	
-	for(long int i = 0; i < n; i++){
+	cout<<"-logT\t\tmean C\t\tstddev C\t\titrWeights"<<endl;
+	
+	for(long int t = 0; t < 10; t++){
 		
-		for(long int j = i; j < n; j++){
+		double cmean = 0, wmean = 0;
+		double cvar;
+		double c[s];
+		
+		for(long int i = 0; i < s; i++){
 			
-			cout<<"("<<i<<"->"<<j<<"): "<<net->distance(net->getNode(i), net->getNode(j))<<endl;
+			NBall* net = new NBall(m+1, m, d);
+			net->baseTol = pow(10, -t);
+			net->baseItr = 1000000;
+			net->grow(n - (m+1));
+			
+			c[i] = net->averageClusteringCoefficient();
+			cmean += c[i]/s;
+			wmean += net->iterationWeights/s;
+			
+			delete net;
 			
 		}
+		
+		cvar = calculateVariance(c, s);
+				
+		cout<<t<<"\t\t"<<cmean<<"\t\t"<<sqrt(cvar)<<"\t\t"<<wmean<<endl;
 		
 	}
 	
