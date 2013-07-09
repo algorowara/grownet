@@ -249,7 +249,7 @@ int main(){
 			}
 			
 			//realdist = net->linearDistance(net->getNode(i), net->getNode(j)); //the physical distance
-			realdist = distance(net->getNode(i), net->getNode(j));
+			realdist = net->distance(net->getNode(i), net->getNode(j));
 			if(net->getNode(i)->hasNeighbor(net->getNode(j))){	//if nodes i and j are neighbors?
 				edge = 1;				
 

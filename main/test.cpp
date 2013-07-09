@@ -1,5 +1,5 @@
 #include "../ngraph/nball.h"
-#include "../growingnetwork2d/growingnetwork2d.h"
+#include "../growingnetwork3d/growingnetwork3d.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -15,65 +15,16 @@ double* findNormalizedNearestNeighborDistances(NBall* net);
 
 int main(){
 	
-	long int nend = 10000, m = 3, d = 2;
-	long int s = 16, nstep = 500;
-	double lenData[nend/nstep][s], clustData[nend/nstep][s];
-	double lenMean[nend/nstep], clustMean[nend/nstep];
-	double lenVar[nend/nstep], clustVar[nend/nstep];
+	long int n = 1000, m = 3;
+	GrowingNetwork3D* net = new GrowingNetwork3D(n, m);
 	
-	for(long int i = 0; i < nend/nstep; i++){
+	for(long int i = 0; i < n; i++){
 		
-		lenMean[i] = 0;
-		clustMean[i] = 0;
-		
-	}
-	
-	for(long int i = 0; i < s; i++){
-		
-		NBall* net = NULL;
-		
-		for(long int n = 0; n < nend; n += nstep){
-		
-			if(net == NULL){
-				
-				net = new NBall(nstep, m, d);
-				net->equalizationPeriod = 10;
-				
-			}
+		for(long int j = i; j < n; j++){
 			
-			else{
-				
-				net->grow(nstep);
-				
-			}
-			
-			lenData[n/nstep][i] = net->averagePathLength();
-			clustData[n/nstep][i] = net->averageClusteringCoefficient();
-		
-		}
-		
-		delete net;
-		
-	}
-	
-	for(long int n = 0; n < nend; n += nstep){
-		
-		for(long int j = 0; j < s; j++){
-			
-			lenMean[n/nstep] += lenData[n/nstep][j]/s;
-			clustMean[n/nstep] += clustData[n/nstep][j]/s;
+			cout<<"("<<i<<"->"<<j<<"): "<<net->distance(net->getNode(i), net->getNode(j))<<endl;
 			
 		}
-		
-		lenVar[n/nstep] = calculateVariance(lenData[n/nstep], s);
-		clustVar[n/nstep] = calculateVariance(clustData[n/nstep], s);
-		
-	}
-	
-	for(long int n = 0; n < nend; n += nstep){
-		
-		cout<<(n + nstep)<<" "<<lenMean[n/nstep]<<" "<<sqrt(lenVar[n/nstep])<<endl;
-		cerr<<(n + nstep)<<" "<<clustMean[n/nstep]<<" "<<sqrt(clustVar[n/nstep])<<endl;
 		
 	}
 	
