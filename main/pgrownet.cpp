@@ -154,11 +154,11 @@ int main(){
 	ofstream ppath2;
 	ppath2.open("ppath2.txt", ios::out | ios::trunc);
 
-	for(long int i = 10; i < 1001; i += 10){ //step from N = 50 to N = 1000
+	for(long int i = 100; i < 10001; i += 100){ //step from N = 50 to N = 1000
 
 		for(long int j = 0; j < 5; j++){ //four data points at each size	
 
-			GrowingNetwork3D* net = new GrowingNetwork3D(i,m);
+			PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(i,m,1,.00001,64);
 			cc = net->averageClusteringCoefficient();
 			pclust2<<i<<" "<<cc<<endl;		
 
