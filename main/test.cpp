@@ -6,44 +6,146 @@
 #include <cstring>
 #include <sstream>
 #include <sys/time.h>
+#include <cfloat>
 
 using namespace std;
 
+double calculateVariance(double* data, long int len);
+double* findNormalizedNearestNeighborDistances(NBall* net);
+
 int main(){
 	
-	long int nmin = 1000, nmax = 10000, nstep = 500;
-	ofstream file;
+	long int nend = 10000, m = 3, d = 2;
+	long int s = 16, nstep = 500;
+	double lenData[nend/nstep][s], clustData[nend/nstep][s];
+	double lenMean[nend/nstep], clustMean[nend/nstep];
+	double lenVar[nend/nstep], clustVar[nend/nstep];
 	
-	for(long int d = 2; d < 12; d += 2){
+	for(long int i = 0; i < nend/nstep; i++){
 		
-		long int m = d+1;
-		NBall* b = new NBall(nmin, m, d);
+		lenMean[i] = 0;
+		clustMean[i] = 0;
 		
-		stringstream sstream;
-		sstream<<"c_vs_n_with_error_"<<d<<"ball_m"<<m<<".txt";
-			
-		file.open(sstream.str().c_str(), ios::out | ios::trunc);
+	}
+	
+	for(long int i = 0; i < s; i++){
 		
-		for(long int n = nmin; n < nmax; n += nstep){
-			
-			double* data = b->averageClusteringCoefficientWithError();
-			
-			file<<n<<" "<<data[0]<<" "<<data[1]<<endl;
-			b->grow(nstep);
-			
-			if(n + nstep >= nmax){
+		NBall* net = NULL;
+		
+		for(long int n = 0; n < nend; n += nstep){
+		
+			if(net == NULL){
 				
-				data = b->averageClusteringCoefficientWithError();
-				
-				file<<(n + nstep)<<" "<<data[0]<<" "<<data[1]<<endl;
+				net = new NBall(nstep, m, d);
+				net->equalizationPeriod = 10;
 				
 			}
 			
+			else{
+				
+				net->grow(nstep);
+				
+			}
+			
+			lenData[n/nstep][i] = net->averagePathLength();
+			clustData[n/nstep][i] = net->averageClusteringCoefficient();
+		
 		}
 		
-		file.close();
-		cout<<"Completed "<<d<<"-Ball data collection."<<endl;
+		delete net;
 		
 	}
+	
+	for(long int n = 0; n < nend; n += nstep){
+		
+		for(long int j = 0; j < s; j++){
+			
+			lenMean[n/nstep] += lenData[n/nstep][j]/s;
+			clustMean[n/nstep] += clustData[n/nstep][j]/s;
+			
+		}
+		
+		lenVar[n/nstep] = calculateVariance(lenData[n/nstep], s);
+		clustVar[n/nstep] = calculateVariance(clustData[n/nstep], s);
+		
+	}
+	
+	for(long int n = 0; n < nend; n += nstep){
+		
+		cout<<(n + nstep)<<" "<<lenMean[n/nstep]<<" "<<sqrt(lenVar[n/nstep])<<endl;
+		cerr<<(n + nstep)<<" "<<clustMean[n/nstep]<<" "<<sqrt(clustVar[n/nstep])<<endl;
+		
+	}
+	
+}
+
+double calculateVariance(double* data, long int len){
+	
+	double mean = 0;
+	double var = 0;
+	
+	for(long int i = 0; i < len; i++){
+		
+		mean += data[i];
+		
+	}
+	
+	mean /= len;
+	
+	for(long int i = 0; i < len; i++){
+		
+		var += pow(mean - data[i], 2.0);
+		
+	}
+	
+	var /= (len-1);
+	
+	return var;
+	
+	
+	
+}
+
+double* findNormalizedNearestNeighborDistances(NBall* net){
+	
+	double* distances = new double[net->N];
+	
+	#pragma omp parallel shared(distances)
+	{
+		
+		#pragma omp parallel for schedule(guided)
+		for(long int i = 0; i < net->N; i++){
+			
+			double min = DBL_MAX;
+			
+			for(long int j = 0; j < net->N; j++){
+				
+				if(net->getNode(i) == net->getNode(j)){
+					
+					continue;
+					
+				}
+				
+				if(net->linearDistance(net->getNode(i), net->getNode(j)) < min){
+					
+					min = net->linearDistance(net->getNode(i), net->getNode(j));
+					
+				}
+				
+			}
+			
+			distances[i] = min;
+					
+		}
+			
+	}
+	
+	for(long int i = 0; i < net->N; i++){
+		
+		distances[i] /= ((net->radius) * pow(net->N, -1.0/net->DIM));	
+		
+	}
+	
+	return distances;
 	
 }

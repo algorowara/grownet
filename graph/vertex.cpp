@@ -51,7 +51,7 @@ double Vertex::clusteringCoefficient(){
 	
 	q /= 2;	// divide q by two, as it will have counted each edge twice
 	
-	return (2 * (double)q / ( k * (k-1) ) );	// return the number of neighbor-to-neighbor edges over the number of possible such edges
+	return ((double)q / ( ( k * (k-1) ) / 2) );	// return the number of neighbor-to-neighbor edges over the number of possible such edges
 	
 }
 

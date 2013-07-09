@@ -1,18 +1,20 @@
 #include "../pgrownet2d/pgrownet2d.h"
 #include "../growingnetwork3d/growingnetwork3d.h"
 #include "../ngraph/nball.h"
+#include "../graph/growingnetwork.h"
+#include "../graph/graph.h"
 #include <iostream>
 #include <fstream>
 
 using namespace std;
-int a = 3; //1 if we want to grow whole network, 2 if we want step by step, 3 if we want ClustCoeff 
+int a = 5; //1 if we want to grow whole network, 2 if we want step by step, 3 if we want ClustCoeff 
 int dcare = 1; //1 if we want distance information, else 0
 
 int main(){
   if(a == 1){	
 	//make the network
-	long int n = 5000, m = 3, nodeage;
-	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(n,m,1,.00001,64);
+	long int n = 1000, m = 3, nodeage;
+	GrowingNetwork3D* net = new GrowingNetwork3D(n,m);
 	
 	//save the position of the points as validation
 	//with this we also want to look at the node ages
@@ -88,14 +90,14 @@ int main(){
 			}
 			
 			//realdist = net->linearDistance(net->getNode(i), net->getNode(j)); //the physical distance
-			realdist = DISTANCE_2D(net->getNode(i), net->getNode(j));
+			realdist = distance(net->getNode(i), net->getNode(j));
 			netdist = net->getNode(j)->distanceFromInitial; //the shortest path
 			
 			pdistance<<netdist<<" "<<realdist<<endl;			
 	
 		}
 		
-		net->clean(net->getNode(i));
+		net->clean();
 
 	}	
 	
@@ -229,5 +231,38 @@ int main(){
         pagedeg.close();
 
   }	
+  else if(a == 5){
+	long int n = 1000, m = 3;
+	bool edge;
+	double realdist;
+	GrowingNetwork3D* net = new GrowingNetwork3D(n,m);
+	ofstream pedge;
+	pedge.open("pedge.txt", ios::out | ios::trunc);
+	
+	for(long int i = 0; i < n; i++){ //for all the nodes in the network
+		
+		for(long int j = 0; j < n; j++){ //for all of the other nodes
+			edge = 0;
+			
+			if(i == j){
+				continue;
+			}
+			
+			//realdist = net->linearDistance(net->getNode(i), net->getNode(j)); //the physical distance
+			realdist = distance(net->getNode(i), net->getNode(j));
+			if(net->getNode(i)->hasNeighbor(net->getNode(j))){	//if nodes i and j are neighbors?
+				edge = 1;				
+
+			}
+
+			pedge<<realdist<<" "<<edge<<endl;
+	
+		}
+
+	}
+	
+	pedge.close();
+
+  }
 
 }

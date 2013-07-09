@@ -21,14 +21,13 @@ public:
 	double* degreeDistribution();
 	double averageDegree();
 	double averageClusteringCoefficient();
-	double* averageClusteringCoefficientWithError();
 	double* nodeBetweenness();
 	void insertNode(Vertex* node, long int position);
 	long int indexOf(Vertex* node) const;
 	Vertex* getNode(long int i) const;	
-	static void memoize(Vertex* root);
-	static void memoize(Vertex* root, vector<Vertex*> path, long int distance);
-	static void clean(Vertex* root);
+	void memoize(Vertex* root);
+	void clean();
+	static bool compareDistancesFromInitial(const Vertex* a, const Vertex* b);
 	~Graph();
 	
 };

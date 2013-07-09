@@ -7,6 +7,8 @@
 #include <list>
 #include <queue>
 #include <stack>
+#include <algorithm>
+#include <iostream>
 
 using namespace std;
 
@@ -52,7 +54,7 @@ double Graph::averagePathLength(){
 				
 			}
 		
-			memoize(dup->getNode(i));	// memoize the duplicate graph, starting from node i
+			dup->memoize(dup->getNode(i));	// memoize the duplicate graph, starting from node i
 			
 			for(long int j = 0; j < N; j++){	// for each duplicate node
 			
@@ -62,11 +64,13 @@ double Graph::averagePathLength(){
 					
 				}
 				
-				#pragma omp atomic
-				sum += dup->getNode(j)->distanceFromInitial;	// add the length of the shortest path
-								
-				#pragma omp atomic
-				num++;	// note that one additional node has been counted
+				#pragma omp critical (summing)
+				{
+					
+					sum += dup->getNode(j)->distanceFromInitial;	// add the length of the shortest path
+					num++;	// note that one additional node has been counted
+					
+				}
 				
 			}
 			
@@ -289,51 +293,22 @@ double Graph::averageDegree(){
 double Graph::averageClusteringCoefficient(){
 	
 	double sum = 0;
+	long int weightsum = 0;
 	
-	#pragma omp parallel shared(sum)
+	#pragma omp parallel shared(sum, weightsum)
 	{
 	
 		#pragma omp for schedule(guided)
 		for(int i = 0; i < N; i++){
 		
 			double coef = getNode(i)->clusteringCoefficient();
+			long int weight = (K(i) * (K(i)-1))/2;
 			
-			#pragma omp atomic
-			sum += coef;
-			
-		}
-		
-	}
-	
-	return sum/N;
-	
-}
-
-/**
- * mulithreaded method to determine the average clustering coefficient of a graph
- * as well as the standard error of the measurement, the standard deviation over the square root of the sample size
- * with the former being the 0th element of the array, and the latter being the 1st
- */
-double* Graph::averageClusteringCoefficientWithError(){
-	
-	double sum = 0;
-	double sumOfSquares = 0;
-	double average, averageOfSquares;
-	double* ret = new double[2];	// array to hold return value
-	
-	#pragma omp parallel shared(sum, sumOfSquares)
-	{
-	
-		#pragma omp for schedule(guided)
-		for(int i = 0; i < N; i++){
-		
-			double coef = getNode(i)->clusteringCoefficient();
-			
-			#pragma omp critical
+			#pragma omp critical (addition)
 			{
 				
-				sum += coef;
-				sumOfSquares += pow(coef, 2.0);
+				sum += coef * weight;
+				weightsum += weight;
 				
 			}
 			
@@ -341,12 +316,7 @@ double* Graph::averageClusteringCoefficientWithError(){
 		
 	}
 	
-	average = sum/N;
-	averageOfSquares = sumOfSquares/N;	
-	ret[0] = average;
-	ret[1] = sqrt(averageOfSquares - pow(average, 2.0)) / sqrt(N);	// where the variance is the expected squared value minus the squared expected value
-	
-	return ret;
+	return sum/weightsum;
 	
 }
 
@@ -378,56 +348,77 @@ Vertex* Graph::getNode(long int i) const{
 
 void Graph::memoize(Vertex* root){
 
-	vector<Vertex*>* path = new vector<Vertex*>;
-	root->pathFromInitial = *path;
-	memoize(root, *path, 0);
+	root->distanceFromInitial = 0;
+	root->pathFromInitial.push_back(root);
 	
-}
+	vector<Vertex*> set = this->nodes;	// create a temporary container for all the nodes
+	
+	while(set.size() > 0){	// while there are elements in the set
+	
+		long int index = 0;;
+		long int minimumDistance = LONG_MAX;
+		
+		for(long int i = 0; i < set.size(); i++){	// for all nodes
+			
+			if(set.at(i)->distanceFromInitial < minimumDistance){	// find the one with the shortest distance
+				
+				index = i;	// and remember it
+				minimumDistance = set.at(i)->distanceFromInitial;
+				
+			}
+			
+		}
 
-/*
- * memoize all vertices with distance notations
- */
-void Graph::memoize(Vertex* root, vector<Vertex*> path, long int distance){
-	
-	if(root->distanceFromInitial > distance){
+		Vertex* node = set.at(index);	// take the zeroth element
+		set.erase(set.begin() + index);	// and remove it from the set
 		
-		root->distanceFromInitial = distance;
-		path.push_back(root);
-		root->pathFromInitial = path;
+		if(node->distanceFromInitial == LONG_MAX){	// if, somehow, the least distance is "infinite"
+			
+			break;	// stop running, as somehow an unconnected component has been encountered
+			
+		}
 		
-		for(long int i = 0; i < root->neighbors.size(); i++){
-		
-			memoize(root->getNeighbor(i), path, distance + 1);
-		
+		for(long int i = 0; i < node->neighbors.size(); i++){	// for each neighbor of this node
+			
+			long int alt = node->distanceFromInitial + 1;	// there is a path from the node which is one additional edge longer
+			
+			if(alt < node->getNeighbor(i)->distanceFromInitial){	// if this path is shorter than the one previously found
+				
+				node->getNeighbor(i)->distanceFromInitial = alt;	// use it 
+				node->getNeighbor(i)->pathFromInitial = node->pathFromInitial;	// and remember the path
+				node->getNeighbor(i)->pathFromInitial.push_back(node->getNeighbor(i));	// from the previous node to this one
+				
+			}
+			
 		}
 		
 	}
-		
+	
 }
 
 /*
  * remove all distance notations from this connected graph
  * and all records of paths
  */
-void Graph::clean(Vertex* root){
+void Graph::clean(){
 	
-	if(root->distanceFromInitial != LONG_MAX){
-	
-		root->distanceFromInitial = LONG_MAX;
+	for(long int i = 0; i < N; i++){
 		
-		while(root->pathFromInitial.size() > 0){
+		getNode(i)->distanceFromInitial = LONG_MAX;
 		
-			root->pathFromInitial.pop_back();
+		while(getNode(i)->pathFromInitial.size() > 0){
 			
-		}
-		
-		for(long int i = 0; i < root->neighbors.size(); i++){
-		
-			clean(root->getNeighbor(i));
+			getNode(i)->pathFromInitial.pop_back();
 			
 		}
 		
 	}
+	
+}
+
+bool Graph::compareDistancesFromInitial(const Vertex* a, const Vertex* b){
+	
+	return a->distanceFromInitial < b->distanceFromInitial;
 	
 }
 

@@ -15,7 +15,7 @@ main/parametertune.o: main/parametertune.cpp growingnetwork3d/growingnetwork3d.c
 	g++ $(FLAGS) -c main/parametertune.cpp -o main/parametertune.o 
 main/test.o: main/test.cpp ngraph/nball.cpp ngraph/nball.h growingnetwork3d/growingnetwork3d.cpp growingnetwork3d/growingnetwork3d.h growingnetwork2d/growingnetwork2d.cpp growingnetwork2d/growingnetwork2d.h
 	g++ $(FLAGS) -c main/test.cpp -o main/test.o 
-main/graphgen.o: main/graphgen.cpp growingnetwork2d/growingnetwork2d.cpp growingnetwork2d/growingnetwork2d.h
+main/graphgen.o: main/graphgen.cpp ngraph/nball.cpp ngraph/nball.h ngraph/nsphere.cpp ngraph/nsphere.h
 	g++ $(FLAGS) -c main/graphgen.cpp -o main/graphgen.o 
 main/pgrownet.o: main/pgrownet.cpp pgrownet2d/pgrownet2d.cpp pgrownet2d/pgrownet2d.h
 	g++ $(FLAGS) -c main/pgrownet.cpp -o main/pgrownet.o

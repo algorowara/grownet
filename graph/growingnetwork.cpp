@@ -98,7 +98,7 @@ double* GrowingNetwork::edgeAgeVsBetweenness(){
 			for(long int j = 0; j < N; j++){	// for every node, use its shortest path from the root
 				
 				for(int k = 1; k < dup->getNode(j)->pathFromInitial.size(); k++){	// for every node in the shortest path except the first
-																				// note that starting at k = 1 ensures that node i is not included
+																					// note that starting at k = 1 ensures that node i is not included
 																				
 					long int a = dup->indexOf(dup->getNode(j)->pathFromInitial.at(k-1));	// use the previous node's index
 					long int b = dup->indexOf(dup->getNode(j)->pathFromInitial.at(k));	// and the current node's index

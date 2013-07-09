@@ -4,7 +4,7 @@
 #include <fstream>
 
 using namespace std;
-long int a = 3;
+long int a = 4;
 
 int main(){
   if(a == 0){
@@ -114,7 +114,7 @@ int main(){
 
                 }
 
-                net->clean(net->getNode(i));
+                net->clean();
 
         }
 
@@ -148,6 +148,40 @@ int main(){
 
         lclust2.close();
         lpath2.close();
+
+  }
+  else if(a == 4){
+	long int n = 1000, m = 3;
+	bool edge;
+	double realdist;
+	PPGrowingNetwork1D* net = new PPGrowingNetwork1D(n, m,1,.00001,64);
+	
+	ofstream ledge;
+	ledge.open("ledge.txt", ios::out | ios::trunc);
+
+	for(long int i = 0; i < n; i++){
+
+		for(long int j = 0; j < n; j++){
+
+			edge = 0;
+
+			if(i == j){
+				continue;
+			}
+
+			realdist = DISTANCE_1D(net->getNode(i), net->getNode(j));
+			if(net->getNode(i)->hasNeighbor(net->getNode(j))){
+				edge = 1;
+
+			}
+
+			ledge<<realdist<<" "<<edge<<endl;
+
+		}
+
+	}
+
+	ledge.close();
 
   }
 
