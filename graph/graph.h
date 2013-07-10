@@ -20,7 +20,8 @@ public:
 	long int nodesWithDegree(long int k);
 	double* degreeDistribution();
 	double averageDegree();
-	double averageClusteringCoefficient();
+	double weightedClusteringCoefficient();
+	double unweightedClusteringCoefficient();
 	double* nodeBetweenness();
 	void insertNode(Vertex* node, long int position);
 	long int indexOf(Vertex* node) const;

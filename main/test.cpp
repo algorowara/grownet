@@ -33,7 +33,7 @@ int main(){
 			net->baseItr = 1000000;
 			net->grow(n - (m+1));
 			
-			c[i] = net->averageClusteringCoefficient();
+			c[i] = net->weightedClusteringCoefficient();
 			cmean += c[i]/s;
 			wmean += net->iterationWeights/s;
 			

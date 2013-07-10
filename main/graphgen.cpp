@@ -16,7 +16,7 @@ using namespace std;
 int main(){
 	
 	long int n = 1000, m = 3, d = 2;
-	NSphere* net = new NSphere(n, m, d);
+	NBall* net = new NBall(n, m, d);
 	
 	for(long int i = 0; i < n; i++){
 		

@@ -289,8 +289,10 @@ double Graph::averageDegree(){
 
 /**
  * multithreaded method to calculate the average clustering coefficient of a graph
+ * weighting each node by k(k-1)/2, where k is the degree of the node,
+ * and the expression k(k-1)/2 is the number of possible triangles
  */
-double Graph::averageClusteringCoefficient(){
+double Graph::weightedClusteringCoefficient(){
 	
 	double sum = 0;
 	long int weightsum = 0;
@@ -320,7 +322,34 @@ double Graph::averageClusteringCoefficient(){
 	
 }
 
-/*
+/**
+ * multithreaded method to calculate the average clustering coefficient of a graph
+ * weighing the contributions of each node equally
+ */
+double Graph::unweightedClusteringCoefficient(){
+	
+	double sum = 0;
+	
+	#pragma omp parallel shared(sum)
+	{
+	
+		#pragma omp for schedule(guided)
+		for(int i = 0; i < N; i++){
+		
+			double coef = getNode(i)->clusteringCoefficient();
+			
+			#pragma omp atomic
+			sum += coef;
+			
+		}
+		
+	}
+	
+	return sum/N;
+	
+}
+
+/**
  * method to find the index of a given node in the vector<Vertex*> nodes
  * returns -1 if the given node is not in the data structure
  */

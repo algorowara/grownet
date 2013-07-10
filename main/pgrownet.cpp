@@ -134,7 +134,7 @@ int main(){
 
 	for(long int i = 4; i < n; i++){
 		
-		cc = net->averageClusteringCoefficient();
+		cc = net->weightedClusteringCoefficient();
 		pclust<<i<<" "<<cc<<endl;		
 
 		cpl = net->averagePathLength();
@@ -161,7 +161,7 @@ int main(){
 		for(long int j = 0; j < 5; j++){ //four data points at each size	
 
 			PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(i,m,1,.00001,64);
-			cc = net->averageClusteringCoefficient();
+			cc = net->weightedClusteringCoefficient();
 			pclust2<<i<<" "<<cc<<endl;		
 
 			cpl = net->averagePathLength();
