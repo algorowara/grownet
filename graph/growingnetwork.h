@@ -9,7 +9,7 @@ public:
 
 	long int m;
 
-	long int getTime();	
+	long int getTime() const;	
 	virtual void grow(long int n) = 0;
 	long int edgeAge(Vertex* a, Vertex* b);
 	double* edgeAgeVsBetweenness();

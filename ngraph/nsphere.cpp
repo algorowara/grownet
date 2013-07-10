@@ -1,9 +1,13 @@
 #include "nsphere.h"
 #include <cstring>
+#include <ctime>
+#include <cmath>
+#include <cstdlib>
+#include <cfloat>
 
 using namespace std;
 
-NSphere::NSphere(long int n, long int m, long int d, double baseGam, double baseTol, long int baseItr, long int threshold, long int period) : DIM(d){
+NSphere::NSphere(long int n, long int m, long int d, double baseGam, double baseTol, long int baseItr, long int threshold, long int period) : NGraph(d){
 	
 	static bool randSeeded = false;
 	

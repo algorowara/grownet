@@ -6,7 +6,7 @@
  * as the time field of a GrowingNetwork is important and not to be tampered with,
  * there is a getter method here to return a copy of it
  */
-long int GrowingNetwork::getTime(){
+long int GrowingNetwork::getTime() const{
 
 	return time;
 

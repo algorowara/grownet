@@ -7,7 +7,7 @@
 #include <cstring>
 #include <iostream>
 
-NBall::NBall(long int n, long int m, long int d, double r, double a, double g, double t, long int i, long int et, long int ep) : DIM(d) {
+NBall::NBall(long int n, long int m, long int d, double r, double a, double g, double t, long int i, long int et, long int ep) : NGraph(d) {
 	
 	static bool randSeeded = false;	// static variable to check if the pseudorandom number generator has been seeded yet
 	
@@ -58,7 +58,7 @@ NBall::NBall(long int n, long int m, long int d, double r, double a, double g, d
 	
 }
 
-NBall::NBall(const NBall* obj) : DIM(obj->DIM){
+NBall::NBall(const NBall* obj) : NGraph(obj->DIM){
 	
 	this->m = obj->m;
 	this->radius = obj->radius;
