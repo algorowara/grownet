@@ -143,7 +143,7 @@ double NSphere::linearDistance(double* a, double* b){
 	
 	for(long int i = 0; i < DIM+1; i++){
 		
-		sumOfSquares += pow(a[i] - b[i], 2.0);
+		sumOfSquares += (a[i] - b[i]) * (a[i] - b[i]);
 		
 	}
 	

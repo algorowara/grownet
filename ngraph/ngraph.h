@@ -26,7 +26,8 @@ class NGraph : public GrowingNetwork {
 		NGraph(long int d);
 		SpatialVertex* getNode(const long int i) const;
 		virtual double* randomLocation() = 0;
-		virtual double linearDistance(Vertex* a, Vertex* b);
+		virtual double linearDistance(Vertex* a, Vertex* b) = 0;
+		virtual double linearDistance(double* a, double* b) = 0;
 	
 };
 

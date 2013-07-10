@@ -18,11 +18,10 @@ double* findNormalizedNearestNeighborDistances(NBall* net);
 
 int main(){
 	
-	NSphere* net = new NSphere(100, 3, 2);
-	NSphere::exportObject(net, "test.out");
-	NSphere* net2 = NSphere::importObject("test.out");
+	long int n = 400, m = 3, d = 2;
+	NBall* net = new NBall(n, m, d);
 	
-	cout<<net->averagePathLength()<<" = "<<net2->averagePathLength()<<endl;
+	//cout<<net->weightedClusteringCoefficient()<<endl;
 	
 }
 

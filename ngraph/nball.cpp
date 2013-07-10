@@ -118,6 +118,7 @@ void NBall::grow(long int n){
 		}
 		
 		addNode(newNode);	// add the new node to the graph
+		beta = (alpha * N)/pow(radius, (double)DIM);	// update the attractive cloud force constant
 		
 		if(N < this->equalizationThreshold || N%(this->equalizationPeriod) == 0){
 			
@@ -127,7 +128,6 @@ void NBall::grow(long int n){
 		
 		delete[] nearNeighbors;
 	
-		beta = (alpha * N)/pow(radius, (double)DIM);	// update the attractive cloud force constant
 		tick();
 		n--;
 		
@@ -192,7 +192,7 @@ double NBall::linearDistance(double* a, double* b){
 	
 	for(long int i = 0; i < DIM; i++){
 		
-		d_squared += pow(a[i] - b[i], 2.0);
+		d_squared += (a[i] - b[i]) * (a[i] - b[i]);
 		
 	}
 	
@@ -325,7 +325,7 @@ void NBall::gradientDescent(const double gamma, const double tolerance, long int
 	double* netForce[N];	// a record of the net force on each node
 	double prevMaxDisp = DBL_MAX;	// record of the maximum scalar displacement of a node on the previous iteration
 									// initially set to an impossibly large value to ensure at least one iteration occurs
-	double tolMaxDisp = (radius * pow(N, -1.0/DIM) * tolerance) * baseGam;	// the maximum tolerated displacement
+	double tolMaxDisp = radius * pow(N, -1.0/DIM) * tolerance * baseGam;	// the maximum tolerated displacement
 																			// if the maximum displacement is above this value, continue iterating
 																			// scales with gamma to provide equal treatment across timestep sizes
 
@@ -392,6 +392,7 @@ void NBall::gradientDescent(const double gamma, const double tolerance, long int
 	}
 	
 	this->iterationWeights += (baseItr - maxItr) * N * N;
+	//cout<<N<<" "<<(baseItr - maxItr)<<endl;
 	
 	return;	// return statement placed here for clarity only
 	
@@ -505,6 +506,7 @@ NBall* NBall::importObject(const char* filename){
 	// create a new NBall (with m+1 nodes so as not to anger the constructor)
 	nb = new NBall(m+1, m, dim, radius, gamma, tolerance, iterations, threshold, period);
 	nb->time = time;
+	nb->beta = nb->alpha * size;
 	
 	while(nb->N > 0){	// remove any nodes in the NBall
 		
