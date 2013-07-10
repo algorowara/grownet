@@ -26,7 +26,7 @@ int main(){
   }
   else if(a == 1){	//plots 1, 2, 3, 4 TP1D
 	long int m = 5, n = 1000, age, nodeage;
-	double* nodeBetw;
+	float* nodeBetw;
 
 	GrowingNetwork2D* net = new GrowingNetwork2D(n, m);
 
@@ -51,7 +51,7 @@ int main(){
 	lagebetw.close();
 
 	//get the degree distribution
-	double* dist = net->degreeDistribution();
+	float* dist = net->degreeDistribution();
 
 	ofstream ldegdist;
 	ldegdist.open("ldegdist.txt", ios::out | ios::trunc);
@@ -83,7 +83,7 @@ int main(){
   }
   else if(a == 2){	//7 & 8, age and path and distance
  	long int n = 1000, m = 3, netdist, agediff;
-        double realdist;
+        float realdist;
         PPGrowingNetwork1D* net = new PPGrowingNetwork1D(n, m, 1, .00001, 64);
 
         ofstream ldistance;
@@ -125,7 +125,7 @@ int main(){
   }
   else if(a == 3){	//clustering and shortest path length
  	long int m = 3;
-        double cc = 0, cpl = 0;; //clustering coefficient and characteristic path length
+        float cc = 0, cpl = 0;; //clustering coefficient and characteristic path length
         ofstream lclust2;
         lclust2.open("lclust2.txt", ios::out | ios::trunc);
         ofstream lpath2;
@@ -153,7 +153,7 @@ int main(){
   else if(a == 4){
 	long int n = 1000, m = 3;
 	bool edge;
-	double realdist;
+	float realdist;
 	PPGrowingNetwork1D* net = new PPGrowingNetwork1D(n, m,1,.00001,64);
 	
 	ofstream ledge;

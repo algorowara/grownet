@@ -8,7 +8,7 @@
 
 using namespace std;
 
-PositiveChargeGrowingNetwork2D::PositiveChargeGrowingNetwork2D(long int n, long int m, double gamma, double tolerance, long int maxItr) : DIM(2){
+PositiveChargeGrowingNetwork2D::PositiveChargeGrowingNetwork2D(long int n, long int m, float gamma, float tolerance, long int maxItr) : DIM(2){
 
 	static bool randSeeded = false;
 
@@ -88,12 +88,12 @@ void PositiveChargeGrowingNetwork2D::grow(long int n){
 /**
  * randomly select a point within the circle using theta = 2 * pi * * u and p_radius = radius * v, where u and v are taken uniformly   * from the interval (0, 1)
  */
-double* PositiveChargeGrowingNetwork2D::randomLocation(){
+float* PositiveChargeGrowingNetwork2D::randomLocation(){
 
-	double* position = new double[DIM];
+	float* position = new float[DIM];
 
-	double theta = 2 * M_PI * (((double)rand())/RAND_MAX);
-	double p_radius2 = radius*radius * (((double)rand())/RAND_MAX); 
+	float theta = 2 * M_PI * (((float)rand())/RAND_MAX);
+	float p_radius2 = radius*radius * (((float)rand())/RAND_MAX); 
 
 	position[0] = sqrt(p_radius2) * cos(theta);
 	position[1] = sqrt(p_radius2) * sin(theta);
@@ -105,7 +105,7 @@ double* PositiveChargeGrowingNetwork2D::randomLocation(){
 /**
  * method to calculate the linear distance between two nodes if the * nodes are not of a type to have a position in space return 0, as * they are unknown
  */ 
-double PositiveChargeGrowingNetwork2D::linearDistance(Vertex* a, Vertex* b){
+float PositiveChargeGrowingNetwork2D::linearDistance(Vertex* a, Vertex* b){
 
 	if(sizeof(a) == sizeof(SpatialVertex) && sizeof(b) == sizeof(SpatialVertex)){
 
@@ -125,11 +125,11 @@ double PositiveChargeGrowingNetwork2D::linearDistance(Vertex* a, Vertex* b){
  * dynamically allocates an array which should be deleted by the
  * caller after use
  */
-double* PositiveChargeGrowingNetwork2D::sumForces(SpatialVertex* node){
+float* PositiveChargeGrowingNetwork2D::sumForces(SpatialVertex* node){
 
-	double* force = new double[DIM];	//allocate a new array for the force vector
+	float* force = new float[DIM];	//allocate a new array for the force vector
 	SpatialVertex* other;	//local placeholder for any other node in two-body interactions
-	double magnitude, distance, pmagnitude, pdistance;	//local placeholders for the magnitude of a force (electron-electron and electron-positive) and the distance between two nodes
+	float magnitude, distance, pmagnitude, pdistance;	//local placeholders for the magnitude of a force (electron-electron and electron-positive) and the distance between two nodes
 
 	for(int i = 0; i < DIM; i++){	//ensure all components are set to zero first
 
@@ -178,7 +178,7 @@ double* PositiveChargeGrowingNetwork2D::sumForces(SpatialVertex* node){
 SpatialVertex** PositiveChargeGrowingNetwork2D::findMNearestNeighbors(SpatialVertex* start){
 
 	SpatialVertex** near = new SpatialVertex*[m];
-	double dsquare[m];	//local record of the distance-squared of the m nearest neighbors
+	float dsquare[m];	//local record of the distance-squared of the m nearest neighbors
 
 	for(int i = 0; i < m; i++){
 
@@ -194,7 +194,7 @@ SpatialVertex** PositiveChargeGrowingNetwork2D::findMNearestNeighbors(SpatialVer
 
 		}
 
-		double square = DISTANCE_SQUARED_2D(start, getNode(i));
+		float square = DISTANCE_SQUARED_2D(start, getNode(i));
 
 		for(int j = 0; j < m; j++){	//iterate through all distance squared records
 
@@ -227,14 +227,14 @@ SpatialVertex** PositiveChargeGrowingNetwork2D::findMNearestNeighbors(SpatialVer
  * log(r-r') and the potential between the cloud of positive charge * and any node is (r^2)/2 where r is the position of the node and 
  * r' is the position of any other node
  */
-double PositiveChargeGrowingNetwork2D::calculatePotential(){
+float PositiveChargeGrowingNetwork2D::calculatePotential(){
 
-	double potential = 0;
+	float potential = 0;
 
 	#pragma omp parallel shared(potential)
 	{
 
-		double localSum = 0;	//sum of potential energies local to this thread
+		float localSum = 0;	//sum of potential energies local to this thread
 		SpatialVertex* a;
 		SpatialVertex* b;
 
@@ -275,10 +275,10 @@ void PositiveChargeGrowingNetwork2D::equalize(){
 
 }
 
-void PositiveChargeGrowingNetwork2D::gradientDescent(double gamma, double tolerance, long int maxItr){
+void PositiveChargeGrowingNetwork2D::gradientDescent(float gamma, float tolerance, long int maxItr){
 
-        double* netForce[N];    // local array to store the net forces on each node
-        double previousPotential = DBL_MAX;     // record of the last potential
+        float* netForce[N];    // local array to store the net forces on each node
+        float previousPotential = DBL_MAX;     // record of the last potential
 
         while(abs(previousPotential - calculatePotential()) > tolerance && maxItr > 0){
 

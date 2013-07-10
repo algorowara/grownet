@@ -22,23 +22,23 @@ class PositiveChargeGrowingNetwork2D : public GrowingNetwork{
 public:
 
 	long int DIM;
-	double radius;
-	double alpha; //electron-electron force constant
-	double beta; //electron-cloud force constant
-	double gamma;
-	double tolerance;
+	float radius;
+	float alpha; //electron-electron force constant
+	float beta; //electron-cloud force constant
+	float gamma;
+	float tolerance;
 	long int maxItr;
 
-	PositiveChargeGrowingNetwork2D(long int n, long int m, double gamma, double tolerance, long int maxItr);
+	PositiveChargeGrowingNetwork2D(long int n, long int m, float gamma, float tolerance, long int maxItr);
 	SpatialVertex* getNode(long int i);
 	void grow(long int n);
-	double* randomLocation();
-	double linearDistance(Vertex* a, Vertex* b);
-	double* sumForces(SpatialVertex* node);
+	float* randomLocation();
+	float linearDistance(Vertex* a, Vertex* b);
+	float* sumForces(SpatialVertex* node);
 	SpatialVertex** findMNearestNeighbors(SpatialVertex* start);
-	double calculatePotential();
+	float calculatePotential();
 	void equalize();
-	void gradientDescent(double gamma, double tolerance, long int maxItr);
+	void gradientDescent(float gamma, float tolerance, long int maxItr);
 	~PositiveChargeGrowingNetwork2D();
 
 };

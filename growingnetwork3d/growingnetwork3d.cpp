@@ -9,7 +9,7 @@ GrowingNetwork3D::GrowingNetwork3D(){
 	
 }
 
-GrowingNetwork3D::GrowingNetwork3D(long int n, long int m, double gam, double tol, long int itr) : DIM(3){
+GrowingNetwork3D::GrowingNetwork3D(long int n, long int m, float gam, float tol, long int itr) : DIM(3){
 	
 	this->time = 0;
 	this->radius = DEFAULT_RADIUS;
@@ -76,12 +76,12 @@ void GrowingNetwork3D::grow(long int n){
  * u and v are taken uniformly from the interval (0, 1)
  * see doc.odt for specification of the coordinate system
  */
-double* GrowingNetwork3D::randomLocation(){
+float* GrowingNetwork3D::randomLocation(){
 	
-	double* position = new double[DIM];
+	float* position = new float[DIM];
 	
-	double theta = 2 * M_PI * (((double)rand())/RAND_MAX);
-	double phi = acos((2 * ((double)rand())/RAND_MAX - 1));
+	float theta = 2 * M_PI * (((float)rand())/RAND_MAX);
+	float phi = acos((2 * ((float)rand())/RAND_MAX - 1));
 	
 	position[0] = radius * sin(phi) * cos(theta);
 	position[1] = radius * sin(phi) * sin(theta);
@@ -97,7 +97,7 @@ double* GrowingNetwork3D::randomLocation(){
  * for uses which actually require distance, use the distance method
  * if a and b are not both three-dimensional, this method's behavior is undefined
  */
-double GrowingNetwork3D::distanceSquared(SpatialVertex* a, SpatialVertex* b){
+float GrowingNetwork3D::distanceSquared(SpatialVertex* a, SpatialVertex* b){
 	
 	return ((X(a) - X(b)) * (X(a) - X(b)) + (Y(a) - Y(b)) * (Y(a) - Y(b)) + (Z(a) - Z(b)) * (Z(a) - Z(b)));
 	
@@ -108,7 +108,7 @@ double GrowingNetwork3D::distanceSquared(SpatialVertex* a, SpatialVertex* b){
  * if a and b are not both three-dimensional, this method's behavior is undefined
  * relies on the distanceSquared method
  */
-double GrowingNetwork3D::distance(SpatialVertex* a, SpatialVertex* b){
+float GrowingNetwork3D::distance(SpatialVertex* a, SpatialVertex* b){
 	
 	return sqrt(distanceSquared(a, b));
 	
@@ -121,7 +121,7 @@ double GrowingNetwork3D::distance(SpatialVertex* a, SpatialVertex* b){
  * this method exists solely to satisfy the requirements of base classes
  * for all other uses, use the distance method
  */
-double GrowingNetwork3D::linearDistance(Vertex* a, Vertex* b){
+float GrowingNetwork3D::linearDistance(Vertex* a, Vertex* b){
 
 	SpatialVertex* a_loc = (SpatialVertex*)a;
 	SpatialVertex* b_loc = (SpatialVertex*)b;
@@ -135,11 +135,11 @@ double GrowingNetwork3D::linearDistance(Vertex* a, Vertex* b){
  * currently falls off as 1/r^2
  * dynamically allocates an array which should be deleted by the caller after use
  */
-double* GrowingNetwork3D::sumForces(SpatialVertex* node){
+float* GrowingNetwork3D::sumForces(SpatialVertex* node){
 	
-	double* force = new double[DIM];	// allocate a new array for the force vector
+	float* force = new float[DIM];	// allocate a new array for the force vector
 	SpatialVertex* other;	// local placeholder for any other node in two-body interactions
-	double magnitude, dist;	// local placeholders for the magnitude of a force and the distance between two nodes
+	float magnitude, dist;	// local placeholders for the magnitude of a force and the distance between two nodes
 	
 	for(long int i = 0; i < DIM; i++){	// ensure all components are set to zero first
 		
@@ -175,7 +175,7 @@ double* GrowingNetwork3D::sumForces(SpatialVertex* node){
 SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 	 
 	SpatialVertex** near = new SpatialVertex*[m];
-	double dsquare[m];	// local record of the distance-squared of the m nearest neighbors
+	float dsquare[m];	// local record of the distance-squared of the m nearest neighbors
 	
 	for(int i = 0; i < m; i++){
 	
@@ -192,7 +192,7 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 			
 		}
 	
-		double square = distanceSquared(start, getNode(i));	// calculate the square of the distance
+		float square = distanceSquared(start, getNode(i));	// calculate the square of the distance
 																// as minimizing distance squared is the same
 																// as minimizing distance (as a signless scalar)
 		
@@ -230,7 +230,7 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 void GrowingNetwork3D::normalizeRadius(SpatialVertex* node){
 	
 	// find the ratio of the ideal radius to the current radial distance
-	double ratio = radius / sqrt(X(node) * X(node) + Y(node) * Y(node) + Z(node) * Z(node));
+	float ratio = radius / sqrt(X(node) * X(node) + Y(node) * Y(node) + Z(node) * Z(node));
 	
 	for(long int i = 0; i < DIM; i++){	// for each dimension
 		
@@ -245,14 +245,14 @@ void GrowingNetwork3D::normalizeRadius(SpatialVertex* node){
  * where the potential of any node pair is defined as 1/r
  * where r is the magnitude of the displacement between the two nodes
  */
-double GrowingNetwork3D::calculatePotential(){
+float GrowingNetwork3D::calculatePotential(){
 	
-	double potential = 0;
+	float potential = 0;
 	
 	#pragma omp parallel shared(potential)
 	{
 		
-		double localSum = 0;	// sum of potential energies local to this thread
+		float localSum = 0;	// sum of potential energies local to this thread
 		SpatialVertex* a;
 		SpatialVertex* b;
 		
@@ -291,11 +291,11 @@ void GrowingNetwork3D::equalize(){
  * where baseTolerance is the maximum ratio of the difference between the potential and the minimum, and the minimum
  * and maxItr is the maximum number of iterations allowed before the function exits, regardless of tolerance
  */
-void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long int maxItr){
+void GrowingNetwork3D::gradientDescent(float gamma, float baseTolerance, long int maxItr){
 	
-	double* netForce[N];	// local array to store the net forces on each node
-	double previousPotential = DBL_MAX;	// local field to store the previous known potential; set to an arbitrary maximum to ensure that at least one iteration occurs
-	double toleratedPotential = 0;
+	float* netForce[N];	// local array to store the net forces on each node
+	float previousPotential = DBL_MAX;	// local field to store the previous known potential; set to an arbitrary maximum to ensure that at least one iteration occurs
+	float toleratedPotential = 0;
 	
 	if(N > GUIDED_N){
 		toleratedPotential = calculateMinimumPotential(N, DIM) + baseTol * calculateMinimumPotentialDifference(N-1, N, DIM);
@@ -348,7 +348,7 @@ void GrowingNetwork3D::gradientDescent(double gamma, double baseTolerance, long 
  * return the potential energy as a function of 
  * as calculated from the equation given in the design document
  */
-double GrowingNetwork3D::calculateMinimumPotential(long int n, long int d){
+float GrowingNetwork3D::calculateMinimumPotential(long int n, long int d){
 	
 	return 0.063594969640041382 * sqrt(n) + -0.55213813866389005 * pow(n, 1.5) + 0.49998893897252450 * (n * n);
 	
@@ -357,7 +357,7 @@ double GrowingNetwork3D::calculateMinimumPotential(long int n, long int d){
 /**
  * return the difference between the minimum potentials at two different values of n
  */
-double GrowingNetwork3D::calculateMinimumPotentialDifference(long int init_n, long int final_n, long int d){
+float GrowingNetwork3D::calculateMinimumPotentialDifference(long int init_n, long int final_n, long int d){
 	
 	return calculateMinimumPotential(final_n, d) - calculateMinimumPotential(init_n, d);
 	

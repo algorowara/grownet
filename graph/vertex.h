@@ -18,7 +18,7 @@ public:
 	Vertex(long int time);
 	
 	void addNeighbor(Vertex* neighbor);
-	double clusteringCoefficient();
+	float clusteringCoefficient();
 	long int getStartTime();
 	bool hasNeighbor(Vertex* neighbor);
 	Vertex* getNeighbor(long int i);

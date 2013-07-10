@@ -44,13 +44,13 @@ long int GrowingNetwork::edgeAge(Vertex* a, Vertex* b){
  * where edge betweenness is defined as the proportion of shortest paths of which the edge is a part
  * as there are as many ages as nodes, the resulting dynamically allocated array will be of size N
  */
-double* GrowingNetwork::edgeAgeVsBetweenness(){
+float* GrowingNetwork::edgeAgeVsBetweenness(){
 
 	long int betweenness[N];	// this array is local and temporary to minimize the effects of floating-point error
 								// the index signifies an age
 								// the element signifies the number of shortest paths which use that edge
 	long int num_edges[N];	// local array to hold the number of edges (the element) of each age (the index)
-	double* dbet = new double[N];
+	float* dbet = new float[N];
 	memset(betweenness, 0, N * sizeof(long int));
 	memset(&num_edges, 0, N * sizeof(long int));
 	
@@ -60,7 +60,7 @@ double* GrowingNetwork::edgeAgeVsBetweenness(){
 			
 			if(edgeAge(getNode(i), getNode(j)) >= 0){	// if an edge exists
 				
-				num_edges[edgeAge(getNode(i), getNode(j))]++;	// record it, which will double-count each edge: once as i->j and once as j->i
+				num_edges[edgeAge(getNode(i), getNode(j))]++;	// record it, which will float-count each edge: once as i->j and once as j->i
 				
 			}
 			
@@ -121,7 +121,7 @@ double* GrowingNetwork::edgeAgeVsBetweenness(){
 		
 		if(num_edges[i] != 0){	// if there exist edges of this age
 		
-			dbet[i] = betweenness[i] / num_edges[i];	// average over the (double-counted) number of edges
+			dbet[i] = betweenness[i] / num_edges[i];	// average over the (float-counted) number of edges
 			
 		}
 		
@@ -141,15 +141,15 @@ double* GrowingNetwork::edgeAgeVsBetweenness(){
 }
 
 /**
- * returns a dynamically allocated array of doubles relating
+ * returns a dynamically allocated array of floats relating
  * edge age (the indices of the array) to
  * average linear distance for that edge (the elements of the array)
  */
-double* GrowingNetwork::edgeAgeVsLinearDistance(){
+float* GrowingNetwork::edgeAgeVsLinearDistance(){
 	
-	double* lin = new double[N];
+	float* lin = new float[N];
 	long int num_edges[N];
-	memset(lin, 0, sizeof(double) * N);
+	memset(lin, 0, sizeof(float) * N);
 	memset(num_edges, 0, N * sizeof(long int));
 	
 	for(int i = 0; i < N; i++){	// iterating over all nodes in the GrowingNetwork
@@ -170,7 +170,7 @@ double* GrowingNetwork::edgeAgeVsLinearDistance(){
 		if(num_edges[i] != 0){	// if some edges were counted for this age
 			
 			lin[i] /= num_edges[i];	// average the length over all the times an edge of this age was counted
-									// which will naturally include double-counting, once for each node
+									// which will naturally include float-counting, once for each node
 			
 		}
 		
@@ -191,9 +191,9 @@ double* GrowingNetwork::edgeAgeVsLinearDistance(){
  * node age (the index and independent variable)
  * vs node degree (the content at index and dependent variable)
  */
-double* GrowingNetwork::nodeAgeVsDegree(){
+float* GrowingNetwork::nodeAgeVsDegree(){
 	
-	double* degree = new double[N];	// allocate a new array with as many indices as there are ages
+	float* degree = new float[N];	// allocate a new array with as many indices as there are ages
 										// since each node has a different age, there are N different ages
 	
 	for(long int i = 0; i < N; i++){	// for each node

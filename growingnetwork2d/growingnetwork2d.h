@@ -13,9 +13,9 @@ public:
 	GrowingNetwork2D(long int n, long int m);
 	void grow(long int n);
 	long int edgeArcDistance(Vertex* a, Vertex* b);
-	double* edgeAgeVsArcDistance();
-	double linearDistance(Vertex* a, Vertex* b);
-	double* edgeArcDistanceDistribution();
+	float* edgeAgeVsArcDistance();
+	float linearDistance(Vertex* a, Vertex* b);
+	float* edgeArcDistanceDistribution();
 
 };
 

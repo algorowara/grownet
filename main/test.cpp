@@ -13,22 +13,20 @@
 
 using namespace std;
 
-double calculateVariance(double* data, long int len);
-double* findNormalizedNearestNeighborDistances(NBall* net);
+float calculateVariance(float* data, long int len);
+float* findNormalizedNearestNeighborDistances(NBall* net);
 
 int main(){
 	
-	long int n = 400, m = 3, d = 2;
+	long int n = 1000, m = 3, d = 2;
 	NBall* net = new NBall(n, m, d);
-	
-	//cout<<net->weightedClusteringCoefficient()<<endl;
 	
 }
 
-double calculateVariance(double* data, long int len){
+float calculateVariance(float* data, long int len){
 	
-	double mean = 0;
-	double var = 0;
+	float mean = 0;
+	float var = 0;
 	
 	for(long int i = 0; i < len; i++){
 		
@@ -52,9 +50,9 @@ double calculateVariance(double* data, long int len){
 	
 }
 
-double* findNormalizedNearestNeighborDistances(NBall* net){
+float* findNormalizedNearestNeighborDistances(NBall* net){
 	
-	double* distances = new double[net->N];
+	float* distances = new float[net->N];
 	
 	#pragma omp parallel shared(distances)
 	{
@@ -62,7 +60,7 @@ double* findNormalizedNearestNeighborDistances(NBall* net){
 		#pragma omp parallel for schedule(guided)
 		for(long int i = 0; i < net->N; i++){
 			
-			double min = DBL_MAX;
+			float min = DBL_MAX;
 			
 			for(long int j = 0; j < net->N; j++){
 				

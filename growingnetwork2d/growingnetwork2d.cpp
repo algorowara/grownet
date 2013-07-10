@@ -98,13 +98,13 @@ long int GrowingNetwork2D::edgeArcDistance(Vertex* a, Vertex* b){
 	
 }
 
-double* GrowingNetwork2D::edgeAgeVsArcDistance(){
+float* GrowingNetwork2D::edgeAgeVsArcDistance(){
 	
 	long int dist[N];	// temporary array to minimize the later effects of floating-point rounding
 									// where the index is the age of the edge
 									// and the distance is the sum of the distances
 									
-	double* ddist = new double[N];
+	float* ddist = new float[N];
 	
 	for(int i = 0; i < N; i++){
 		
@@ -126,7 +126,7 @@ double* GrowingNetwork2D::edgeAgeVsArcDistance(){
 	
 	for(int i = 0; i < N; i++){
 	
-		ddist[i] = dist[i]/(double)(2 * m);	// average the sum of double-counted distances over the m edges of the same age
+		ddist[i] = dist[i]/(float)(2 * m);	// average the sum of float-counted distances over the m edges of the same age
 		
 	}
 	
@@ -134,10 +134,10 @@ double* GrowingNetwork2D::edgeAgeVsArcDistance(){
 	
 }
 
-double GrowingNetwork2D::linearDistance(Vertex* a, Vertex* b){
+float GrowingNetwork2D::linearDistance(Vertex* a, Vertex* b){
 
-	double theta = 2 * M_PI * edgeArcDistance(a, b)/N;
-	double r = N/(2 * M_PI);
+	float theta = 2 * M_PI * edgeArcDistance(a, b)/N;
+	float r = N/(2 * M_PI);
 	
 	return 2 * r * sin(theta/2);
 	
@@ -147,11 +147,11 @@ double GrowingNetwork2D::linearDistance(Vertex* a, Vertex* b){
  * method to return the proportion of edges of a given arc distance, for all possible arc distances
  * where the resulting array is N/2 + 1 long, as N/2 is the maximum possible arc distance
  */
-double* GrowingNetwork2D::edgeArcDistanceDistribution(){
+float* GrowingNetwork2D::edgeArcDistanceDistribution(){
 	
 	long int num[N/2];	// local array relating the arc distance of an edge (the index)
 						// to the number of edges with that arc distance (the content)
-	double* prop = new double[N/2 + 1];	// dynamically allocated array not used until the end in order to minimize floating-point rounding error
+	float* prop = new float[N/2 + 1];	// dynamically allocated array not used until the end in order to minimize floating-point rounding error
 	
 	for(int i = 0; i < N/2 + 1; i++){
 	
@@ -172,7 +172,7 @@ double* GrowingNetwork2D::edgeArcDistanceDistribution(){
 	
 	for(int i = 0; i < N/2 + 1; i++){	// convert all count values into a proportion of the total number of edges
 		
-		prop[i] = ((double)num[i]) / (2 * ((m * (m-1))/2 + (N - m) * m));	// recall that for every node added (N), there are m edges, each of which will be double-counted
+		prop[i] = ((float)num[i]) / (2 * ((m * (m-1))/2 + (N - m) * m));	// recall that for every node added (N), there are m edges, each of which will be float-counted
 																			// except for the first m edges, which form a clique with (m * (m-1))/2 edges
 		
 	}

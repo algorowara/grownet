@@ -30,7 +30,7 @@ void Vertex::addNeighbor(Vertex* neighbor){
 	
 }
 
-double Vertex::clusteringCoefficient(){
+float Vertex::clusteringCoefficient(){
 	
 	long int q = 0;
 	long int k = neighbors.size();
@@ -55,7 +55,7 @@ double Vertex::clusteringCoefficient(){
 	
 	q /= 2;	// divide q by two, as it will have counted each edge twice
 	
-	return ((double)q / ( ( k * (k-1) ) / 2) );	// return the number of neighbor-to-neighbor edges over the number of possible such edges
+	return ((float)q / ( ( k * (k-1) ) / 2) );	// return the number of neighbor-to-neighbor edges over the number of possible such edges
 	
 }
 

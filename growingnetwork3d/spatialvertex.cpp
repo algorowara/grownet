@@ -1,7 +1,7 @@
 #include "spatialvertex.h"
 #include <cmath>
 
-SpatialVertex::SpatialVertex(long int dimension, double* position, long int startTime){
+SpatialVertex::SpatialVertex(long int dimension, float* position, long int startTime){
 	
 	this->dimension = dimension;
 	this->position = position;
@@ -15,9 +15,9 @@ SpatialVertex* SpatialVertex::getNeighbor(long int i){
 	
 }
 
-double SpatialVertex::radialDistance(){
+float SpatialVertex::radialDistance(){
 	
-	double rsq = 0;
+	float rsq = 0;
 	
 	for(long int i = 0; i < dimension; i++){
 		

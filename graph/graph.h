@@ -16,13 +16,13 @@ public:
 	vector<Vertex*> nodes;
 	
 	void addNode(Vertex* node);
-	double averagePathLength();
+	float averagePathLength();
 	long int nodesWithDegree(long int k);
-	double* degreeDistribution();
-	double averageDegree();
-	double weightedClusteringCoefficient();
-	double unweightedClusteringCoefficient();
-	double* nodeBetweenness();
+	float* degreeDistribution();
+	float averageDegree();
+	float weightedClusteringCoefficient();
+	float unweightedClusteringCoefficient();
+	float* nodeBetweenness();
 	void insertNode(Vertex* node, long int position);
 	long int indexOf(Vertex* node) const;
 	Vertex* getNode(long int i) const;	

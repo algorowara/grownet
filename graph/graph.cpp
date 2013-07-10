@@ -24,9 +24,9 @@ void Graph::addNode(Vertex* node){
 /**
  * method to calculate the mean length of the shortest path between any two given nodes in the graph
  */
-double Graph::averagePathLength(){
+float Graph::averagePathLength(){
 
-	long double sum = 0;
+	long int sum = 0;
 	long int num = 0;
 	
 	#pragma omp parallel shared(sum, num)
@@ -80,7 +80,7 @@ double Graph::averagePathLength(){
 		
 	}
 	
-	return sum/num;	// return the sum of the shortest path lengths divided by the number of such paths
+	return ((float)sum)/num;	// return the sum of the shortest path lengths divided by the number of such paths
 	
 }
 
@@ -101,10 +101,10 @@ void Graph::insertNode(Vertex* node, long int position){
  * which is defined as the sum over node pairs of the ratio of shortest paths passing through this node
  * to all such shortest paths between pairs
  */
-double* Graph::nodeBetweenness(){
+float* Graph::nodeBetweenness(){
 
-	double* betweennessCentrality = new double[N];	//a dynamically allocated array giving the betweennesscentrality of each node
-	memset(betweennessCentrality, 0, N*sizeof(double));	//start with 0 everywhere
+	float* betweennessCentrality = new float[N];	//a dynamically allocated array giving the betweennesscentrality of each node
+	memset(betweennessCentrality, 0, N*sizeof(float));	//start with 0 everywhere
 	
 	#pragma omp parallel shared(betweennessCentrality)
 	{
@@ -241,13 +241,13 @@ long int Graph::nodesWithDegree(long int k){
  * method to return the proportion of nodes of a given degree, for all possible degrees
  * where the resulting array is N long, as N-1 is the maximum possible degree
  */
-double* Graph::degreeDistribution(){
+float* Graph::degreeDistribution(){
 	
 	long int dist[N];	// this array is local and temporary to minimize the effects of floating-point rounding
 									// where the index is the degree k
 									// and the content is the number of nodes with degree k
 									
-	double* ddist = new double[N];
+	float* ddist = new float[N];
 	
 	for(int i = 0; i < N; i++){
 	
@@ -265,7 +265,7 @@ double* Graph::degreeDistribution(){
 	
 	for(int i = 0; i < N; i++){
 	
-		ddist[i] = dist[i]/(double)N;
+		ddist[i] = dist[i]/(float)N;
 		
 	}
 	
@@ -273,7 +273,7 @@ double* Graph::degreeDistribution(){
 	
 }
 
-double Graph::averageDegree(){
+float Graph::averageDegree(){
 	
 	long int sum = 0;
 	
@@ -283,7 +283,7 @@ double Graph::averageDegree(){
 		
 	}
 	
-	return ((double)sum)/N;
+	return ((float)sum)/N;
 	
 }
 
@@ -292,9 +292,9 @@ double Graph::averageDegree(){
  * weighting each node by k(k-1)/2, where k is the degree of the node,
  * and the expression k(k-1)/2 is the number of possible triangles
  */
-double Graph::weightedClusteringCoefficient(){
+float Graph::weightedClusteringCoefficient(){
 	
-	double sum = 0;
+	float sum = 0;
 	long int weightsum = 0;
 	
 	#pragma omp parallel shared(sum, weightsum)
@@ -303,7 +303,7 @@ double Graph::weightedClusteringCoefficient(){
 		#pragma omp for schedule(guided)
 		for(int i = 0; i < N; i++){
 		
-			double coef = getNode(i)->clusteringCoefficient();
+			float coef = getNode(i)->clusteringCoefficient();
 			long int weight = (K(i) * (K(i)-1))/2;
 			
 			#pragma omp critical (addition)
@@ -326,9 +326,9 @@ double Graph::weightedClusteringCoefficient(){
  * multithreaded method to calculate the average clustering coefficient of a graph
  * weighing the contributions of each node equally
  */
-double Graph::unweightedClusteringCoefficient(){
+float Graph::unweightedClusteringCoefficient(){
 	
-	double sum = 0;
+	float sum = 0;
 	
 	#pragma omp parallel shared(sum)
 	{
@@ -336,7 +336,7 @@ double Graph::unweightedClusteringCoefficient(){
 		#pragma omp for schedule(guided)
 		for(int i = 0; i < N; i++){
 		
-			double coef = getNode(i)->clusteringCoefficient();
+			float coef = getNode(i)->clusteringCoefficient();
 			
 			#pragma omp atomic
 			sum += coef;

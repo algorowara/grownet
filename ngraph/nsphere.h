@@ -4,7 +4,7 @@
 #include "ngraph.h"
 
 #define NSPHERE_DEFAULT_RADIUS 1.0
-#define NSPHERE_DEFAULT_GAMMA 1.0
+#define NSPHERE_DEFAULT_GAMMA 4.0
 #define NSPHERE_DEFAULT_TOLERANCE 0.01
 #define NSPHERE_DEFAULT_ITERATIONS 100
 #define NSPHERE_DEFAULT_THRESHOLD 100
@@ -16,15 +16,15 @@ class NSphere : public NGraph {
 
 	public:
 		
-		NSphere(long int n, long int m, long int d, double r = NSPHERE_DEFAULT_RADIUS, double baseGam = NSPHERE_DEFAULT_GAMMA, double baseTol = NSPHERE_DEFAULT_TOLERANCE, long int baseItr = NSPHERE_DEFAULT_ITERATIONS, long int threshold = NSPHERE_DEFAULT_THRESHOLD, long int period = NSPHERE_DEFAULT_PERIOD);
+		NSphere(long int n, long int m, long int d, float r = NSPHERE_DEFAULT_RADIUS, float baseGam = NSPHERE_DEFAULT_GAMMA, float baseTol = NSPHERE_DEFAULT_TOLERANCE, long int baseItr = NSPHERE_DEFAULT_ITERATIONS, long int threshold = NSPHERE_DEFAULT_THRESHOLD, long int period = NSPHERE_DEFAULT_PERIOD);
 		void grow(long int n);
-		double* randomLocation();
-		double linearDistance(Vertex* a, Vertex* b);
-		double linearDistance(double* a, double* b);
+		float* randomLocation();
+		float linearDistance(Vertex* a, Vertex* b);
+		float linearDistance(float* a, float* b);
 		SpatialVertex** findMNearestNeighbors(SpatialVertex* start);
-		double* sumForces(SpatialVertex* node);
+		float* sumForces(SpatialVertex* node);
 		void equalize();
-		void gradientDescent(double gamma, double tolerance, long int maxItr);
+		void gradientDescent(float gamma, float tolerance, long int maxItr);
 		void normalizeRadius(SpatialVertex* node);
 		static void exportObject(const NSphere* ns, const char* filename);
 		static NSphere* importObject(const char* filename);

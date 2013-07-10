@@ -12,7 +12,7 @@
 #include <sstream>
 #include <string>
 
-NBall::NBall(long int n, long int m, long int d, double r, double g, double t, long int i, long int et, long int ep) : NGraph(d) {
+NBall::NBall(long int n, long int m, long int d, float r, float g, float t, long int i, long int et, long int ep) : NGraph(d) {
 	
 	static bool randSeeded = false;	// static variable to check if the pseudorandom number generator has been seeded yet
 	
@@ -53,7 +53,7 @@ NBall::NBall(long int n, long int m, long int d, double r, double g, double t, l
 		}
 		
 		addNode(newNode);	// add the new node to the graph
-		beta = (alpha * N)/pow(radius, (double)DIM);	// update the attractive cloud force constant
+		beta = (alpha * N)/pow(radius, (float)DIM);	// update the attractive cloud force constant
 		equalize();	
 		tick();	// move forward in time
 		
@@ -78,8 +78,8 @@ NBall::NBall(const NBall* obj) : NGraph(obj->DIM){
 	
 	for(long int i = 0; i < obj->N; i++){	// for all nodes in the original NBall
 	
-		double* copyPos = new double[DIM];	// create a duplicate position vector of the appropriate dimension
-		memcpy(copyPos, obj->getNode(i)->position, DIM * sizeof(double));	// and populate it
+		float* copyPos = new float[DIM];	// create a duplicate position vector of the appropriate dimension
+		memcpy(copyPos, obj->getNode(i)->position, DIM * sizeof(float));	// and populate it
 		SpatialVertex* copyNode = new SpatialVertex(DIM, copyPos, obj->getNode(i)->getStartTime());	// create a new node with identical position and start time
 		this->addNode(copyNode);	// add it to the duplicate NBall
 		
@@ -118,7 +118,7 @@ void NBall::grow(long int n){
 		}
 		
 		addNode(newNode);	// add the new node to the graph
-		beta = (alpha * N)/pow(radius, (double)DIM);	// update the attractive cloud force constant
+		beta = (alpha * N)/pow(radius, (float)DIM);	// update the attractive cloud force constant
 		
 		if(N < this->equalizationThreshold || N%(this->equalizationPeriod) == 0){
 			
@@ -140,14 +140,14 @@ void NBall::grow(long int n){
  * generates a point from a uniform distribution over an n-cube
  * then rejects it and tries again if it lies outside the ball
  */
-double* NBall::randomLocation(){
+float* NBall::randomLocation(){
 	
-	double* pos = new double[DIM];
-	double r_squared = 0;	// local sum to track the square of the radial length of the position vector
+	float* pos = new float[DIM];
+	float r_squared = 0;	// local sum to track the square of the radial length of the position vector
 	
 	for(long int i = 0; i < DIM; i++){	// for every dimension
 		
-		pos[i] = ((rand() / ((double)RAND_MAX)) - 0.5) * (2 * radius);	// generate a random number from 0 to RAND_MAX
+		pos[i] = ((rand() / ((float)RAND_MAX)) - 0.5) * (2 * radius);	// generate a random number from 0 to RAND_MAX
 																		// scale it to the range (0, 1) by dividing by RAND_MAX
 																		// shift it to the range (-0.5, 0.5) by subtracting 0.5
 																		// scale it to the range (-radius, radius) by multiplying by 2 * radius
@@ -176,7 +176,7 @@ double* NBall::randomLocation(){
  * (rather than arc length) between two nodes
  * unsafe for use with classes without a position field
  */
-double NBall::linearDistance(Vertex* a, Vertex* b){
+float NBall::linearDistance(Vertex* a, Vertex* b){
 	
 	return linearDistance(((SpatialVertex*)a)->position, ((SpatialVertex*)b)->position);
 	
@@ -186,9 +186,9 @@ double NBall::linearDistance(Vertex* a, Vertex* b){
  * method to determine the scalar distance between two position vectors
  * assumed to be of the same dimension as the NBall; unsafe/undefined otherwise
  */
-double NBall::linearDistance(double* a, double* b){
+float NBall::linearDistance(float* a, float* b){
 	
-	double d_squared = 0;
+	float d_squared = 0;
 	
 	for(long int i = 0; i < DIM; i++){
 		
@@ -208,7 +208,7 @@ double NBall::linearDistance(double* a, double* b){
 SpatialVertex** NBall::findMNearestNeighbors(SpatialVertex* start){
 
 	SpatialVertex** near = new SpatialVertex*[m];
-	double dist[m];	//local record of the distance from the start of the m nearest neighbors
+	float dist[m];	//local record of the distance from the start of the m nearest neighbors
 
 	for(int i = 0; i < m; i++){
 
@@ -223,7 +223,7 @@ SpatialVertex** NBall::findMNearestNeighbors(SpatialVertex* start){
 
 		}
 
-		double d = linearDistance(start, getNode(i));
+		float d = linearDistance(start, getNode(i));
 
 		for(int j = 0; j < m; j++){	//iterate through all distance squared records
 
@@ -255,13 +255,13 @@ SpatialVertex** NBall::findMNearestNeighbors(SpatialVertex* start){
  * using the inter-node repulsive forces and the attractive cloud force
  * allocates and returns an array which should be subsequently deallocated
  */
-double* NBall::sumForces(SpatialVertex* node){
+float* NBall::sumForces(SpatialVertex* node){
 	
-	double* force = new double[DIM];
+	float* force = new float[DIM];
 	SpatialVertex* other;	// placeholder for a pointer to some other node in two-body interactions
-	double mag, dist;	// local fields to hold the force magnitude and distance of a two-body interaction
+	float mag, dist;	// local fields to hold the force magnitude and distance of a two-body interaction
 	
-	memset(force, 0, DIM * sizeof(double));	// ensure that the components of force are set to zero
+	memset(force, 0, DIM * sizeof(float));	// ensure that the components of force are set to zero
 	
 	for(long int i = 0; i < N; i++){	// for every node in the graph
 		
@@ -281,7 +281,7 @@ double* NBall::sumForces(SpatialVertex* node){
 			
 		}
 		
-		mag = alpha / pow(dist, (double)DIM-1);	// and the magnitude of the electrostatic repulsive force
+		mag = alpha / pow(dist, (float)DIM-1);	// and the magnitude of the electrostatic repulsive force
 		
 		for(long int j = 0; j < DIM; j++){	// for every dimension
 			
@@ -320,21 +320,21 @@ void NBall::equalize(){
 	
 }
 
-void NBall::gradientDescent(const double gamma, const double tolerance, long int maxItr){
+void NBall::gradientDescent(const float gamma, const float tolerance, long int maxItr){
 	
-	double* netForce[N];	// a record of the net force on each node
-	double prevMaxDisp = DBL_MAX;	// record of the maximum scalar displacement of a node on the previous iteration
+	float* netForce[N];	// a record of the net force on each node
+	float prevMaxDisp = DBL_MAX;	// record of the maximum scalar displacement of a node on the previous iteration
 									// initially set to an impossibly large value to ensure at least one iteration occurs
-	double tolMaxDisp = radius * pow(N, -1.0/DIM) * tolerance * baseGam;	// the maximum tolerated displacement
+	float tolMaxDisp = radius * pow(N, -1.0/DIM) * tolerance * baseGam;	// the maximum tolerated displacement
 																			// if the maximum displacement is above this value, continue iterating
 																			// scales with gamma to provide equal treatment across timestep sizes
 
-	memset(netForce, 0, N * sizeof(double*));
+	memset(netForce, 0, N * sizeof(float*));
 	
 	while(prevMaxDisp > tolMaxDisp && maxItr > 0){	// while there remains some excess energy above tolerance
 													// and the hard limit of iterations has not been passed
 
-		double maxDisp = 0;
+		float maxDisp = 0;
 
 		#pragma omp parallel shared(netForce, maxDisp)
 		{
@@ -356,7 +356,7 @@ void NBall::gradientDescent(const double gamma, const double tolerance, long int
 			
 			for(long int i = 0; i < N; i++){	// for every node
 			
-				double oldPos[DIM];
+				float oldPos[DIM];
 				
 				for(long int j = 0; j < DIM; j++){	// for every dimension
 				
@@ -366,7 +366,7 @@ void NBall::gradientDescent(const double gamma, const double tolerance, long int
 					
 				}
 				
-				double disp = linearDistance(oldPos, getNode(i)->position);	// calculate the displacement
+				float disp = linearDistance(oldPos, getNode(i)->position);	// calculate the displacement
 																				// between the old and current positions
 				
 				#pragma omp critial (maximumDisplacement)	// encase this comparison in a critical region
@@ -454,7 +454,7 @@ NBall* NBall::importObject(const char* filename){
 	NBall* nb;
 	long int bufsize = 2048;
 	long int m, time, dim, iterations, threshold, period, size;
-	double radius, gamma, tolerance, weights;
+	float radius, gamma, tolerance, weights;
 	char* line = new char[bufsize];	// create a character buffer larger than could be reasonably used
 	bool** adjacency;	// create an adjacency matrix to record edges
 	
@@ -519,7 +519,7 @@ NBall* NBall::importObject(const char* filename){
 	while(!infile.eof()){	// while there remain lines in the file
 	
 		long int index, dimension, starttime;
-		double* position;
+		float* position;
 		SpatialVertex* node;
 		
 		infile.getline(line, bufsize);	// retrieve them from the file
@@ -539,7 +539,7 @@ NBall* NBall::importObject(const char* filename){
 		dimension = atol(tokens.at(1).c_str());	// record the dimension to read the appropriate number of position components
 		starttime = atol(tokens.at(2).c_str());	// record the starttime to use as a parameter to the new node's constructor
 		
-		position = new double[dimension];	// initialize the new position array
+		position = new float[dimension];	// initialize the new position array
 		adjacency[index] = new bool[size];	// initialize this row/column of the adjacency matrix
 		memset(adjacency[index], false, size * sizeof(bool));
 		

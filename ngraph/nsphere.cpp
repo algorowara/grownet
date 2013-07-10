@@ -12,7 +12,7 @@
 
 using namespace std;
 
-NSphere::NSphere(long int n, long int m, long int d, double r, double baseGam, double baseTol, long int baseItr, long int threshold, long int period) : NGraph(d){
+NSphere::NSphere(long int n, long int m, long int d, float r, float baseGam, float baseTol, long int baseItr, long int threshold, long int period) : NGraph(d){
 	
 	static bool randSeeded = false;
 	
@@ -91,17 +91,17 @@ void NSphere::grow(long int n){
 
 /**
  * uses the Box-Muller transform to randomly generate a position on the surface of an NSphere
- * dynamically allocates a double array of length DIM
+ * dynamically allocates a float array of length DIM
  */
-double* NSphere::randomLocation(){
+float* NSphere::randomLocation(){
 	
-	double* position = new double[DIM+1];
-	double actual_radius = 0;
-	double ratio;
+	float* position = new float[DIM+1];
+	float actual_radius = 0;
+	float ratio;
 	
 	for(long int i = 0; i < DIM+1; i++){	// for every dimension
 		
-		double u = ((double)rand())/RAND_MAX, v = ((double)rand())/RAND_MAX;	// pick two values from a uniform distribution (0, 1)
+		float u = ((float)rand())/RAND_MAX, v = ((float)rand())/RAND_MAX;	// pick two values from a uniform distribution (0, 1)
 		position[i] = sqrt(-2 * log(u)) * cos(2 * M_PI * v);	// set position component in dimension i to the result of the transform, distributed on N(0, 1)
 		actual_radius += position[i] * position[i];	// track the actual radial distance of the position
 		
@@ -126,7 +126,7 @@ double* NSphere::randomLocation(){
  * assumes that both SpatialVertices are of the dimension specified by the NSphere (DIM+1)
  * otherwise behavior is undefined and possibly fatal
  */
-double NSphere::linearDistance(Vertex* a, Vertex* b){
+float NSphere::linearDistance(Vertex* a, Vertex* b){
 	
 	return linearDistance(((SpatialVertex*)a)->position, ((SpatialVertex*)b)->position);
 	
@@ -137,9 +137,9 @@ double NSphere::linearDistance(Vertex* a, Vertex* b){
  * assumes that both arrays are of size DIM+1, such that they are of the dimension of the NSphere's space
  * otherwise behavior is undefined and possibly fatal
  */
-double NSphere::linearDistance(double* a, double* b){
+float NSphere::linearDistance(float* a, float* b){
 	
-	double sumOfSquares = 0;
+	float sumOfSquares = 0;
 	
 	for(long int i = 0; i < DIM+1; i++){
 		
@@ -158,7 +158,7 @@ double NSphere::linearDistance(double* a, double* b){
 SpatialVertex** NSphere::findMNearestNeighbors(SpatialVertex* start){
 	
 	SpatialVertex** near = new SpatialVertex*[m];
-	double dist[m];	//local record of the distance from the start of the m nearest neighbors
+	float dist[m];	//local record of the distance from the start of the m nearest neighbors
 
 	for(int i = 0; i < m; i++){
 
@@ -173,7 +173,7 @@ SpatialVertex** NSphere::findMNearestNeighbors(SpatialVertex* start){
 
 		}
 
-		double d = linearDistance(start, getNode(i));
+		float d = linearDistance(start, getNode(i));
 
 		for(int j = 0; j < m; j++){	//iterate through all distance squared records
 
@@ -205,11 +205,11 @@ SpatialVertex** NSphere::findMNearestNeighbors(SpatialVertex* start){
  * currently uses a force law of 1/r^(DIM-1)
  * returns a dynamically allocated array (force vector) which must be deleted after use
  */
-double* NSphere::sumForces(SpatialVertex* node){
+float* NSphere::sumForces(SpatialVertex* node){
 	
-	double* force = new double[DIM+1];	// allocate a new force vector of a size appropriate to the space
+	float* force = new float[DIM+1];	// allocate a new force vector of a size appropriate to the space
 	SpatialVertex* other;	// local placeholder for the other node in two-body interactions
-	double magnitude, dist;	// local fields to hold the magnitude of the force and distance between two nodes
+	float magnitude, dist;	// local fields to hold the magnitude of the force and distance between two nodes
 	
 	for(long int i = 0; i < DIM+1; i++){	// first, ensure that all components of the force vector are zero
 		
@@ -227,11 +227,11 @@ double* NSphere::sumForces(SpatialVertex* node){
 		
 		other = getNode(i);
 		dist = linearDistance(node, other);
-		magnitude = 1.0 / pow(dist, (double)DIM);	// calculate the magnitude of the force as 1/r^DIM
+		magnitude = 1.0 / pow(dist, (float)DIM);	// calculate the magnitude of the force as 1/r^DIM
 		
 		for(long int j = 0; j < DIM+1; j++){	// for each dimension, add the component of force from this interaction
 			
-			double unitComponent = (node->position[j] - other->position[j]) / dist;	// the component of the unit
+			float unitComponent = (node->position[j] - other->position[j]) / dist;	// the component of the unit
 																						// vector is r(j)/|r|
 			force[j] += unitComponent * magnitude;	// the component of the force in the direction of dimension j
 													// is the value of the component of the unit vector
@@ -252,21 +252,21 @@ void NSphere::equalize(){
 	
 }
 
-void NSphere::gradientDescent(double gamma, double tolerance, long int maxItr){
+void NSphere::gradientDescent(float gamma, float tolerance, long int maxItr){
 
-	double* netForce[N];	// a record of the net force on each node
-	double prevMaxDisp = DBL_MAX;	// record of the maximum scalar displacement of a node on the previous iteration
+	float* netForce[N];	// a record of the net force on each node
+	float prevMaxDisp = DBL_MAX;	// record of the maximum scalar displacement of a node on the previous iteration
 									// initially set to an impossibly large value to ensure at least one iteration occurs
-	double tolMaxDisp = (radius * pow(N, -1.0/DIM) * tolerance) * baseGam;	// the maximum tolerated displacement
+	float tolMaxDisp = (radius * pow(N, -1.0/DIM) * tolerance) * baseGam;	// the maximum tolerated displacement
 																				// if the maximum displacement is above this value, continue iterating
 																				// scales with gamma to provide equal treatment across timestep sizes
 
-	memset(netForce, 0, N * sizeof(double*));
+	memset(netForce, 0, N * sizeof(float*));
 	
 	while(prevMaxDisp > tolMaxDisp && maxItr > 0){	// while there remains some excess energy above tolerance
 													// and the hard limit of iterations has not been passed
 
-		double maxDisp = 0;
+		float maxDisp = 0;
 
 		#pragma omp parallel shared(netForce, maxDisp)
 		{
@@ -288,7 +288,7 @@ void NSphere::gradientDescent(double gamma, double tolerance, long int maxItr){
 			
 			for(long int i = 0; i < N; i++){	// for every node
 			
-				double oldPos[DIM];
+				float oldPos[DIM];
 				
 				for(long int j = 0; j < DIM+1; j++){	// for every dimension
 				
@@ -299,7 +299,7 @@ void NSphere::gradientDescent(double gamma, double tolerance, long int maxItr){
 				}
 				
 				normalizeRadius(getNode(i));	// normalize the radius
-				double disp = linearDistance(oldPos, getNode(i)->position);	// calculate the displacement
+				float disp = linearDistance(oldPos, getNode(i)->position);	// calculate the displacement
 																				// between the old and current positions
 				
 				#pragma omp critial (maximumDisplacement)	// encase this comparison in a critical region
@@ -335,8 +335,8 @@ void NSphere::gradientDescent(double gamma, double tolerance, long int maxItr){
  */
 void NSphere::normalizeRadius(SpatialVertex* node){
 	
-	double actual_radius_squared = 0;
-	double ratio;	// the ratio of the desired radius to the actual radius
+	float actual_radius_squared = 0;
+	float ratio;	// the ratio of the desired radius to the actual radius
 	
 	for(long int i = 0; i < DIM+1; i++){	// for each dimension
 		
@@ -411,7 +411,7 @@ NSphere* NSphere::importObject(const char* filename){
 	NSphere* ns;
 	long int bufsize = 2048;
 	long int m, time, dim, iterations, threshold, period, size;
-	double radius, gamma, tolerance, weights;
+	float radius, gamma, tolerance, weights;
 	char* line = new char[bufsize];	// create a character buffer larger than could be reasonably used
 	bool** adjacency;	// create an adjacency matrix to record edges
 	
@@ -475,7 +475,7 @@ NSphere* NSphere::importObject(const char* filename){
 	while(!infile.eof()){	// while there remain lines in the file
 	
 		long int index, dimension, starttime;
-		double* position;
+		float* position;
 		SpatialVertex* node;
 		
 		infile.getline(line, bufsize);	// retrieve them from the file
@@ -495,7 +495,7 @@ NSphere* NSphere::importObject(const char* filename){
 		dimension = atol(tokens.at(1).c_str());	// record the dimension to read the appropriate number of position components
 		starttime = atol(tokens.at(2).c_str());	// record the starttime to use as a parameter to the new node's constructor
 		
-		position = new double[dimension];	// initialize the new position array
+		position = new float[dimension];	// initialize the new position array
 		adjacency[index] = new bool[size];	// initialize this row/column of the adjacency matrix
 		memset(adjacency[index], false, size * sizeof(bool));
 		

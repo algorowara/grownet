@@ -8,7 +8,7 @@
 
 using namespace std;
 
-PPGrowingNetwork1D::PPGrowingNetwork1D(long int n, long int m, double gamma, double tolerance, long int maxItr) : DIM(1){
+PPGrowingNetwork1D::PPGrowingNetwork1D(long int n, long int m, float gamma, float tolerance, long int maxItr) : DIM(1){
 
 	static bool randSeeded = false;
 
@@ -90,11 +90,11 @@ void PPGrowingNetwork1D::grow(long int n){
 /**
  * randomly select a point on the line using p_radius = radius * v, where v is taken uniformly from the interval [0,1]
 */
-double* PPGrowingNetwork1D::randomLocation(){
+float* PPGrowingNetwork1D::randomLocation(){
 
-	double* position = new double[DIM]; 
+	float* position = new float[DIM]; 
 	
-	double p_radius = radius * (((double)rand())/RAND_MAX);
+	float p_radius = radius * (((float)rand())/RAND_MAX);
 	long int p_sign = (rand() % 2) - 1;
 		if(p_sign == 0){
 			p_sign = 1;
@@ -109,7 +109,7 @@ double* PPGrowingNetwork1D::randomLocation(){
 /**
  * method to find linear distance, I don't use it but it is needed in here to compile properly
 */
-double PPGrowingNetwork1D::linearDistance(Vertex* a, Vertex* b){
+float PPGrowingNetwork1D::linearDistance(Vertex* a, Vertex* b){
 	if(sizeof(a) == sizeof(SpatialVertex) && sizeof(b) == sizeof(SpatialVertex)){
 
 		SpatialVertex* a_loc = (SpatialVertex*)a;
@@ -126,11 +126,11 @@ double PPGrowingNetwork1D::linearDistance(Vertex* a, Vertex* b){
 /**
  * calculate the repulsive force between two nodes based on their displacement. It dynamically allocated an array which should be deleted by caller after use
 */
-double* PPGrowingNetwork1D::sumForces(SpatialVertex* node){
+float* PPGrowingNetwork1D::sumForces(SpatialVertex* node){
 
-	double* force = new double[DIM]; //allocate a double for the force vector
+	float* force = new float[DIM]; //allocate a float for the force vector
 	SpatialVertex* other; //local placeholder for any other node in 2 body interactions
-	double magnitude, distance, pmagnitude, pdistance; //local placeholders for magnitude of force and location of nodes for electron - electron interactions and electron cloud interactions
+	float magnitude, distance, pmagnitude, pdistance; //local placeholders for magnitude of force and location of nodes for electron - electron interactions and electron cloud interactions
 
 	force[0] = 0; //force is initially 0
 
@@ -163,7 +163,7 @@ double* PPGrowingNetwork1D::sumForces(SpatialVertex* node){
 SpatialVertex** PPGrowingNetwork1D::findMNearestNeighbors(SpatialVertex* start){
 
 	SpatialVertex** near = new SpatialVertex*[m];
-	double dnormal[m]; //local record of the distance of the m nearest neighbors
+	float dnormal[m]; //local record of the distance of the m nearest neighbors
 
 	for(int i = 0; i < m; i++){
 
@@ -179,7 +179,7 @@ SpatialVertex** PPGrowingNetwork1D::findMNearestNeighbors(SpatialVertex* start){
 
 		}
 
-		double dist = DISTANCE_1D(start, getNode(i));
+		float dist = DISTANCE_1D(start, getNode(i));
 
 		for(int j = 0; j < m; j++){  //iterate through all distance records
 			if(dist < dnormal[j]){  //if this node is closer than the nearest neighbor j
@@ -209,14 +209,14 @@ SpatialVertex** PPGrowingNetwork1D::findMNearestNeighbors(SpatialVertex* start){
 /**
  * method to calculate the potential of all the nodes in the network, where the potential of any node pair is defined as alpha * r and the potential between the clouse of positive charge and any node is beta/2*r^2
 */
-double PPGrowingNetwork1D::calculatePotential(){
+float PPGrowingNetwork1D::calculatePotential(){
 
-	double potential = 0;
+	float potential = 0;
 
 	#pragma omp parallel shared(potential)
 	{
 
-		double localSum = 0;  //sum of potential energies local to this thread
+		float localSum = 0;  //sum of potential energies local to this thread
 		SpatialVertex* a;
 		SpatialVertex* b;
 
@@ -261,10 +261,10 @@ void PPGrowingNetwork1D::equalize(){
 
 }
 
-void PPGrowingNetwork1D::gradientDescent(double gamma, double tolerance, long int maxItr){
+void PPGrowingNetwork1D::gradientDescent(float gamma, float tolerance, long int maxItr){
 
-	double* netForce[N];	//local array to store forces on each node
-	double previousPotential = DBL_MAX;  //record of the last potential for minimization
+	float* netForce[N];	//local array to store forces on each node
+	float previousPotential = DBL_MAX;  //record of the last potential for minimization
 
 	while(abs(previousPotential - calculatePotential()) > tolerance && maxItr > 0){
 

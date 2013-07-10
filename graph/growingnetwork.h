@@ -12,10 +12,10 @@ public:
 	long int getTime() const;	
 	virtual void grow(long int n) = 0;
 	long int edgeAge(Vertex* a, Vertex* b);
-	double* edgeAgeVsBetweenness();
-	virtual double linearDistance(Vertex* a, Vertex* b) = 0;
-	double* edgeAgeVsLinearDistance();
-	double* nodeAgeVsDegree();
+	float* edgeAgeVsBetweenness();
+	virtual float linearDistance(Vertex* a, Vertex* b) = 0;
+	float* edgeAgeVsLinearDistance();
+	float* nodeAgeVsDegree();
 	
 protected:
 

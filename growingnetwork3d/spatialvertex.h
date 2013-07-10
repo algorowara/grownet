@@ -8,11 +8,11 @@ class SpatialVertex : public Vertex{
 public:
 
 	long int dimension;
-	double* position;
+	float* position;
 
-	SpatialVertex(long int dimension, double* position, long int startTime);
+	SpatialVertex(long int dimension, float* position, long int startTime);
 	SpatialVertex* getNeighbor(long int i);
-	double radialDistance();
+	float radialDistance();
 	~SpatialVertex();
 	
 };

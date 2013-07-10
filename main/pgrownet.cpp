@@ -44,7 +44,7 @@ int main(){
 	cout << net->calculatePotential() << endl;
 	
 	//get the degree distribution
-	double* dist = net->degreeDistribution();
+	float* dist = net->degreeDistribution();
 
 	ofstream pdegdist;
 	pdegdist.open("pdegdist.txt", ios::out | ios::trunc);
@@ -75,7 +75,7 @@ int main(){
 	if(dcare == 1){ //if we want this information
 
 	long int netdist;
-	double realdist;
+	float realdist;
 	ofstream pdistance;
 	pdistance.open("pdistance.txt", ios::out | ios::trunc);
 
@@ -109,7 +109,7 @@ int main(){
 	ofstream eagebetw;
 	eagebetw.open("eagebetw.txt", ios::out | ios::trunc);
 
-	double* edgeinfo = net->edgeAgeVsBetweenness();
+	float* edgeinfo = net->edgeAgeVsBetweenness();
 
 	for(long int i = 0; i < n; i++){
 
@@ -123,8 +123,8 @@ int main(){
   //instead grow the network node at a time and get the clustering coefficient and characteristic path length at each timestep
   else if (a == 2) { 
 	long int n = 1000, m = 3;
-	double cc = 0; //clustering coefficient
-	double cpl = 0; //characteristic path length
+	float cc = 0; //clustering coefficient
+	float cpl = 0; //characteristic path length
 	PositiveChargeGrowingNetwork2D* net = new PositiveChargeGrowingNetwork2D(4,m,1,.00001,64);
 	
 	ofstream pclust;
@@ -150,7 +150,7 @@ int main(){
   }
   else if (a == 3) {
 	long int m = 3;
-	double cc = 0, cpl = 0;; //clustering coefficient and characteristic path length
+	float cc = 0, cpl = 0;; //clustering coefficient and characteristic path length
 	ofstream pclust2;
 	pclust2.open("pclust2.txt", ios::out | ios::trunc);		
 	ofstream ppath2;
@@ -177,7 +177,7 @@ int main(){
   }
   else if (a == 4) {	//node betweenness info & tests
 	long int m = 9, n = 1000, age, nodeage;
-	double* nodeBetw;	
+	float* nodeBetw;	
 
 	NBall* net = new NBall(n,m,3);
 
@@ -201,7 +201,7 @@ int main(){
 	pagebetw.close();
 	
         //get the degree distribution
-        double* dist = net->degreeDistribution();
+        float* dist = net->degreeDistribution();
 
         ofstream pdegdist;
         pdegdist.open("pdegdist.txt", ios::out | ios::trunc);
@@ -234,7 +234,7 @@ int main(){
   else if(a == 5){
 	long int n = 1000, m = 3;
 	bool edge;
-	double realdist;
+	float realdist;
 	GrowingNetwork3D* net = new GrowingNetwork3D(n,m);
 	ofstream pedge;
 	pedge.open("pedge.txt", ios::out | ios::trunc);
