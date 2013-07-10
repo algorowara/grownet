@@ -3,8 +3,8 @@ FLAGS = -fopenmp -ffast-math -O3
 all: main/test main/graphgen main/parametertune main/pgrownet main/lineppnet
 main/parametertune: main/parametertune.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o
 	g++ $(FLAGS) main/parametertune.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/parametertune 
-main/test: main/test.o ngraph/nball.o ngraph/ngraph.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o pgrownet2d/pgrownet2d.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o
-	g++ $(FLAGS) main/test.o ngraph/nball.o ngraph/ngraph.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o pgrownet2d/pgrownet2d.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/test 
+main/test: main/test.o ngraph/nball.o ngraph/nsphere.o ngraph/ngraph.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o pgrownet2d/pgrownet2d.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o
+	g++ $(FLAGS) main/test.o ngraph/nball.o ngraph/nsphere.o ngraph/ngraph.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o pgrownet2d/pgrownet2d.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/test 
 main/graphgen: main/graphgen.o ngraph/nball.o ngraph/nsphere.o ngraph/ngraph.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o
 	g++ $(FLAGS) main/graphgen.o ngraph/nball.o ngraph/nsphere.o ngraph/ngraph.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o growingnetwork2d/growingnetwork2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/graphgen 
 main/pgrownet: main/pgrownet.o ngraph/nball.o ngraph/ngraph.o pgrownet2d/pgrownet2d.o graph/growingnetwork.o graph/graph.o graph/vertex.o growingnetwork3d/spatialvertex.o growingnetwork3d/growingnetwork3d.o

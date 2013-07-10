@@ -6,8 +6,13 @@
 #include <cfloat>
 #include <cstring>
 #include <iostream>
+#include <fstream>
+#include <algorithm>
+#include <iterator>
+#include <sstream>
+#include <string>
 
-NBall::NBall(long int n, long int m, long int d, double r, double a, double g, double t, long int i, long int et, long int ep) : NGraph(d) {
+NBall::NBall(long int n, long int m, long int d, double r, double g, double t, long int i, long int et, long int ep) : NGraph(d) {
 	
 	static bool randSeeded = false;	// static variable to check if the pseudorandom number generator has been seeded yet
 	
@@ -28,8 +33,8 @@ NBall::NBall(long int n, long int m, long int d, double r, double a, double g, d
 	// initialize the non-constant variables
 	this->m = m;
 	this->radius = r;
-	this->alpha = a;
-	this->beta = a * N;
+	this->alpha = NBALL_DEFAULT_ALPHA;
+	this->beta = this->alpha * N;
 	this->baseGam = g;
 	this->baseTol = t;
 	this->baseItr = i;
@@ -93,15 +98,6 @@ NBall::NBall(const NBall* obj) : NGraph(obj->DIM){
 		}
 		
 	}
-	
-}
-
-/**
- * accessor method to retrieve a node, automatically casting it to a SpatialVertex*
- */
-SpatialVertex* NBall::getNode(long int i) const{
-	
-	return (SpatialVertex*)nodes.at(i);
 	
 }
 
@@ -400,6 +396,201 @@ void NBall::gradientDescent(const double gamma, const double tolerance, long int
 	return;	// return statement placed here for clarity only
 	
 }
+
+void NBall::exportObject(const NBall* nb, const char* filename){
+	
+	ofstream outfile(filename, ios::out | ios::trunc);	// open the output file
+	
+	// output all of the parameters of the model
+	outfile<<"# dimension = "<<nb->DIM<<endl;
+	outfile<<"# radius = "<<nb->radius<<endl;
+	outfile<<"# base gamma = "<<nb->baseGam<<endl;
+	outfile<<"# base tolerance = "<<nb->baseTol<<endl;
+	outfile<<"# base iterations = "<<nb->baseItr<<endl;
+	outfile<<"# equalization threshold = "<<nb->equalizationThreshold<<endl;
+	outfile<<"# equalization period = "<<nb->equalizationPeriod<<endl;
+	outfile<<"# iteration weights = "<<nb->iterationWeights<<endl;
+	outfile<<"# time = "<<nb->getTime()<<endl;
+	outfile<<"# m = "<<nb->m<<endl;
+	outfile<<"# N = "<<nb->N<<endl;
+	
+	outfile<<endl;
+	
+	for(long int i = 0; i < nb->N; i++){	// for each node in the graph
+		
+		outfile<<i<<" ";	// output the index of the node, now its only identifier
+		
+		outfile<<nb->getNode(i)->dimension<<" ";	// output the dimension of the node so that is position can be accurately read
+		
+		outfile<<nb->getNode(i)->getStartTime()<<" ";	// output the starting time of this node
+		
+		for(long int j = 0; j < nb->getNode(i)->dimension; j++){	// for each dimension of the space
+			
+			outfile<<nb->getNode(i)->position[j]<<" ";	// output the position
+			
+		}
+		
+		for(long int j = 0; j < nb->K(i); j++){	// for each neighbor of this node
+			
+			long int index = nb->indexOf(nb->getNode(i)->getNeighbor(j));	// identify it by index
+			
+			outfile<<index<<" ";
+			
+		}
+		
+		outfile<<endl;	// signify the end of this node's information with a new line
+		
+	}
+	
+	outfile.close();	// close the output file
+	
+}
+
+NBall* NBall::importObject(const char* filename){
+	
+	ifstream infile(filename, ios::in);
+	
+	NBall* nb;
+	long int bufsize = 2048;
+	long int m, time, dim, iterations, threshold, period, size;
+	double radius, gamma, tolerance, weights;
+	char* line = new char[bufsize];	// create a character buffer larger than could be reasonably used
+	bool** adjacency;	// create an adjacency matrix to record edges
+	
+	// retrieve the parameters of the model as they were output
+	infile.getline(line, bufsize);
+	sscanf(line, "# dimension = %li", &dim);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# radius = %lf", &radius);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# base gamma = %lf", &gamma);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# base tolerance = %lf", &tolerance);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# base iterations = %li", &iterations);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# equalization threshold = %li", &threshold);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# equalization period = %li", &period);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# iteration weights = %lf", &weights);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# time = %li", &time);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# m = %li", &m);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# N = %li", &size);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	// create a new NBall (with m+1 nodes so as not to anger the constructor)
+	nb = new NBall(m+1, m, dim, radius, gamma, tolerance, iterations, threshold, period);
+	nb->time = time;
+	
+	while(nb->N > 0){	// remove any nodes in the NBall
+		
+		nb->nodes.pop_back();
+		
+	}
+	
+	adjacency = new bool*[size];	// create an array of N adjacency arrays
+	
+	while(!infile.eof()){	// while there remain lines in the file
+	
+		long int index, dimension, starttime;
+		double* position;
+		SpatialVertex* node;
+		
+		infile.getline(line, bufsize);	// retrieve them from the file
+		
+		vector<string> tokens;	// create a vector of string tokens
+		istringstream linestream(line);	// and execute the appropriate steps
+		copy(istream_iterator<string>(linestream), istream_iterator<string>(), back_inserter<vector<string> >(tokens));	// to read each whitespace-delimited string as a separate token
+		
+		if(tokens.size() == 0){	// if this is a line of whitespace, or otherwise contains no information
+			
+			memset(line, 0, bufsize * sizeof(char));	// delete the information
+			continue;	// do not attempt to parse it
+			
+		}
+		
+		index = atol(tokens.at(0).c_str());	// record the index to properly populate the adjacency matrix
+		dimension = atol(tokens.at(1).c_str());	// record the dimension to read the appropriate number of position components
+		starttime = atol(tokens.at(2).c_str());	// record the starttime to use as a parameter to the new node's constructor
+		
+		position = new double[dimension];	// initialize the new position array
+		adjacency[index] = new bool[size];	// initialize this row/column of the adjacency matrix
+		memset(adjacency[index], false, size * sizeof(bool));
+		
+		for(long int i = 3; i < 3 + dimension; i++){	// for each component of the node's position
+			
+			position[i - 3] = atof(tokens.at(i).c_str());	// the first component is the fourth value given
+															// since the tokens vector is zero-indexed, this means that the position starts from index 3
+			
+		}
+		
+		for(long int i = 3 + dimension; i < tokens.size(); i++){	// for all remaining tokens
+			
+			long int neighborindex = atol(tokens.at(i).c_str());	// record the index given by the token
+			adjacency[index][neighborindex] = true;	// record that this node (index) is linked to some other node (neighborindex)
+			
+		}
+		
+		node = new SpatialVertex(dimension, position, starttime);
+		nb->addNode(node);
+		
+		memset(line, 0, bufsize * sizeof(char));
+		
+	}
+	
+	for(long int i = 0; i < size; i++){	// for each adjacency list in the adjacency matrix
+		
+		for(long int j = 0; j < size; j++){	// for each element in that list
+			
+			if(adjacency[i][j]){	// if that element is true (i.e. nodes i and j are linked)
+				
+				nb->getNode(i)->addNeighbor(nb->getNode(j));	// create an edge (if one does not exist aleady)
+				
+			}
+			
+		}
+		
+	}
+	
+	infile.close();
+	
+	for(long int i = 0; i < size; i++){
+		
+		delete adjacency[i];
+		
+	}
+	
+	delete adjacency;
+	delete line;
+	
+	return nb;
+	
+}
+
 
 NBall::~NBall(){
 	

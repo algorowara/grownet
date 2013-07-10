@@ -1,6 +1,7 @@
 #include "ngraph.h"
 #include "../growingnetwork3d/spatialvertex.h"
 #include <fstream>
+#include <cmath>
 
 NGraph::NGraph(long int d) : DIM(d){
 	
@@ -14,46 +15,21 @@ SpatialVertex* NGraph::getNode(const long int i) const{
 	
 }
 
-void exportObject(const NGraph* g, const char* filename){
+/**
+ * method of calculating the linear distance between two nodes in a space
+ * behavior is undefined and dangerous if both nodes are not SpatialVertices
+ * if one node is of a higher dimension than the other, the lower dimension will be the space considered
+ */
+double NGraph::linearDistance(Vertex* a, Vertex* b){
 	
-	ofstream outfile(filename, ios::out | ios::trunc);	// open the output file
+	double sum = 0;
 	
-	// output all of the parameters of the model
-	outfile<<"# dimension ="<<g->DIM<<endl;
-	outfile<<"# radius = "<<g->radius<<endl;
-	outfile<<"# base gamma = "<<g->baseGam<<endl;
-	outfile<<"# base tolerance = "<<g->baseTol<<endl;
-	outfile<<"# base iterations = "<<g->baseItr<<endl;
-	outfile<<"# equalization threshold = "<<g->equalizationThreshold<<endl;
-	outfile<<"# equalization period = "<<g->equalizationPeriod<<endl;
-	outfile<<"# iteration weights = "<<g->iterationWeights<<endl;
-	outfile<<"# time = "<<g->getTime()<<endl;
-	outfile<<"# m = "<<g->m<<endl;
-	
-	for(long int i = 0; i < g->N; i++){	// for each node in the graph
+	for(long int i = 0; i < ((SpatialVertex*)a)->dimension && i < ((SpatialVertex*)b)->dimension; i++){
 		
-		outfile<<i<<" ";	// output the index of the node, now its only identifier
-		
-		outfile<<g->getNode(i)->dimension<<" ";	// output the dimension of the node so that is position can be accurately read
-		
-		for(long int j = 0; j < g->getNode(i)->dimension; j++){	// for each dimension of the space
-			
-			outfile<<g->getNode(i)->position[j]<<" ";	// output the position
-			
-		}
-		
-		for(long int j = 0; j < g->K(i); j++){	// for each neighbor of this node
-			
-			long int index = g->indexOf(g->getNode(i)->getNeighbor(j));	// identify it by index
-			
-			outfile<<index<<" ";
-			
-		}
-		
-		outfile<<endl;	// signify the end of this node's information with a new line
+		sum += pow(((SpatialVertex*)a)->position[i] - ((SpatialVertex*)b)->position[i], 2.0);
 		
 	}
 	
-	outfile.close();	// close the output file
+	return sqrt(sum);
 	
 }

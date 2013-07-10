@@ -1,4 +1,6 @@
+#include "../ngraph/ngraph.h"
 #include "../ngraph/nball.h"
+#include "../ngraph/nsphere.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -6,6 +8,8 @@
 #include <sstream>
 #include <sys/time.h>
 #include <cfloat>
+#include <algorithm>
+#include <iterator>
 
 using namespace std;
 
@@ -14,7 +18,11 @@ double* findNormalizedNearestNeighborDistances(NBall* net);
 
 int main(){
 	
-	NBall* net = new NBall(10, 3, 2);
+	NSphere* net = new NSphere(100, 3, 2);
+	NSphere::exportObject(net, "test.out");
+	NSphere* net2 = NSphere::importObject("test.out");
+	
+	cout<<net->averagePathLength()<<" = "<<net2->averagePathLength()<<endl;
 	
 }
 

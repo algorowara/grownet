@@ -20,9 +20,13 @@ Vertex::Vertex(long int time){
 }
 	
 void Vertex::addNeighbor(Vertex* neighbor){
-
-	neighbors.push_back(neighbor);
-	neighbor->neighbors.push_back(this);
+	
+	if(!hasNeighbor(neighbor)){
+		
+		neighbors.push_back(neighbor);
+		neighbor->neighbors.push_back(this);
+		
+	}
 	
 }
 

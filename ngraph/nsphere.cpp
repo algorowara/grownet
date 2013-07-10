@@ -4,10 +4,15 @@
 #include <cmath>
 #include <cstdlib>
 #include <cfloat>
+#include <string>
+#include <sstream>
+#include <algorithm>
+#include <iterator>
+#include <fstream>
 
 using namespace std;
 
-NSphere::NSphere(long int n, long int m, long int d, double baseGam, double baseTol, long int baseItr, long int threshold, long int period) : NGraph(d){
+NSphere::NSphere(long int n, long int m, long int d, double r, double baseGam, double baseTol, long int baseItr, long int threshold, long int period) : NGraph(d){
 	
 	static bool randSeeded = false;
 	
@@ -19,7 +24,7 @@ NSphere::NSphere(long int n, long int m, long int d, double baseGam, double base
 	}
 	
 	this->time = 0;
-	this->radius = NSPHERE_DEFAULT_RADIUS;
+	this->radius = r;
 	this->m = m;
 	this->baseGam = baseGam;
 	this->baseTol = baseTol;
@@ -47,15 +52,6 @@ NSphere::NSphere(long int n, long int m, long int d, double baseGam, double base
 	}
 	
 	grow(n);	// grow the remaining nodes normally
-	
-}
-
-/**
- * method to retrieve a node and cast it to SpatialVertex*
- */
-SpatialVertex* NSphere::getNode(long int i){
-	
-	return (SpatialVertex*)(nodes.at(i));
 	
 }
 
@@ -356,5 +352,199 @@ void NSphere::normalizeRadius(SpatialVertex* node){
 									// |vector * scalar/|vector|| = |vector/|vector| * scalar| = |unit vector * scalar| = scalar
 		
 	}
+	
+}
+
+void NSphere::exportObject(const NSphere* ns, const char* filename){
+	
+	ofstream outfile(filename, ios::out | ios::trunc);	// open the output file
+	
+	// output all of the parameters of the model
+	outfile<<"# dimension = "<<ns->DIM<<endl;
+	outfile<<"# radius = "<<ns->radius<<endl;
+	outfile<<"# base gamma = "<<ns->baseGam<<endl;
+	outfile<<"# base tolerance = "<<ns->baseTol<<endl;
+	outfile<<"# base iterations = "<<ns->baseItr<<endl;
+	outfile<<"# equalization threshold = "<<ns->equalizationThreshold<<endl;
+	outfile<<"# equalization period = "<<ns->equalizationPeriod<<endl;
+	outfile<<"# iteration weights = "<<ns->iterationWeights<<endl;
+	outfile<<"# time = "<<ns->getTime()<<endl;
+	outfile<<"# m = "<<ns->m<<endl;
+	outfile<<"# N = "<<ns->N<<endl;
+	
+	outfile<<endl;
+	
+	for(long int i = 0; i < ns->N; i++){	// for each node in the graph
+		
+		outfile<<i<<" ";	// output the index of the node, now its only identifier
+		
+		outfile<<ns->getNode(i)->dimension<<" ";	// output the dimension of the node so that is position can be accurately read
+		
+		outfile<<ns->getNode(i)->getStartTime()<<" ";	// output the starting time of this node
+		
+		for(long int j = 0; j < ns->getNode(i)->dimension; j++){	// for each dimension of the space
+			
+			outfile<<ns->getNode(i)->position[j]<<" ";	// output the position
+			
+		}
+		
+		for(long int j = 0; j < ns->K(i); j++){	// for each neighbor of this node
+			
+			long int index = ns->indexOf(ns->getNode(i)->getNeighbor(j));	// identify it by index
+			
+			outfile<<index<<" ";
+			
+		}
+		
+		outfile<<endl;	// signify the end of this node's information with a new line
+		
+	}
+	
+	outfile.close();	// close the output file
+	
+}
+
+NSphere* NSphere::importObject(const char* filename){
+	
+	ifstream infile(filename, ios::in);
+	
+	NSphere* ns;
+	long int bufsize = 2048;
+	long int m, time, dim, iterations, threshold, period, size;
+	double radius, gamma, tolerance, weights;
+	char* line = new char[bufsize];	// create a character buffer larger than could be reasonably used
+	bool** adjacency;	// create an adjacency matrix to record edges
+	
+	// retrieve the parameters of the model as they were output
+	infile.getline(line, bufsize);
+	sscanf(line, "# dimension = %li", &dim);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# radius = %lf", &radius);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# base gamma = %lf", &gamma);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# base tolerance = %lf", &tolerance);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# base iterations = %li", &iterations);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# equalization threshold = %li", &threshold);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# equalization period = %li", &period);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# iteration weights = %lf", &weights);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# time = %li", &time);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# m = %li", &m);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	infile.getline(line, bufsize);
+	sscanf(line, "# N = %li", &size);
+	memset(line, 0, bufsize * sizeof(char));
+	
+	// create a new NSphere (with m+1 nodes so as not to anger the constructor)
+	ns = new NSphere(m+1, m, dim, radius, gamma, tolerance, iterations, threshold, period);
+	ns->time = time;
+	
+	while(ns->N > 0){	// remove any nodes in the NSphere
+		
+		ns->nodes.pop_back();
+		
+	}
+	
+	adjacency = new bool*[size];	// create an array of N adjacency arrays
+	
+	while(!infile.eof()){	// while there remain lines in the file
+	
+		long int index, dimension, starttime;
+		double* position;
+		SpatialVertex* node;
+		
+		infile.getline(line, bufsize);	// retrieve them from the file
+		
+		vector<string> tokens;	// create a vector of string tokens
+		istringstream linestream(line);	// and execute the appropriate steps
+		copy(istream_iterator<string>(linestream), istream_iterator<string>(), back_inserter<vector <string> >(tokens));	// to read each whitespace-delimited string as a separate token
+		
+		if(tokens.size() == 0){	// if this is a line of whitespace, or otherwise contains no information
+			
+			memset(line, 0, bufsize * sizeof(char));	// delete the information
+			continue;	// do not attempt to parse it
+			
+		}
+		
+		index = atol(tokens.at(0).c_str());	// record the index to properly populate the adjacency matrix
+		dimension = atol(tokens.at(1).c_str());	// record the dimension to read the appropriate number of position components
+		starttime = atol(tokens.at(2).c_str());	// record the starttime to use as a parameter to the new node's constructor
+		
+		position = new double[dimension];	// initialize the new position array
+		adjacency[index] = new bool[size];	// initialize this row/column of the adjacency matrix
+		memset(adjacency[index], false, size * sizeof(bool));
+		
+		for(long int i = 3; i < 3 + dimension; i++){	// for each component of the node's position
+			
+			position[i - 3] = atof(tokens.at(i).c_str());	// the first component is the fourth value given
+														// since the tokens vector is zero-indexed, this means that the position starts from index 3
+			
+		}
+		
+		for(long int i = 3 + dimension; i < tokens.size(); i++){	// for all remaining tokens
+			
+			long int neighborindex = atol(tokens.at(i).c_str());	// record the index given by the token
+			adjacency[index][neighborindex] = true;	// record that this node (index) is linked to some other node (neighborindex)
+			
+		}
+		
+		node = new SpatialVertex(dimension, position, starttime);
+		ns->addNode(node);
+		
+		memset(line, 0, bufsize * sizeof(char));
+		
+	}
+	
+	for(long int i = 0; i < size; i++){	// for each adjacency list in the adjacency matrix
+		
+		for(long int j = 0; j < size; j++){	// for each element in that list
+			
+			if(adjacency[i][j]){	// if that element is true (i.e. nodes i and j are linked)
+				
+				ns->getNode(i)->addNeighbor(ns->getNode(j));	// create an edge (if one does not exist aleady)
+				
+			}
+			
+		}
+		
+	}
+	
+	infile.close();
+	
+	for(long int i = 0; i < size; i++){
+		
+		delete adjacency[i];
+		
+	}
+	
+	delete adjacency;
+	delete line;
+	
+	return ns;
 	
 }

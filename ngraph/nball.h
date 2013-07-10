@@ -20,9 +20,8 @@ class NBall : public NGraph {
 		double alpha;	// node-node force constant
 		double beta;	// attractive cloud force constant; always equal to the node-node force constant multiplied by the number of nodes
 		
-		NBall(long int n, long int m, long int d, double r = NBALL_DEFAULT_RADIUS, double a = NBALL_DEFAULT_ALPHA, double g = NBALL_DEFAULT_GAMMA, double t = NBALL_DEFAULT_TOLERANCE, long int i = NBALL_DEFAULT_ITERATIONS, long int et = NBALL_DEFAULT_THRESHOLD, long int ep = NBALL_DEFAULT_PERIOD);
+		NBall(long int n, long int m, long int d, double r = NBALL_DEFAULT_RADIUS, double g = NBALL_DEFAULT_GAMMA, double t = NBALL_DEFAULT_TOLERANCE, long int i = NBALL_DEFAULT_ITERATIONS, long int et = NBALL_DEFAULT_THRESHOLD, long int ep = NBALL_DEFAULT_PERIOD);
 		NBall(const NBall* obj);
-		SpatialVertex* getNode(long int i) const;
 		void grow(long int n);
 		double* randomLocation();
 		double linearDistance(Vertex* a, Vertex* b);
@@ -31,6 +30,8 @@ class NBall : public NGraph {
 		double* sumForces(SpatialVertex* node);
 		void equalize();
 		void gradientDescent(double gamma, double tolerance, long int maxItr);
+		static void exportObject(const NBall* nb, const char* filename);
+		static NBall* importObject(const char* filename);
 		~NBall();
 		
 };
