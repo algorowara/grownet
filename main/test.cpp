@@ -15,10 +15,13 @@ using namespace std;
 
 int main(){
 	
-	long int n = 7, m = 3, d = 2;
+	long int n = 200, m = 3, d = 2;
 	
-	for(long int i = 0; i < 1; i++){
-	NBall* net = new NBall(n, m, d);
+	for(long int i = 0; i < 10; i++){
+		
+		NBall* net = new NBall(n, m, d);
+		delete net;
+		
 	}
 	
 }

@@ -54,8 +54,13 @@ NBall::NBall(long int n, long int m, long int d, float r, float g, float t, long
 		
 		addNode(newNode);	// add the new node to the graph
 		beta = (alpha * N)/pow(radius, (float)DIM);	// update the attractive cloud force constant
-		equalize();	
 		tick();	// move forward in time
+		
+	}
+	
+	if(N > 1){
+		
+		equalize();
 		
 	}
 	

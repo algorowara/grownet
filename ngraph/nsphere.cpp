@@ -44,14 +44,17 @@ NSphere::NSphere(long int n, long int m, long int d, float r, float baseGam, flo
 			
 		}
 		
-		
-		equalize();	// equalize the distribution of nodes
 		tick();
-		n--;
 		
 	}
 	
-	grow(n);	// grow the remaining nodes normally
+	if(N > 1){
+		
+		equalize();
+		
+	}
+	
+	grow(n - (m+1));	// grow the remaining nodes normally
 	
 }
 
