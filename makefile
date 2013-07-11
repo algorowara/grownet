@@ -1,5 +1,6 @@
 FLAGS = -fopenmp -ffast-math -O3
 
+
 all: main/test main/graphgen main/parametertune main/pgrownet main/lineppnet
 main/parametertune: main/parametertune.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o
 	g++ $(FLAGS) main/parametertune.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o -o main/parametertune 

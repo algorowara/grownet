@@ -167,7 +167,7 @@ SpatialVertex** PPGrowingNetwork1D::findMNearestNeighbors(SpatialVertex* start){
 
 	for(int i = 0; i < m; i++){
 
-		dnormal[i] = DBL_MAX; //everything is initially far away
+		dnormal[i] = FLT_MAX; //everything is initially far away
 
 	}
 
@@ -264,7 +264,7 @@ void PPGrowingNetwork1D::equalize(){
 void PPGrowingNetwork1D::gradientDescent(float gamma, float tolerance, long int maxItr){
 
 	float* netForce[N];	//local array to store forces on each node
-	float previousPotential = DBL_MAX;  //record of the last potential for minimization
+	float previousPotential = FLT_MAX;  //record of the last potential for minimization
 
 	while(abs(previousPotential - calculatePotential()) > tolerance && maxItr > 0){
 

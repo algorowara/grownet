@@ -212,7 +212,7 @@ SpatialVertex** NBall::findMNearestNeighbors(SpatialVertex* start){
 
 	for(int i = 0; i < m; i++){
 
-		dist[i] = DBL_MAX;
+		dist[i] = FLT_MAX;
 	}
 
 	for(int i = 0; i < N; i++){
@@ -323,7 +323,7 @@ void NBall::equalize(){
 void NBall::gradientDescent(const float gamma, const float tolerance, long int maxItr){
 	
 	float* netForce[N];	// a record of the net force on each node
-	float prevMaxDisp = DBL_MAX;	// record of the maximum scalar displacement of a node on the previous iteration
+	float prevMaxDisp = FLT_MAX;	// record of the maximum scalar displacement of a node on the previous iteration
 									// initially set to an impossibly large value to ensure at least one iteration occurs
 	float tolMaxDisp = radius * pow(N, -1.0/DIM) * tolerance * baseGam;	// the maximum tolerated displacement
 																			// if the maximum displacement is above this value, continue iterating
@@ -341,7 +341,7 @@ void NBall::gradientDescent(const float gamma, const float tolerance, long int m
 		
 			#pragma omp for schedule(guided)
 			for(long int i = 0; i < N; i++){	// for each node
-				
+			
 				netForce[i] = this->sumForces(getNode(i));	// store the current net force on each node
 				
 			}
@@ -464,15 +464,15 @@ NBall* NBall::importObject(const char* filename){
 	memset(line, 0, bufsize * sizeof(char));
 	
 	infile.getline(line, bufsize);
-	sscanf(line, "# radius = %lf", &radius);
+	sscanf(line, "# radius = %f", &radius);
 	memset(line, 0, bufsize * sizeof(char));
 	
 	infile.getline(line, bufsize);
-	sscanf(line, "# base gamma = %lf", &gamma);
+	sscanf(line, "# base gamma = %f", &gamma);
 	memset(line, 0, bufsize * sizeof(char));
 	
 	infile.getline(line, bufsize);
-	sscanf(line, "# base tolerance = %lf", &tolerance);
+	sscanf(line, "# base tolerance = %f", &tolerance);
 	memset(line, 0, bufsize * sizeof(char));
 	
 	infile.getline(line, bufsize);
@@ -488,7 +488,7 @@ NBall* NBall::importObject(const char* filename){
 	memset(line, 0, bufsize * sizeof(char));
 	
 	infile.getline(line, bufsize);
-	sscanf(line, "# iteration weights = %lf", &weights);
+	sscanf(line, "# iteration weights = %f", &weights);
 	memset(line, 0, bufsize * sizeof(char));
 	
 	infile.getline(line, bufsize);

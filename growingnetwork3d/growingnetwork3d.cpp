@@ -179,7 +179,7 @@ SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
 	
 	for(int i = 0; i < m; i++){
 	
-		dsquare[i] = DBL_MAX;
+		dsquare[i] = FLT_MAX;
 		
 	}
 	
@@ -294,7 +294,7 @@ void GrowingNetwork3D::equalize(){
 void GrowingNetwork3D::gradientDescent(float gamma, float baseTolerance, long int maxItr){
 	
 	float* netForce[N];	// local array to store the net forces on each node
-	float previousPotential = DBL_MAX;	// local field to store the previous known potential; set to an arbitrary maximum to ensure that at least one iteration occurs
+	float previousPotential = FLT_MAX;	// local field to store the previous known potential; set to an arbitrary maximum to ensure that at least one iteration occurs
 	float toleratedPotential = 0;
 	
 	if(N > GUIDED_N){

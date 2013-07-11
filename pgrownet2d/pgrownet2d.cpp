@@ -182,7 +182,7 @@ SpatialVertex** PositiveChargeGrowingNetwork2D::findMNearestNeighbors(SpatialVer
 
 	for(int i = 0; i < m; i++){
 
-		dsquare[i] = DBL_MAX; //everything is intitially far away
+		dsquare[i] = FLT_MAX; //everything is intitially far away
 
 	}
 
@@ -278,7 +278,7 @@ void PositiveChargeGrowingNetwork2D::equalize(){
 void PositiveChargeGrowingNetwork2D::gradientDescent(float gamma, float tolerance, long int maxItr){
 
         float* netForce[N];    // local array to store the net forces on each node
-        float previousPotential = DBL_MAX;     // record of the last potential
+        float previousPotential = FLT_MAX;     // record of the last potential
 
         while(abs(previousPotential - calculatePotential()) > tolerance && maxItr > 0){
 
