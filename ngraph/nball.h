@@ -6,12 +6,19 @@
 #define NUM_NODES_ERR 13
 
 #define NBALL_DEFAULT_RADIUS 1.0
-#define NBALL_DEFAULT_GAMMA 4.0
+#define NBALL_DEFAULT_GAMMA 6.0
 #define NBALL_DEFAULT_ALPHA 1.0
 #define NBALL_DEFAULT_TOLERANCE 0.01
 #define NBALL_DEFAULT_ITERATIONS 20
 #define NBALL_DEFAULT_THRESHOLD 1000
 #define NBALL_DEFAULT_PERIOD 1
+
+#define NBALL_LINEAR_DISTANCE(nodePos, otherPos, dist) \
+	dist = 0; \
+	for(long int itr_var = 0; itr_var < DIM; itr_var++){ \
+		dist += (nodePos[itr_var] - otherPos[itr_var]) * (nodePos[itr_var] - otherPos[itr_var]); \
+	} \
+	dist = sqrt(dist); \
 
 class NBall : public NGraph {
 	

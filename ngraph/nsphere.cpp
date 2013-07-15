@@ -188,7 +188,8 @@ SpatialVertex** NSphere::findMNearestNeighbors(SpatialVertex* start){
 
 		}
 
-		float d = linearDistance(start, getNode(i));
+		float d;
+		NSPHERE_LINEAR_DISTANCE(start->position, getNode(i)->position, d);
 
 		for(int j = 0; j < m; j++){	//iterate through all distance squared records
 
@@ -241,7 +242,7 @@ float* NSphere::sumForces(SpatialVertex* node){
 		}
 		
 		other = getNode(i);
-		dist = linearDistance(node, other);
+		NSPHERE_LINEAR_DISTANCE(node->position, other->position, dist);
 		magnitude = 1.0 / pow(dist, (float)DIM);	// calculate the magnitude of the force as 1/r^DIM
 		
 		for(long int j = 0; j < DIM+1; j++){	// for each dimension, add the component of force from this interaction
@@ -304,6 +305,7 @@ void NSphere::gradientDescent(float gamma, float tolerance, long int maxItr){
 			for(long int i = 0; i < N; i++){	// for every node
 			
 				float oldPos[DIM];
+				float disp;
 				
 				for(long int j = 0; j < DIM+1; j++){	// for every dimension
 				
@@ -314,7 +316,7 @@ void NSphere::gradientDescent(float gamma, float tolerance, long int maxItr){
 				}
 				
 				normalizeRadius(getNode(i));	// normalize the radius
-				float disp = linearDistance(oldPos, getNode(i)->position);	// calculate the displacement
+				NSPHERE_LINEAR_DISTANCE(oldPos, getNode(i)->position, disp);	// calculate the displacement
 																				// between the old and current positions
 				
 				#pragma omp critial (maximumDisplacement)	// encase this comparison in a critical region

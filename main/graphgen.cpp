@@ -17,7 +17,7 @@ using namespace std;
 int main(){
 	
 	long int nstart = 50, nstep = 50, nend = 1000;
-	long int m = 4;
+	long int m = 2;
 	long int sample = 5;
 	
 	ofstream file[4][2];
@@ -56,6 +56,7 @@ int main(){
 				
 			}
 			
+			ss<<"_m"<<m;
 			ss<<".txt";
 		
 			file[i][j].open(ss.str().c_str(), ios::out | ios::trunc);

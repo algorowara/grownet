@@ -249,7 +249,8 @@ SpatialVertex** NBall::findMNearestNeighbors(SpatialVertex* start){
 
 		}
 
-		float d = linearDistance(start, getNode(i));
+		float d;
+		NBALL_LINEAR_DISTANCE(start->position, getNode(i)->position, d);
 
 		for(int j = 0; j < m; j++){	//iterate through all distance squared records
 
@@ -299,7 +300,7 @@ float* NBall::sumForces(SpatialVertex* node){
 			
 		}
 		
-		dist = linearDistance(node, other);	// remember the distance
+		NBALL_LINEAR_DISTANCE(node->position, other->position, dist);
 		
 		if(dist == 0){	// if these nodes are right on top of each other
 			
@@ -399,8 +400,8 @@ void NBall::gradientDescent(const float gamma, const float tolerance, long int m
 					
 				}
 				
-				disp = linearDistance(oldPos, getNode(i)->position);	// calculate the displacement
-																		// between the old and current positions
+				NBALL_LINEAR_DISTANCE(oldPos, getNode(i)->position, disp);	// calculate the displacement
+																			// between the old and current positions
 				
 				#pragma omp critial (maximumDisplacement)	// encase this comparison in a critical region
 				{

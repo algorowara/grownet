@@ -4,11 +4,18 @@
 #include "ngraph.h"
 
 #define NSPHERE_DEFAULT_RADIUS 1.0
-#define NSPHERE_DEFAULT_GAMMA 4.0
+#define NSPHERE_DEFAULT_GAMMA 6.0
 #define NSPHERE_DEFAULT_TOLERANCE 0.01
 #define NSPHERE_DEFAULT_ITERATIONS 100
 #define NSPHERE_DEFAULT_THRESHOLD 100
 #define NSPHERE_DEFAULT_PERIOD 1
+
+#define NSPHERE_LINEAR_DISTANCE(nodePos, otherPos, dist) \
+	dist = 0; \
+	for(long int itr_var = 0; itr_var < DIM+1; itr_var++){ \
+		dist += (nodePos[itr_var] - otherPos[itr_var]) * (nodePos[itr_var] - otherPos[itr_var]); \
+	} \
+	dist = sqrt(dist); \
 
 using namespace std;
 
