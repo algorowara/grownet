@@ -15,13 +15,9 @@ using namespace std;
 
 int main(){
 	
-	long int n = 200, m = 3, d = 2;
-	
-	for(long int i = 0; i < 10; i++){
-		
-		NBall* net = new NBall(n, m, d);
-		delete net;
-		
-	}
+	long int n = 1000, m = 11, d = 10;
+	NBall* net = new NBall(m+1, m, d);
+	net->baseGam = 4.0;
+	net->grow(n - (m+1));
 	
 }

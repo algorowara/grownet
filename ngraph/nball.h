@@ -9,8 +9,8 @@
 #define NBALL_DEFAULT_GAMMA 4.0
 #define NBALL_DEFAULT_ALPHA 1.0
 #define NBALL_DEFAULT_TOLERANCE 0.01
-#define NBALL_DEFAULT_ITERATIONS 200
-#define NBALL_DEFAULT_THRESHOLD 100
+#define NBALL_DEFAULT_ITERATIONS 20
+#define NBALL_DEFAULT_THRESHOLD 1000
 #define NBALL_DEFAULT_PERIOD 1
 
 class NBall : public NGraph {
@@ -20,7 +20,7 @@ class NBall : public NGraph {
 		float alpha;	// node-node force constant
 		float beta;	// attractive cloud force constant; always equal to the node-node force constant multiplied by the number of nodes
 		
-		NBall(long int n, long int m, long int d, float r = NBALL_DEFAULT_RADIUS, float g = NBALL_DEFAULT_GAMMA, float t = NBALL_DEFAULT_TOLERANCE, long int i = NBALL_DEFAULT_ITERATIONS, long int et = NBALL_DEFAULT_THRESHOLD, long int ep = NBALL_DEFAULT_PERIOD);
+		NBall(long int n, long int m, int d, float r = NBALL_DEFAULT_RADIUS, float g = NBALL_DEFAULT_GAMMA, float t = NBALL_DEFAULT_TOLERANCE, long int i = NBALL_DEFAULT_ITERATIONS, long int et = NBALL_DEFAULT_THRESHOLD, long int ep = NBALL_DEFAULT_PERIOD);
 		NBall(const NBall* obj);
 		void grow(long int n);
 		float* randomLocation();

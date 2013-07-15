@@ -14,11 +14,11 @@ class NGraph : public GrowingNetwork {
 	
 	public:
 
-		const long int DIM;
+		const int DIM;
 		float radius;
 		float baseGam;
 		float baseTol;
-		float baseItr;
+		long int baseItr;
 		long int equalizationThreshold;	// the number of nodes below which GradientDescent is called once per node added
 		long int equalizationPeriod;	// the number of nodes added per call to GradientDescent
 		float iterationWeights;	// count of weighted iterations over this object's lifetime

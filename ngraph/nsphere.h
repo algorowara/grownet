@@ -16,7 +16,7 @@ class NSphere : public NGraph {
 
 	public:
 		
-		NSphere(long int n, long int m, long int d, float r = NSPHERE_DEFAULT_RADIUS, float baseGam = NSPHERE_DEFAULT_GAMMA, float baseTol = NSPHERE_DEFAULT_TOLERANCE, long int baseItr = NSPHERE_DEFAULT_ITERATIONS, long int threshold = NSPHERE_DEFAULT_THRESHOLD, long int period = NSPHERE_DEFAULT_PERIOD);
+		NSphere(long int n, long int m, int d, float r = NSPHERE_DEFAULT_RADIUS, float baseGam = NSPHERE_DEFAULT_GAMMA, float baseTol = NSPHERE_DEFAULT_TOLERANCE, long int baseItr = NSPHERE_DEFAULT_ITERATIONS, long int threshold = NSPHERE_DEFAULT_THRESHOLD, long int period = NSPHERE_DEFAULT_PERIOD);
 		void grow(long int n);
 		float* randomLocation();
 		float linearDistance(Vertex* a, Vertex* b);

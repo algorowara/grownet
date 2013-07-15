@@ -21,7 +21,7 @@ float SpatialVertex::radialDistance(){
 	
 	for(long int i = 0; i < dimension; i++){
 		
-		rsq += pow(position[i], 2.0);
+		rsq += pow(position[i], 2);
 		
 	}
 	

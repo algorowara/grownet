@@ -12,7 +12,7 @@
 #include <sstream>
 #include <string>
 
-NBall::NBall(long int n, long int m, long int d, float r, float g, float t, long int i, long int et, long int ep) : NGraph(d) {
+NBall::NBall(long int n, long int m, int d, float r, float g, float t, long int i, long int et, long int ep) : NGraph(d) {
 	
 	static bool randSeeded = false;	// static variable to check if the pseudorandom number generator has been seeded yet
 	
@@ -33,8 +33,8 @@ NBall::NBall(long int n, long int m, long int d, float r, float g, float t, long
 	// initialize the non-constant variables
 	this->m = m;
 	this->radius = r;
-	this->alpha = NBALL_DEFAULT_ALPHA;
-	this->beta = this->alpha * N;
+	this->alpha = NBALL_DEFAULT_ALPHA/DIM;
+	this->beta = (this->alpha * N) / (pow(radius, DIM));
 	this->baseGam = g;
 	this->baseTol = t;
 	this->baseItr = i;
@@ -53,17 +53,13 @@ NBall::NBall(long int n, long int m, long int d, float r, float g, float t, long
 		}
 		
 		addNode(newNode);	// add the new node to the graph
-		beta = (alpha * N)/pow(radius, (float)DIM);	// update the attractive cloud force constant
+		beta = (alpha * N)/(pow(radius, DIM));	// update the attractive cloud force constant
 		tick();	// move forward in time
+
 		
 	}
 	
-	if(N > 1){
-		
-		equalize();
-		
-	}
-	
+	equalize();
 	grow(n - (m+1));	// grow the remaining nodes normally
 	
 }
@@ -115,15 +111,40 @@ void NBall::grow(long int n){
 		
 		SpatialVertex* newNode = new SpatialVertex(DIM, randomLocation(), getTime());	// generate a new node at a random location
 		SpatialVertex** nearNeighbors = findMNearestNeighbors(newNode);	// find its m nearest neighbors
-				
+		long int radiallyCloserNeighbors = 0;
+		
 		for(long int i = 0; i < m; i++){	// for each of those nearest neighbors
 			
 			newNode->addNeighbor(nearNeighbors[i]);	// link it to the new node
 			
+			if(newNode->radialDistance() > nearNeighbors[i]->radialDistance()){	// if this node is farther from the origin than this neighbor
+				
+				radiallyCloserNeighbors++;	// note that it has an additional neighbor which is radially closer
+				
+			}
+			
 		}
 		
 		addNode(newNode);	// add the new node to the graph
-		beta = (alpha * N)/pow(radius, (float)DIM);	// update the attractive cloud force constant
+		beta = (alpha * N)/(pow(radius, DIM));	// update the attractive cloud force constant
+		
+		if(radiallyCloserNeighbors < m && m > DIM){	// if this node is not the farthest outward of all its neighbors
+													// and the number of nearest neighbors is large enough for this space
+													// to avoid being confined to a lower-dimensional set of points
+			
+			for(long int i = 0; i < DIM; i++){	// for each dimension
+				
+				newNode->position[i] = 0;
+				
+				for(long int j = 0; j < m; j++){	// slightly pre-equalize the new node
+					
+					newNode->position[i] += (nearNeighbors[j]->position[i])/m;	// by placing it at the average position of its nearest neighbors
+					
+				}
+					
+			}
+			
+		}
 		
 		if(N < this->equalizationThreshold || N%(this->equalizationPeriod) == 0){
 			
@@ -300,6 +321,12 @@ float* NBall::sumForces(SpatialVertex* node){
 	dist = node->radialDistance();	// calculate the attractive cloud force
 	mag = -beta * dist;	// since the force is attractive, it will be negative with respect to the radially outwards vector
 	
+	if(dist > radius){
+		
+		mag = -beta * radius;
+		
+	}
+	
 	if(dist > 0){	// if this node is not at the origin, in which case finding the unit vector will result in a nan
 
 		for(long int i = 0; i < DIM; i++){
@@ -321,7 +348,7 @@ float* NBall::sumForces(SpatialVertex* node){
  */
 void NBall::equalize(){
 	
-	gradientDescent(baseGam /pow(N, 1 + 1.0/DIM), baseTol, baseItr);
+	gradientDescent(baseGam / pow(N, 1 + 1.0/DIM), baseTol, baseItr);
 	
 }
 
@@ -362,6 +389,7 @@ void NBall::gradientDescent(const float gamma, const float tolerance, long int m
 			for(long int i = 0; i < N; i++){	// for every node
 			
 				float oldPos[DIM];
+				float disp;
 				
 				for(long int j = 0; j < DIM; j++){	// for every dimension
 				
@@ -371,8 +399,8 @@ void NBall::gradientDescent(const float gamma, const float tolerance, long int m
 					
 				}
 				
-				float disp = linearDistance(oldPos, getNode(i)->position);	// calculate the displacement
-																				// between the old and current positions
+				disp = linearDistance(oldPos, getNode(i)->position);	// calculate the displacement
+																		// between the old and current positions
 				
 				#pragma omp critial (maximumDisplacement)	// encase this comparison in a critical region
 				{
@@ -397,7 +425,6 @@ void NBall::gradientDescent(const float gamma, const float tolerance, long int m
 	}
 	
 	this->iterationWeights += (baseItr - maxItr) * N * N;
-	//cout<<N<<" "<<(baseItr - maxItr)<<endl;
 	
 	return;	// return statement placed here for clarity only
 	
