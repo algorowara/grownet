@@ -46,6 +46,8 @@ graph/vertex.o: graph/vertex.cpp graph/vertex.h
 	g++ $(FLAGS) -c graph/vertex.cpp -o graph/vertex.o 
 pgrownet2d/pgrownet2d.o: pgrownet2d/pgrownet2d.cpp pgrownet2d/pgrownet2d.h growingnetwork3d/spatialvertex.cpp growingnetwork3d/spatialvertex.h graph/*.cpp graph/*.h
 	g++ $(FLAGS) -c pgrownet2d/pgrownet2d.cpp -o pgrownet2d/pgrownet2d.o
+pp1d/pp1d.o: pp1d/pp1d.cpp pp1d/pp1d.h growingnetwork3d/spatialvertex.cpp growingnetwork3d/spatialvertex.h graph/*.cpp graph/*.h
+	g++ $(FLAGS) -c pp1d/pp1d.cpp -o pp1d/pp1d.o
 backup: graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h pgrownet2d/*.cpp pgrownet2d/*.h ngraph/*.cpp ngraph/*.h pp1d/*.cpp pp1d/*.h main/*.cpp main/*.m makefile README doc.odt
 	zip ../backup.zip graph/*.cpp graph/*.h growingnetwork2d/*.cpp growingnetwork2d/*.h growingnetwork3d/*.cpp growingnetwork3d/*.h pgrownet2d/*.cpp pgrownet2d/*.h ngraph/*.cpp ngraph/*.h pp1d/*.cpp pp1d/*.h main/*.cpp main/*.m makefile README doc.odt design.odt
 clean:

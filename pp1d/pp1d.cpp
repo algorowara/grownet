@@ -134,20 +134,30 @@ float* PPGrowingNetwork1D::sumForces(SpatialVertex* node){
 
 	force[0] = 0; //force is initially 0
 
-	for(int i = 0; i < N; i++){  //for each node in the graph
+	#pragma omp parallel shared(force)
+	{
 
-		if(getNode(i) == node){  //except this one
-
-			continue;
-
+		#pragma omp for schedule(guided)
+		for(int i = 0; i < N; i++){  //for each node in the graph
+		
+			other = getNode(i);
+	
+			if(node == other){  //except this one
+	
+				continue;
+	
+			}
+			
+			magnitude = alpha; // unitless magnitude of electron electron force, it is constant in 1D
+			distance = DISTANCE_1D(node, other);
+			
+			#pragma omp atomic
+			force[0] += magnitude * (X(node) - X(other))/distance; // multiply the magnitude by the unit vector of displacement
+	
 		}
-
-		other = getNode(i);
-		magnitude = alpha; //unitless magnitude of electron electron force, it is constant in 1D
-		distance = DISTANCE_1D(node, other);
-		force[0] += magnitude * (X(node) - X(other))/distance; //multiply the magnitude by the unit vector of displacement
-
+		
 	}
+	
 	pdistance = X(node); //the distance from the origin
 	pmagnitude = - beta * pdistance; //unitless magnitude of attractive electron-cloud interaction
 
@@ -267,7 +277,6 @@ void PPGrowingNetwork1D::gradientDescent(float gamma, float tolerance, long int 
 	float previousPotential = FLT_MAX;  //record of the last potential for minimization
 
 	while(abs(previousPotential - calculatePotential()) > tolerance && maxItr > 0){
-
 		
 		previousPotential = calculatePotential();
 
