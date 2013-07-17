@@ -16,6 +16,7 @@ class NGraph : public GrowingNetwork {
 
 		const int DIM;
 		float radius;
+		float forceExp;	// the exponent of the force law; defaults to DIM-1
 		float baseGam;
 		float baseTol;
 		long int baseItr;

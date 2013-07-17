@@ -15,9 +15,7 @@ using namespace std;
 
 int main(){
 	
-	long int n = 1000, m = 3, d = 2;
-	NBall* net = new NBall(m+1, m, d);
-	net->baseGam = 8.0;
-	net->grow(n - (m+1));
+	long int n = 500, m = 9, d = 2;
+	
 	
 }

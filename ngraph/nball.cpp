@@ -33,8 +33,9 @@ NBall::NBall(long int n, long int m, int d, float r, float g, float t, long int 
 	// initialize the non-constant variables
 	this->m = m;
 	this->radius = r;
-	this->alpha = NBALL_DEFAULT_ALPHA/DIM;
+	this->alpha = NBALL_DEFAULT_ALPHA;
 	this->beta = (this->alpha * N) / (pow(radius, DIM));
+	this->forceExp = DIM-1;
 	this->baseGam = g;
 	this->baseTol = t;
 	this->baseItr = i;
@@ -70,6 +71,7 @@ NBall::NBall(const NBall* obj) : NGraph(obj->DIM){
 	this->radius = obj->radius;
 	this->alpha = obj->alpha;
 	this->beta = obj->beta;
+	this->forceExp = obj->forceExp;
 	this->baseGam = obj->baseGam;
 	this->baseTol = obj->baseTol;
 	this->baseItr = obj->baseItr;
@@ -308,7 +310,7 @@ float* NBall::sumForces(SpatialVertex* node){
 			
 		}
 		
-		mag = alpha / pow(dist, (float)DIM-1);	// and the magnitude of the electrostatic repulsive force
+		mag = alpha / pow(dist, forceExp);	// and the magnitude of the electrostatic repulsive force
 		
 		for(long int j = 0; j < DIM; j++){	// for every dimension
 			

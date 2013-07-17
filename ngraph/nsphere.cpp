@@ -25,6 +25,7 @@ NSphere::NSphere(long int n, long int m, int d, float r, float baseGam, float ba
 	
 	this->time = 0;
 	this->radius = r;
+	this->forceExp = DIM-1;
 	this->m = m;
 	this->baseGam = baseGam;
 	this->baseTol = baseTol;
@@ -243,7 +244,7 @@ float* NSphere::sumForces(SpatialVertex* node){
 		
 		other = getNode(i);
 		NSPHERE_LINEAR_DISTANCE(node->position, other->position, dist);
-		magnitude = 1.0 / pow(dist, (float)DIM);	// calculate the magnitude of the force as 1/r^DIM
+		magnitude = 1.0 / pow(dist, forceExp);	// calculate the magnitude of the force as 1/r^DIM-1
 		
 		for(long int j = 0; j < DIM+1; j++){	// for each dimension, add the component of force from this interaction
 			
