@@ -12,6 +12,10 @@ main/pgrownet: main/pgrownet.o ngraph/nball.o ngraph/ngraph.o pgrownet2d/pgrowne
 	g++ $(FLAGS) main/pgrownet.o ngraph/nball.o ngraph/ngraph.o pgrownet2d/pgrownet2d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o growingnetwork3d/growingnetwork3d.o -o main/pgrownet 
 main/lineppnet: main/lineppnet.o pp1d/pp1d.o graph/growingnetwork.o graph/graph.o graph/vertex.o growingnetwork3d/spatialvertex.o growingnetwork2d/growingnetwork2d.o
 	g++ $(FLAGS) main/lineppnet.o pp1d/pp1d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o growingnetwork2d/growingnetwork2d.o -o main/lineppnet
+main/figuredata: main/figuredata.o pp1d/pp1d.o graph/growingnetwork.o graph/graph.o graph/vertex.o growingnetwork3d/spatialvertex.o growingnetwork2d/growingnetwork2d.o ngraph/nball.o ngraph/ngraph.o ngraph/nsphere.o
+	g++ $(FLAGS) main/figuredata.o pp1d/pp1d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o growingnetwork2d/growingnetwork2d.o ngraph/nball.o ngraph/ngraph.o ngraph/nsphere.o -o main/figuredata
+main/figuredata.o: main/figuredata.cpp ngraph/nball.cpp ngraph/nball.h ngraph/nsphere.cpp ngraph/nsphere.h pp1d/pp1d.cpp pp1d/pp1d.h growingnetwork2d/growingnetwork2d.cpp growingnetwork2d/growingnetwork2d.h
+	g++ $(FLAGS) -c main/figuredata.cpp -o main/figuredata.o
 main/parametertune.o: main/parametertune.cpp growingnetwork3d/growingnetwork3d.cpp growingnetwork3d/growingnetwork3d.h
 	g++ $(FLAGS) -c main/parametertune.cpp -o main/parametertune.o 
 main/test.o: main/test.cpp ngraph/nball.cpp ngraph/nball.h ngraph/ngraph.cpp ngraph/ngraph.h growingnetwork3d/growingnetwork3d.cpp growingnetwork3d/growingnetwork3d.h growingnetwork2d/growingnetwork2d.cpp growingnetwork2d/growingnetwork2d.h
@@ -50,5 +54,6 @@ clean:
 	rm -vf main/test
 	rm -vf main/graphgen
 	rm -vf main/lineppnet
+	rm -vf main/figuredata
 	rm -vf */*.o
 	
