@@ -15,34 +15,21 @@ using namespace std;
 
 int main(){
 	
-	long int n = 100, m = 4;
-	long int minDim = 1, maxDim = 10, stepDim = 1;
-	long int minExp = 0, maxExp = 10, stepExp = 1;
-	long int sample = 4;
+	long int n = 100, m = 4, d = 2;
+	NBall* net = new NBall(m+1, m, d);
+	net->baseGam = 0.1;
+	net->forceExp = 3;
+	net->grow(n - (m+1));
 	
-	for(long int d = minDim; d <= maxDim; d += stepDim){
+	for(long int i = 0; i < n; i++){
 		
-		for(long int exponent = minExp; exponent <= maxExp; exponent += stepExp){
+		for(long int j = 0; j < d; j++){
 			
-			float averageCoef = 0;
-			float averageWeight = 0;
-				
-			for(long int s = 0; s < sample; s++){
-				
-				NGraph* net = new NBall(m+1, m, d);
-				net->forceExp = exponent;
-				net->baseGam = 0.1;
-				net->grow(n - (m+1));
-				
-				averageCoef += net->unweightedClusteringCoefficient()/sample;
-				averageWeight += net->iterationWeights/sample;
-				delete net;
-				
-			}		
-			
-			cout<<d<<" "<<exponent<<" "<<averageCoef<<" "<<averageWeight<<endl;
+			cout<<net->getNode(i)->position[j]<<" ";
 			
 		}
+		
+		cout<<endl;
 		
 	}
 	
