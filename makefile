@@ -57,5 +57,13 @@ clean:
 	rm -vf main/graphgen
 	rm -vf main/lineppnet
 	rm -vf main/figuredata
+	rm -vf spatialNetworksPaper/spatialNetworksPaper.aux
+	rm -vf spatialNetworksPaper/spatialNetworksPaper.bbl
+	rm -vf spatialNetworksPaper/spatialNetworksPaper.blg
+	rm -vf spatialNetworksPaper/spatialNetworksPaper.dvi
+	rm -vf spatialNetworksPaper/spatialNetworksPaper.log
+	rm -vf spatialNetworksPaper/spatialNetworksPaper.out
+	rm -vf spatialNetworksPaper/spatialNetworksPaper.pdf
+	rm -vf spatialNetworksPaper/spatialNetworksPaperNotes.bib
 	rm -vf */*.o
 	
