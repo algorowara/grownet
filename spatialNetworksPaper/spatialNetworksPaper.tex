@@ -165,8 +165,24 @@ This equation represents a specific example of the unavoidable fact that in dyna
 
 %once again do we include figures to demonstrate the claim? Which figures to show? They're all pretty much the same since it's the same distribution for every model
 
-\subsection{Betweenness-Degree Relationship}
+\subsection{Betweenness-Degree Relationship}	%this section may not even be necessary...
+Betweenness centrality is a common measure of how many shortest paths go through a node; so nodes with higher betweenness appear in more shortest paths across the network than nodes with lower betweenness.
+In general we would expect that the nodes with the greatest degree have the highest betweenness since they serve as bridges across the network, meaning many shortest paths between low degree nodes must pass through these high degree nodes.
+The existence and subsequent high betweenness of high degree nodes (which can be thought of as hubs in the network) is directly related to the small-world property.
+High clustering in networks leads to regions where nodes are highly connected separated from one another.
+Short path lengths across the network require these regions to be somehow connected to one another, and this necessitates the existence of hubs to connect the clustered regions.
+This means that many low degree nodes aren't necessary for shortest paths across the network since the shortest path will make use of the hubs, leading to higher betweenness for high degree nodes and vice versa.
+The variety of models presented here all have the small-world property and share the same degree distribution, and thus we expect they share the same betweenness-degree relationship.
 
+%present figure of betweenness-vs-degree for at least a few of the models?
+
+The main discrepancy between the simulation results and the predictions discussed above appear in the 1 dimensional case.
+The high degree nodes in the 1D plum pudding model have much higher betweenness than the high degree nodes in the 1D Thomson model (which is just the OHO model).
+The 1D plum pudding model has firm boundary conditions at either edge of the line, and so any shortest path from one side of the line to the other must use ahigh degree node to cross the network.
+The OHO model on the other hand has no edge effects and thus the shortest path through the network will go either clockwise or counter-clockwise around the circle, meaning that the shortest paths across the network don't necessarily pass through a select few high degree nodes in the middle (like in the line model).
+As we increase the dimension this effect disappears in part because the nodes in higher dimensional spaces are free to move around each other, producing a wider variety of shortest paths than are possible in lower dimensions. 
+Thus the discrepancy in betweenness vs. degree in the 1D case can be attributed to the feature that in 1 dimension the nodes behave like a Tonks-Girardeau Gas in that they cannot move past one another.
+Although the invariance of the betweenness-degree relationship is not fully established, the higher dimensional models all exhibit the same pattern, indicating that betweenness is not significantly impacted by the space in which the network is embedded as long as the space is sufficiently large to allow nodes to move freely.
 
 \section{CONCLUSION}
 

@@ -9,7 +9,7 @@
 #include <fstream>
 
 using namespace std;
-int fignum = 11;
+int fignum = 12;
 
 
 int main(){
@@ -62,6 +62,33 @@ int main(){
 	}
 
 	degreedist.close();
+
+  }
+  else if (fignum == 12){	//degree vs node age
+	long int n = 10000, m = 4;
+	long int age, pdegree, tdegree;
+
+	NSphere* T2D = new NSphere(n,m,2);
+	NBall* PP2D = new NBall(n,m,2);
+
+	ofstream degvsage;
+	degvsage.open("degvsage.txt", ios::out | ios::trunc);
+
+	for(long int i = 0; i < n; i++){
+
+		age = (T2D->getTime() - T2D->getNode(i)->getStartTime());
+
+		tdegree = T2D->K(i);
+		pdegree = PP2D->K(i);
+
+		//the first column is the age
+		//the 2nd column is the degree from the T2D model
+		//the 3rd column is the degree from the PP2D model
+		degvsage<<age<<", "<<tdegree<<", "<<pdegree<<endl;
+
+	}
+
+	degvsage.close();
 
   }
 
