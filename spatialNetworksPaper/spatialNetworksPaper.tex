@@ -118,7 +118,8 @@ In this section we discuss some properties that are invariant between our differ
 One key feature that leads to the invariance discussed below is the uniform probability for each preexisting node to be connected to any new node at each timestep. 
 
 \subsection{Degree Distribution}
-Here we show that regardless of which model we look at, we produce the same master equation governing the evolution of the degree distribution (in particular the master equation for the degree distribution in \cite{ozik2004}).
+Here we show that regardless of which model we look at, we produce the same master equation governing the evolution of the degree distribution (in particular the master equation for the degree distribution in \cite{ozik2004}).  This master equation is not specific to the spatial structure of the network, or indeed the existence of any spatial structure, but rather relies on the uniform distribution of new links among preexisting nodes.  It appears, in various forms, in networks such as the Deterministic Uniform Random Tree \cite{zhang2008topologies}.
+
 We define $\hat{G}(k,N)$ to be the number of nodes with degree $k$ when we are at time $N$ (i.e. when the system has $N$ nodes).
 When a node is added to the network it is initially connected to its $m$ nearest neighbors, so initially (upon creation) $k = m$ for each node, meaning that $\hat{G}(k,N) = 0 \text{ for } k < m$.
 At each timestep a node with $k = m$ is added to the network and so connects to $m$ existing nodes.
