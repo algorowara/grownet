@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <iterator>
 #include <fstream>
+#include <iostream>
 
 using namespace std;
 
@@ -25,7 +26,6 @@ NSphere::NSphere(long int n, long int m, int d, float r, float baseGam, float ba
 	
 	this->time = 0;
 	this->radius = r;
-	this->forceExp = DIM-1;
 	this->m = m;
 	this->baseGam = baseGam;
 	this->baseTol = baseTol;
@@ -244,7 +244,8 @@ float* NSphere::sumForces(SpatialVertex* node){
 		
 		other = getNode(i);
 		NSPHERE_LINEAR_DISTANCE(node->position, other->position, dist);
-		magnitude = 1.0 / pow(dist, forceExp);	// calculate the magnitude of the force as 1/r^DIM-1
+		POSITIVE_INTEGER_POWER(dist, DIM-1, magnitude);
+		magnitude = 1.0 / magnitude;
 		
 		for(long int j = 0; j < DIM+1; j++){	// for each dimension, add the component of force from this interaction
 			
@@ -424,7 +425,20 @@ void NSphere::exportObject(const NSphere* ns, const char* filename){
 
 NSphere* NSphere::importObject(const char* filename){
 	
-	ifstream infile(filename, ios::in);
+	ifstream infile;
+	
+	try{
+		
+		infile.open(filename, ios::in);
+		
+	}
+	catch(int e){
+		
+		cerr<<"Could not retrieve NSphere object from file: "<<filename<<endl;
+		cerr<<"Returning a null pointer."<<endl;
+		return NULL;
+		
+	}
 	
 	NSphere* ns;
 	long int bufsize = 2048;

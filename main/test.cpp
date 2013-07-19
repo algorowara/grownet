@@ -15,22 +15,10 @@ using namespace std;
 
 int main(){
 	
-	long int n = 100, m = 4, d = 2;
-	NBall* net = new NBall(m+1, m, d);
-	net->baseGam = 0.1;
-	net->forceExp = 3;
+	long int n = 1000, m = 3, d = 2;
+	NGraph* net = new NBall(m+1, m, d);
+	net->baseGam = 1;
 	net->grow(n - (m+1));
-	
-	for(long int i = 0; i < n; i++){
-		
-		for(long int j = 0; j < d; j++){
-			
-			cout<<net->getNode(i)->position[j]<<" ";
-			
-		}
-		
-		cout<<endl;
-		
-	}
+	cout<<net->unweightedClusteringCoefficient();
 	
 }

@@ -11,6 +11,7 @@
 #include <iterator>
 #include <sstream>
 #include <string>
+#include <iostream>
 
 NBall::NBall(long int n, long int m, int d, float r, float g, float t, long int i, long int et, long int ep) : NGraph(d) {
 	
@@ -35,7 +36,6 @@ NBall::NBall(long int n, long int m, int d, float r, float g, float t, long int 
 	this->radius = r;
 	this->alpha = NBALL_DEFAULT_ALPHA;
 	this->beta = (this->alpha * N) / (pow(radius, DIM));
-	this->forceExp = DIM-1;
 	this->baseGam = g;
 	this->baseTol = t;
 	this->baseItr = i;
@@ -71,7 +71,6 @@ NBall::NBall(const NBall* obj) : NGraph(obj->DIM){
 	this->radius = obj->radius;
 	this->alpha = obj->alpha;
 	this->beta = obj->beta;
-	this->forceExp = obj->forceExp;
 	this->baseGam = obj->baseGam;
 	this->baseTol = obj->baseTol;
 	this->baseItr = obj->baseItr;
@@ -302,7 +301,8 @@ float* NBall::sumForces(SpatialVertex* node){
 			
 		}
 		
-		NBALL_LINEAR_DISTANCE(node->position, other->position, dist);
+		NBALL_LINEAR_DISTANCE(node->position, other->position, dist);	// calculate the distance between the two nodes
+																		// and store it in the variable dist
 		
 		if(dist == 0){	// if these nodes are right on top of each other
 			
@@ -310,7 +310,8 @@ float* NBall::sumForces(SpatialVertex* node){
 			
 		}
 		
-		mag = alpha / pow(dist, forceExp);	// and the magnitude of the electrostatic repulsive force
+		POSITIVE_INTEGER_POWER(dist, DIM-1, mag);	// calculate the r^(DIM-1) value and store it in mag
+		mag = alpha / mag;	// the actual magnitude of the force is alpha / r^(DIM-1)
 		
 		for(long int j = 0; j < DIM; j++){	// for every dimension
 			
@@ -484,7 +485,20 @@ void NBall::exportObject(const NBall* nb, const char* filename){
 
 NBall* NBall::importObject(const char* filename){
 	
-	ifstream infile(filename, ios::in);
+	ifstream infile;
+	
+	try{
+		
+		infile.open(filename, ios::in);
+		
+	}
+	catch(int e){
+		
+		cerr<<"Could not retrieve NBall object from file: "<<filename<<endl;
+		cerr<<"Returning a null pointer."<<endl;
+		return NULL;
+		
+	}
 	
 	NBall* nb;
 	long int bufsize = 2048;

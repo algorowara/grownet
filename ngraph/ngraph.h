@@ -8,6 +8,13 @@
 #define NBALL_ID 1
 #define NSPHERE_ID 2
 
+#define POSITIVE_INTEGER_POWER(base, exponent, output){ \
+	output = 1; \
+	for(long int itr_var = 0; itr_var < exponent; itr_var++){ \
+		output *= base; \
+	} \
+}
+
 using namespace std;
 
 class NGraph : public GrowingNetwork {
@@ -16,7 +23,6 @@ class NGraph : public GrowingNetwork {
 
 		const int DIM;
 		float radius;
-		float forceExp;	// the exponent of the force law; defaults to DIM-1
 		float baseGam;
 		float baseTol;
 		long int baseItr;

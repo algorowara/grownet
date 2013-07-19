@@ -13,12 +13,15 @@
 #define NBALL_DEFAULT_THRESHOLD 1000
 #define NBALL_DEFAULT_PERIOD 1
 
-#define NBALL_LINEAR_DISTANCE(nodePos, otherPos, dist) \
+#define NBALL_LINEAR_DISTANCE(nodePos, otherPos, dist){ \
 	dist = 0; \
 	for(long int itr_var = 0; itr_var < DIM; itr_var++){ \
 		dist += (nodePos[itr_var] - otherPos[itr_var]) * (nodePos[itr_var] - otherPos[itr_var]); \
 	} \
 	dist = sqrt(dist); \
+}
+	
+using namespace std;
 
 class NBall : public NGraph {
 	
