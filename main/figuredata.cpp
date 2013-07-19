@@ -10,7 +10,7 @@
 #include <sstream>
 
 using namespace std;
-int fignum = 12;
+int fignum = 0;
 
 
 int main(){
@@ -20,9 +20,9 @@ int main(){
 		long int sampsize = 10;	// the number of graphs of each dimension and topology to be generated
 		long int nmin = 500, nmax = 10000, nstep = 500;	// the starting n, ending n, and step size; not independent
 		long int m = 4;	// the number of connections formed by each new node
-		long int dmin = 1, dmax = 4, dstep = 1;	// the number of dimensions to go through
+		long int dmin = 2, dmax = 8, dstep = 3;	// the number of dimensions to go through
 		
-		for(long int d = dmin; d <= dmax; d++){	// for each dimension to be reviewed
+		for(long int d = dmin; d <= dmax; d += dstep){	// for each dimension to be reviewed
 			
 			for(long int s = 0; s < sampsize; s++){	// generate some number of samples
 				
@@ -37,7 +37,7 @@ int main(){
 					
 					if(net == NULL){	// if the network does not yet exist
 						
-						net = new NBall(n, m, d);	// create it
+						net = new NBall(n, m, d, NBALL_DEFAULT_RADIUS, 20.0/d, NBALL_DEFAULT_TOLERANCE, NBALL_DEFAULT_ITERATIONS, NBALL_DEFAULT_THRESHOLD, NBALL_DEFAULT_PERIOD);	// create it
 						
 					}
 					
@@ -67,7 +67,7 @@ int main(){
 					
 					if(net == NULL){	// if the network does not yet exist
 						
-						net = new NSphere(n, m, d);	// create it
+						net = new NSphere(n, m, d, NSPHERE_DEFAULT_RADIUS, 20.0/d, NSPHERE_DEFAULT_TOLERANCE, NSPHERE_DEFAULT_ITERATIONS, NSPHERE_DEFAULT_THRESHOLD, NSPHERE_DEFAULT_PERIOD);	// create it
 						
 					}
 					
@@ -95,12 +95,12 @@ int main(){
 
 		GrowingNetwork2D* T1D = new GrowingNetwork2D(n,m);
 		PPGrowingNetwork1D* PP1D = new PPGrowingNetwork1D(n,m,1,.00001,64);
-		NSphere* T2D = NSphere::importObject("figuredata_1_2sphere_m4_n10000.nsphere");
-		NBall* PP2D = NBall::importObject("figuredata_1_2ball_m4_n10000.nball");
-		NSphere* T3D = NSphere::importObject("figuredata_1_3sphere_m4_n10000.nsphere");
-		NBall* PP3D = NBall::importObject("figuredata_1_3ball_m4_n10000.nball");
-		NSphere* T4D = NSphere::importObject("figuredata_1_4sphere_m4_n10000.nsphere");
-		NBall* PP4D = NBall::importObject("figuredata_1_4ball_m4_n10000.nball");
+		NSphere* T2D = NSphere::importObject("figuredata_0_2sphere_m4_n10000.nsphere");
+		NBall* PP2D = NBall::importObject("figuredata_0_2ball_m4_n10000.nball");
+		NSphere* T3D = NSphere::importObject("figuredata_0_3sphere_m4_n10000.nsphere");
+		NBall* PP3D = NBall::importObject("figuredata_0_3ball_m4_n10000.nball");
+		NSphere* T4D = NSphere::importObject("figuredata_0_4sphere_m4_n10000.nsphere");
+		NBall* PP4D = NBall::importObject("figuredata_0_4ball_m4_n10000.nball");
 		
 		ofstream degreedist;
 		degreedist.open("degreedist.txt", ios::out | ios::trunc);
@@ -147,8 +147,8 @@ int main(){
 		long int n = 10000, m = 4;
 		long int age, pdegree, tdegree;
 		
-		NSphere* T2D = NSphere::importObject("figuredata_1_2sphere_m4_n10000.nsphere");
-		NBall* PP2D = NBall::importObject("figuredata_1_2ball_m4_n10000.nball");
+		NSphere* T2D = NSphere::importObject("figuredata_0_2sphere_m4_n10000.nsphere");
+		NBall* PP2D = NBall::importObject("figuredata_0_2ball_m4_n10000.nball");
 		
 		ofstream degvsage;
 		degvsage.open("degvsage.txt", ios::out | ios::trunc);
