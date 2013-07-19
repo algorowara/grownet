@@ -42,7 +42,8 @@ support the emergence of small-world networks.
 \maketitle
 
 \section{INTRODUCTION}
-
+%in the introduction don't forget to present definitions we use, in particular be clear what we mean by small world property
+%mention how our generalizations were chosen for their physical significance rather than the ease with which we can perform comupational and analytic calculations of their properties. 
 
 \section{THE OHO MODEL}
 The original Ozik-Hunt-Ott (OHO) model, presented in \cite{ozik2004} considers a network which initially has a clique of $m+1$ nodes on the circumference of a circle. 
@@ -55,7 +56,24 @@ It has been shown \cite{ozik2004} that this growth model leads to a small-world 
 The original goal of the OHO model was to explore the effect that geographic locality has on the growth of networks; in this paper we extend this analysis by considering networks growing by geographic attachment preference in more general Euclidean spaces than the circumference of a circle. 
 
 \subsection{The Original Model: Embedding a Network on a Circle}
-In this section we quickly review some key results about the OHO model, including the degree distribution, clustering coefficient, and characteristic path length scaling. 
+The original OHO model exhibits the following three properties which indicate that the small-world property is present:
+\begin{description}
+  \item[Degree Distribution] It was shown in \cite{ozik2004} that for large network size N the degree distribution $H(k,N)$ approaches an asymptotically N invariant form given by 
+\[\bar{H}(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}\]
+for $k \geq m$ and $\bar{H}(k) = 0$ for $k < m$.
+This leads to a result that as N approaches infinity, the average node degree $\langle k \rangle$ approaches the limiting value $\langle k \rangle {_\lim_{N \to \infty}} = 2m$.
+This means that the average node degree remains finite even as $N \to \infty$, which shows that the OHO model meets the first criterion for the small-world property.
+  \item[Characteristic Path Length] Although analytic results for the relationship between the shortest path length between pairs of nodes averaged over the whole network (which we denote $\ell$) is generally impossible, simulation results allow the verification of the desired small world path lenth scaling: $\ell \sim \log N$.
+This property was verified for the OHO model in \cite{ozik2004}, but an intuitive picture of why this is the case can be seen as follows, as new nodes are added they push apart the older connected nodes, leaving long edges that pass through the middle of the circle. 
+These older nodes then serve as hubs for travel between pairs of nodes across the network, dramatically decreasing the shortest path length between any given pair of nodes.
+  \item[Clustering Coefficient] The final criterion for a small world network is comparatively high clustering coefficient, or to be more precise, a clustering coefficient that does not decay to $0$ as $N \to \infty$. 
+In order for this criterion to make sense, we must provide a clear definition of this clustering coefficient. 
+In their seminal paper, Watts and Strogatz defined the clustering coefficient (which we will denote $C_{ws}$) as the average over the whole network of the clustering coefficient $C_i$ of each node $i$ \cite{wsnat}.
+For each node the local clustering $C_i$ is defined as $C_i = \frac{q_i}{\frac{1}{2} k_i(k_i-1)}$ where $q_i$ is the number of links between the $k_i$ neighbors of node $i$ and $\frac{1}{2} k_i(k_i-1)$ is the maximum possible number of such links between the neighbors of node $i$.
+This leads to a natural expression for the clustering coefficient, $C_{ws} = \frac{1}{N} \sum_{i=1}^{N} C_i$, which is shown in \cite{ozik2004} to approach an asymptotic value $C_{ws} = 0.648$ as $N \to \infty$.
+As a note to the reader, in the past few years new measures of clustering have been developed that do a better job representing the global clustering in the network, and although for consistency with \cite{ozik2004} we used the Watts-Strogatz definition of clustering in the preceding discussion, we will later use some different definitions that will be presented as they arise.
+\end{description}
+Thus the OHO model produces a small-world network, but we wonder what general features of this model leads to the small-world property, and so we investigate similar models to explore how the small-world property emerges from spatially embedded networks.
 
 \subsection{Generalizing the Model: The Thomson Problem}
 The natural generalization from embedding nodes on the one-dimensional circumference of a circle is to embed them on the two-dimensional surface of a sphere, or in general on the n-dimnsional surface of a hypersphere.
@@ -78,6 +96,7 @@ In the following sections we explore the differences between the OHO model and t
 A key feature of the OHO model is that the nodes can only be placed on the circumference of the circle, when we generalize this to higher dimensions we are still embedding the network on an n-dimensional surface in an n+1 dimensional space, so nodes never occupy a volume in the embedding space.
 In this generalization we explore how the network properties are affected if we instead embed a growing network in an n-dimensional space with no restriction as to the surface upon which the nodes can reside.
 In order to maintain the spirit of the OHO model, and in particular to ensure that at each timestep there is a uniform probability of incrementing the degree of any existing node, we want the nodes to be arranged uniformly in some region in the embedding space.
+
 Keeping with the idea of nodes as point charges that we introduced earlier, we model our network as a collection of classical electrons, each electron representing a node, free to move around in a cloud of positive charge (which for our model fill the embedding space).
 This model was motivated by Thomson's defunct atomic model where electrons were plums embedding in a sphere of positively charged pudding.
 We use this model because the repulsive potential between electrons ensures that the nodes are spaced equidistant from one another in the minimum potential configuration, while the cloud of positive charge ensures that the nodes do not move arbitrarily far from some fixed starting point.
@@ -134,7 +153,7 @@ The second term is the expected number of nodes with degree $k$ at time N that g
 The third term is the expected number of nodes with degree $k-1$ at time N that get promoted to degree $k$.
 The last term on the right is the new node with degree $m$.
 
-It was shown by Ozik et al. \cite{ozik2004} that this master equation leads to an exponentially decaying degree distribution with an asymptotically N invariant form $\bar{H}(k) := \lim{N \to +\infty} G(k,N)/N$ given by the closed form solution,
+It was shown by Ozik et al. \cite{ozik2004} that this master equation leads to an exponentially decaying degree distribution with an asymptotically N invariant form $\bar{H}(k) := \lim_{N \to +\infty} G(k,N)/N$ given by the closed form solution,
 
 \[\bar{H}(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}\]
 
