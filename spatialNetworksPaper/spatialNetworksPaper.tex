@@ -115,7 +115,7 @@ These boundary conditions lead to differences in network properties such as the 
 
 \subsubsection{The 1D Case: Nodes on a Line}
 The laws of electromagnetism in 1 dimension lead to a constant force term between each electron, and thus this case is really just a line segmented into equal parts by the set of nodes. 
-If this is hauntingly similar to the original OHO model (growing network on a circle)  don't be surprised; the only difference between these two models are the two boundary nodes in the line case. 
+This model is essentially the same as the original OHO model (nodes on the circumference of a circle), with the exception of a boundary condition. 
 On the circle each node borders two internode intervals while on the line the nodes at each endpoint only border one internode interval.
 Thus this model leads to nearly identical results as the OHO model, especially for large $N$.
 For large $N$ there are still only two boundary nodes, but they make up a fraction $\frac{2}{N}$ of all the nodes, and thus barely contribute to the stastical network properties.
@@ -158,7 +158,7 @@ It was shown by Ozik et al. \cite{ozik2004} that this master equation leads to a
 
 for $k \geq m$ and of course $\bar{H}(k) = 0$ for $k < m$.
 
-The interesting point here is that this exponentially decaying degree distribution comes only from the growing procedure and the uniform probability of attaching new links to existing nodes.
+The interesting point here is that this exponentially decaying degree distribution comes only from the growing procedure and the uniform probability of attaching new links to existing nodes.  Since, in our models, the uniform probability of attachment to any given node is a result of the uniform spacing of the nodes, conformity to this degree distribution is an important confirmation that our models are, in fact, spatially uniform.
 Thus this distribution and the analysis therein holds for all of the generalizations presented in this article. 
 So as long as we have a growing network where nodes are added with equal probability of being nearby (in the metric space) any existing node and each new node is connected to its $m$ nearest neighbors, then we will recover the exponential degree distribution given by $\bar{H}(k)$.
 
