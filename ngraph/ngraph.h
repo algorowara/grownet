@@ -9,10 +9,10 @@
 #define NSPHERE_ID 2
 
 #define POSITIVE_INTEGER_POWER(base, exponent, output){ \
-	output = 1; \
-	for(long int itr_var = 0; itr_var < exponent; itr_var++){ \
-		output *= base; \
-	} \
+  output = 1; \
+  for(long int itr_var = 0; itr_var < exponent; itr_var++){ \
+    output *= base; \
+  } \
 }
 
 using namespace std;

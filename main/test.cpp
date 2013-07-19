@@ -17,7 +17,7 @@ int main(){
 	
 	long int n = 1000, m = 3, d = 2;
 	NGraph* net = new NBall(m+1, m, d);
-	net->baseGam = 1;
+	net->baseGam = 10;
 	net->grow(n - (m+1));
 	cout<<net->unweightedClusteringCoefficient();
 	
