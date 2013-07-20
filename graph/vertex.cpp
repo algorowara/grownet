@@ -21,7 +21,7 @@ Vertex::Vertex(long int time){
 	
 void Vertex::addNeighbor(Vertex* neighbor){
 	
-	if(!(this->hasNeighbor(neighbor))){
+	if(!(this->hasNeighbor(neighbor)) && this != neighbor){
 		
 		this->neighbors.push_back(neighbor);
 		neighbor->neighbors.push_back(this);
