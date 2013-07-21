@@ -87,7 +87,27 @@ In this way we reproduce the key features of the OHO model, a growing network wi
 In the following sections we explore the differences between the OHO model and the higher dimension generalizations, starting with the sphere case. 
 
 \subsubsection{The 2D Case: Network Embedded on the Surface of a Sphere}
-
+The first generalization we explore is the case of nodes confined to exist on the surface of a unit sphere in Euclidean 3-space.
+This is directly analogous to the original Thomson problem presented in \cite{thomson1904}, where N electrons are bound to the surface of a sphere and interact with each other via the Couloumb force.
+As a result of the Couloumb interaction, the minimum energy configuration for these points on the sphere is one where the points are distributed in an approximately uniform manner across the surface of the sphere.
+In order to determine if this model produces a small world network we determine the following three properties:
+\begin{description}
+  \item[Degree Distribution] The uniform distribution of nodes on the surface of the sphere leads to a uniform probability of choosing an area interval in which to place a new nodes; thus existing nodes each have an equal probability of having their degree increased at each timestep.
+This causes the degree distribution for this new model to be identical to the degree distribution for the original OHO model, for more detail on this discussion refer to the section on invariant properties at the end of this article.
+  \item[Characteristic Path Length] For this model we find that the the average shortest path length $\ell$ scales logarithmically with the network size N, that is, $\ell \sim \log N$. 
+This is a reasonable result because as the network grows in size the older nodes get pushed apart by the repulsive Coulumb force thus leaving bridges across the network that span a significant physical distance.
+These long range links serve to connect disparate regions of highly interconnected nodes, dramatically reducing the shortest path length between any two nodes in the network.
+At each timestep only geographically local connections are made, but due to the dynamic nature of the nodes' spatial positions, each timestep can make existing links longer in physical space, thus building bridges across the network.
+Furthermore, we find that for a given value of $N$ the shortest path between any two nodes in this 2D case is shorter than that of the corresponding 1D case (the original OHO model).
+One possible explanation for this feature is that the surface of a sphere provides more freedom for nodes to move around each other, thus increasing the chance that a shortcut is created.
+In the original OHO model each node, like a boson in a Tonks-Girardeau gas, is forever locked between its two original spatial neighbors, and thus long range links can only be created if new nodes are placed between the two neighbors.
+In this first generalization of the OHO model, the repulsive Couloumb force between electrons allows them to rearrange thier relative positions by moving in 2 dimensions in order to minimize the potential energy of the configuration.
+Thus two originally adjacent nodes can be moved apart around other nodes, forming long range links; of course placing new nodes between them will also create bridges, but these effects combine to produce shorter path length in the 2D case than in the 1D case.
+  \item[Clustering Coefficient] 
+%I'm going to leave this section blank until we have results and figures for this since that should determine what we write.
+\end{description}
+Thus we find that that the model of a network growing on the surface of a sphere with geographic attachment preference leads to the emergence of the small-world property.
+We now move onto discussing the generalized case of a network embedded on the surface of an N-sphere in order to see how the dimension of the embedding space impacts the network properties.
 
 \subsubsection{Spatial Embedding of Networks on the Surface of the Unit N-Sphere}
 
