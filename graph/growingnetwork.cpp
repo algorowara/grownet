@@ -2,9 +2,9 @@
 #include <iostream>
 #include <cstring>
 
-/*
+/**
  * as the time field of a GrowingNetwork is important and not to be tampered with,
- * there is a getter method here to return a copy of it
+ * there is an accessor method here to return a copy of it
  */
 long int GrowingNetwork::getTime() const{
 
@@ -12,8 +12,9 @@ long int GrowingNetwork::getTime() const{
 
 }
 
-/*
- * to better keep track of the time field, there is a method to increment time
+/**
+ * as the time field of a GrowingNetwork is important and not to be tampered with,
+ * this mutator method should be used to increment the current time
  */
 void GrowingNetwork::tick(){
 
@@ -50,7 +51,7 @@ float* GrowingNetwork::edgeAgeVsBetweenness(){
 								// the index signifies an age
 								// the element signifies the number of shortest paths which use that edge
 	long int num_edges[N];	// local array to hold the number of edges (the element) of each age (the index)
-	float* dbet = new float[N];
+	float* dbet = new float[N];	// dynamically allocated array to hold the betweenness values
 	memset(betweenness, 0, N * sizeof(long int));
 	memset(&num_edges, 0, N * sizeof(long int));
 	
@@ -147,8 +148,8 @@ float* GrowingNetwork::edgeAgeVsBetweenness(){
  */
 float* GrowingNetwork::edgeAgeVsLinearDistance(){
 	
-	float* lin = new float[N];
-	long int num_edges[N];
+	float* lin = new float[N];	// dynamically allocated array to be returned holding the linear distances
+	long int num_edges[N];	// local array to record how many edges of a given age exist for averaging purposes
 	memset(lin, 0, sizeof(float) * N);
 	memset(num_edges, 0, N * sizeof(long int));
 	
@@ -156,8 +157,8 @@ float* GrowingNetwork::edgeAgeVsLinearDistance(){
 		
 		for(int j = 0; j < K(i); j++){	// for each neighbor (and the corresponding edge)
 		
-			Vertex* a = getNode(i);
-			Vertex* b = getNode(i)->getNeighbor(j);
+			Vertex* a = getNode(i);	// for this node
+			Vertex* b = getNode(i)->getNeighbor(j);	// and its neighbor
 			lin[edgeAge(a, b)] += linearDistance(a, b);	// add the length of the edge to the sum
 			num_edges[edgeAge(a, b)]++;	// increment the count of edges of this age seen
 			

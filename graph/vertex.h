@@ -13,6 +13,7 @@ public:
 	long int distanceFromInitial;
 	vector<Vertex*> pathFromInitial;
 	vector<Vertex*> neighbors;
+	long int startTime;
 		
 	Vertex();
 	Vertex(long int time);
@@ -22,10 +23,6 @@ public:
 	long int getStartTime();
 	bool hasNeighbor(Vertex* neighbor);
 	Vertex* getNeighbor(long int i);
-	
-protected:
-
-	long int startTime;
 	
 };
 

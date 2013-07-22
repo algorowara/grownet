@@ -136,7 +136,7 @@ int main(){
                 for(long int j = 0; j < 5; j++){ //four data points at each size        
 
                         GrowingNetwork2D* net = new GrowingNetwork2D(i,m);
-                        cc = net->weightedClusteringCoefficient();
+                        cc = net->transitivity();	// was net->weightedClusteringCoefficient
                         lclust2<<i<<" "<<cc<<endl;
 
                         cpl = net->averagePathLength();

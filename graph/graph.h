@@ -17,11 +17,11 @@ public:
 	
 	void addNode(Vertex* node);
 	float averagePathLength();
-	long int nodesWithDegree(long int k);
-	float* degreeDistribution();
-	float averageDegree();
-	float weightedClusteringCoefficient();
-	float unweightedClusteringCoefficient();
+	long int nodesWithDegree(long int k) const;
+	float* degreeDistribution() const;
+	float averageDegree() const;
+	float clustering() const;
+	float transitivity() const;
 	float* nodeBetweenness();
 	void insertNode(Vertex* node, long int position);
 	long int indexOf(Vertex* node) const;

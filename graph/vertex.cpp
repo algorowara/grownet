@@ -6,19 +6,36 @@
 
 using namespace std;
 
+/**
+ * default constructor
+ * does not initialize the time field
+ * sets distanceFromInitial to LONG_MAX, meaning "not yet memoized"
+ */
 Vertex::Vertex(){
 
 	distanceFromInitial = LONG_MAX;
 	
 }
 
+/**
+ * constructor for a Vertex in a GrowingNetwork
+ * sets the start time, usually to the GrowingNetwork's current time
+ * also sets distanceFromInitial to the signal value of "not yet memoized"
+ */
 Vertex::Vertex(long int time){
 	
 	distanceFromInitial = LONG_MAX;
 	startTime = time;
 	
 }
-	
+
+/**
+ * adds a neighbor to this Vertex by placing it in its list of neighbors
+ * and placing this Vertex in the neighbor's list of neighbors
+ * if and only if
+ *   a) the two Vertices are not already neighbors and
+ *   b) the two Vertices are different (no edges to the self allowed)
+ */
 void Vertex::addNeighbor(Vertex* neighbor){
 	
 	if(!(this->hasNeighbor(neighbor)) && this != neighbor){
@@ -30,6 +47,11 @@ void Vertex::addNeighbor(Vertex* neighbor){
 	
 }
 
+/**
+ * method to calculate the clustering coefficient of this Vertex
+ * defined as the number of edges between two neighbors of this Vertex
+ * normalized over the number of possible edges between such neighbors
+ */
 float Vertex::clusteringCoefficient(){
 	
 	long int q = 0;
@@ -59,12 +81,21 @@ float Vertex::clusteringCoefficient(){
 	
 }
 
+/**
+ * accessor method to get the starting time
+ * used to emphasize that while Vertex::startTime is a public field,
+ * it should not be written to by other entities
+ */
 long int Vertex::getStartTime(){
 
 	return startTime;
 	
 }
 
+/**
+ * method to check if this Vertex and another Vertex are neighbors
+ * checks this Vertex's neighbor vector only
+ */
 bool Vertex::hasNeighbor(Vertex* neighbor){
 	
 	for(int i = 0; i < neighbors.size(); i++){
@@ -81,6 +112,10 @@ bool Vertex::hasNeighbor(Vertex* neighbor){
 	
 }
 
+/**
+ * accesses Vertex::neighbors to return a given neighbor
+ * without requiring outside access to Vertex::neighbors
+ */
 Vertex* Vertex::getNeighbor(long int i){
 	
 	return neighbors.at(i);

@@ -26,8 +26,8 @@ void Graph::addNode(Vertex* node){
  */
 float Graph::averagePathLength(){
 
-	long int sum = 0;
-	long int num = 0;
+	long int sum = 0;	// the sum of all shortest path distances
+	long int num = 0;	// the number of shortest paths recorded
 	
 	#pragma omp parallel shared(sum, num)
 	{
@@ -219,7 +219,7 @@ float* Graph::nodeBetweenness(){
 /**
  * method to return a count of the number of nodes with exactly k edges
  */
-long int Graph::nodesWithDegree(long int k){
+long int Graph::nodesWithDegree(long int k) const{
 	
 	long int num = 0;
 	
@@ -241,31 +241,28 @@ long int Graph::nodesWithDegree(long int k){
  * method to return the proportion of nodes of a given degree, for all possible degrees
  * where the resulting array is N long, as N-1 is the maximum possible degree
  */
-float* Graph::degreeDistribution(){
+float* Graph::degreeDistribution() const{
 	
 	long int dist[N];	// this array is local and temporary to minimize the effects of floating-point rounding
-									// where the index is the degree k
-									// and the content is the number of nodes with degree k
+						// where the index is the degree k
+						// and the content is the number of nodes with degree k
 									
-	float* ddist = new float[N];
-	
-	for(int i = 0; i < N; i++){
-	
-		dist[i] = 0;
-		
-	}
+	float* ddist = new float[N];	// dynamically allocated array to store the degree distribution
+									// normalized over N
+	memset(dist, (long int)0, N * sizeof(long int));
 
-	for(int i = 0; i < N; i++){
+	for(int i = 0; i < N; i++){	// for each node in the graph
 		
-		long int index = getNode(i)->neighbors.size();
+		long int index = getNode(i)->neighbors.size();	// record the number of neighbors it has
 		
-		dist[getNode(i)->neighbors.size()]++;
+		dist[getNode(i)->neighbors.size()]++;	// note that there is one more node with that number of neighbors
 		
 	}
 	
-	for(int i = 0; i < N; i++){
+	for(int i = 0; i < N; i++){	// for each possible degree (maximum degree is N-1)
 	
-		ddist[i] = dist[i]/(float)N;
+		ddist[i] = dist[i]/(float)N;	// the proportion of nodes with that degree
+										// is the number of nodes with that degree divided by N
 		
 	}
 	
@@ -273,44 +270,47 @@ float* Graph::degreeDistribution(){
 	
 }
 
-float Graph::averageDegree(){
+/**
+ * method to find the mean degree of a node in the graph
+ */
+float Graph::averageDegree() const{
 	
-	long int sum = 0;
+	long int sum = 0;	// total number of "degrees"
 	
-	for(int i = 0; i < N; i++){
+	for(int i = 0; i < N; i++){	// for each node
 		
-			sum += getNode(i)->neighbors.size();
+			sum += K(i);	// add the degree of that node to the sum
 		
 	}
 	
-	return ((float)sum)/N;
+	return ((float)sum)/N;	// average over all nodes
 	
 }
 
 /**
- * multithreaded method to calculate the average clustering coefficient of a graph
- * weighting each node by k(k-1)/2, where k is the degree of the node,
- * and the expression k(k-1)/2 is the number of possible triangles
+ * multithreaded method to calculate the transitivity ratio of the graph
+ * obtained by calculating a weighted average of the local clustering coefficient
+ * where each node is weighted by k(k-1)/2, the number of possible triangles
  */
-float Graph::weightedClusteringCoefficient(){
+float Graph::transitivity() const{
 	
-	float sum = 0;
-	long int weightsum = 0;
+	float sum = 0;	// the weighted sum of local clustering coefficients, equal to the number of triangles
+	long int weightsum = 0;	// the sum of the weights, equal to the number of possible triangles
 	
 	#pragma omp parallel shared(sum, weightsum)
 	{
 	
 		#pragma omp for schedule(guided)
-		for(int i = 0; i < N; i++){
+		for(int i = 0; i < N; i++){	// for each node
 		
-			float coef = getNode(i)->clusteringCoefficient();
-			long int weight = (K(i) * (K(i)-1))/2;
+			float coef = getNode(i)->clusteringCoefficient();	// calculate the clustering coefficient
+			long int weight = (K(i) * (K(i)-1))/2;	// and the weight
 			
 			#pragma omp critical (addition)
 			{
 				
-				sum += coef * weight;
-				weightsum += weight;
+				sum += coef * weight;	// add the weighted contribution (number of triangles) to the sum
+				weightsum += weight;	// and the weight (number of possible triangles) to the sum)
 				
 			}
 			
@@ -318,34 +318,34 @@ float Graph::weightedClusteringCoefficient(){
 		
 	}
 	
-	return sum/weightsum;
+	return sum/weightsum;	// return the weighted average; the weighted sum over the weight
 	
 }
 
 /**
- * multithreaded method to calculate the average clustering coefficient of a graph
+ * multithreaded method to calculate the mean clustering coefficient of a graph
  * weighing the contributions of each node equally
  */
-float Graph::unweightedClusteringCoefficient(){
+float Graph::clustering() const{
 	
-	float sum = 0;
+	float sum = 0;	// sum of all local clustering coefficients
 	
 	#pragma omp parallel shared(sum)
 	{
 	
 		#pragma omp for schedule(guided)
-		for(int i = 0; i < N; i++){
+		for(int i = 0; i < N; i++){	// for each node
 		
-			float coef = getNode(i)->clusteringCoefficient();
+			float coef = getNode(i)->clusteringCoefficient();	// calculate the clustering coefficient
 			
 			#pragma omp atomic
-			sum += coef;
+			sum += coef;	// and add it to the sum
 			
 		}
 		
 	}
 	
-	return sum/N;
+	return sum/N;	// return the simple mean
 	
 }
 
@@ -355,50 +355,58 @@ float Graph::unweightedClusteringCoefficient(){
  */
 long int Graph::indexOf(Vertex* node) const{
 	
-	for(int i = 0; i < N; i++){
+	for(int i = 0; i < N; i++){	// for each node
 	
-		if(node == getNode(i)){
+		if(node == getNode(i)){	// if this is the target node
 		
-			return i;
+			return i;	// return its index
 			
 		}
 		
 	}
 	
-	return -1;
+	return -1;	// if the target node is not found, return a clearly invalid index
 	
 }
 
+/**
+ * method to retrieve a node by index without requiring external access to the Graph::nodes
+ * will be overridden in derivde classes to cast nodes to the appropriate derived class of Vertex
+ */
 Vertex* Graph::getNode(long int i) const{
 	
 	return nodes.at(i);
 	
 }
 
+/**
+ * method to use a breadth-first queue-based search to memoize all nodes
+ * with the minimum distance from some root node and the corresponding shortest path
+ */
 void Graph::memoize(Vertex* root){
 
-	root->distanceFromInitial = 0;
-	root->pathFromInitial.push_back(root);
+	root->distanceFromInitial = 0;	// the root is always a distance of zero from itself
+	root->pathFromInitial.push_back(root);	// the root is always the first node in any shortest path from the root
 	
 	vector<Vertex*> set = this->nodes;	// create a temporary container for all the nodes
 	
 	while(set.size() > 0){	// while there are elements in the set
 	
-		long int index = 0;;
-		long int minimumDistance = LONG_MAX;
+		long int index = 0;	// the index of the node which is closest to the root (possibly the root itself)
+		long int minimumDistance = LONG_MAX;	// the shortest known distance from the root
 		
 		for(long int i = 0; i < set.size(); i++){	// for all nodes
 			
 			if(set.at(i)->distanceFromInitial < minimumDistance){	// find the one with the shortest distance
 				
 				index = i;	// and remember it
-				minimumDistance = set.at(i)->distanceFromInitial;
+				minimumDistance = set.at(i)->distanceFromInitial;	// and remember the shortest distance for future comparisons
 				
 			}
 			
 		}
 
-		Vertex* node = set.at(index);	// take the zeroth element
+		Vertex* node = set.at(index);	// take this element which is closest to the root
 		set.erase(set.begin() + index);	// and remove it from the set
 		
 		if(node->distanceFromInitial == LONG_MAX){	// if, somehow, the least distance is "infinite"
@@ -407,7 +415,7 @@ void Graph::memoize(Vertex* root){
 			
 		}
 		
-		for(long int i = 0; i < node->neighbors.size(); i++){	// for each neighbor of this node
+		for(long int i = 0; i < node->neighbors.size(); i++){	// for each neighbor of this closest node
 			
 			long int alt = node->distanceFromInitial + 1;	// there is a path from the node which is one additional edge longer
 			
@@ -423,19 +431,21 @@ void Graph::memoize(Vertex* root){
 		
 	}
 	
+	return;	// return statement placed here for clarity only
+	
 }
 
-/*
+/**
  * remove all distance notations from this connected graph
  * and all records of paths
  */
 void Graph::clean(){
 	
-	for(long int i = 0; i < N; i++){
+	for(long int i = 0; i < N; i++){	// for each node
 		
-		getNode(i)->distanceFromInitial = LONG_MAX;
+		getNode(i)->distanceFromInitial = LONG_MAX;	// set the distanceFromInitial to the value which signals "not yet memoized"
 		
-		while(getNode(i)->pathFromInitial.size() > 0){
+		while(getNode(i)->pathFromInitial.size() > 0){	// remove all elements of the pathFromInitial vector
 			
 			getNode(i)->pathFromInitial.pop_back();
 			
@@ -443,19 +453,27 @@ void Graph::clean(){
 		
 	}
 	
+	return;	// return statement placed here for clarity only
+	
 }
 
+/**
+ * method to compare two nodes to check which one has a greater distance from some root node
+ */
 bool Graph::compareDistancesFromInitial(const Vertex* a, const Vertex* b){
 	
 	return a->distanceFromInitial < b->distanceFromInitial;
 	
 }
 
+/**
+ * destructor which also deletes all nodes
+ */
 Graph::~Graph(){
 	
-	for(long int i = 0; i < N; i++){
+	for(long int i = 0; i < N; i++){	// for each node
 		
-		delete getNode(i);
+		delete getNode(i);	// call its destructor
 		
 	}
 	
