@@ -110,7 +110,9 @@ Thus we find that that the model of a network growing on the surface of a sphere
 We now move onto discussing the generalized case of a network embedded on the surface of an N-sphere in order to see how the dimension of the embedding space impacts the network properties.
 
 \subsubsection{Spatial Embedding of Networks on the Surface of the Unit N-Sphere}
-%Alex should probably write this section
+In this extension of the OHO model, we generalized from the simple case of nodes on a circle and investigated the possibility of placing nodes on an $n$-dimensional sphere.  In order to preserve the non-preferential selection of the OHO model, favoring no inter-node interval above others, we placed new nodes with uniform probability on the surface of the $n$-sphere after "relaxing" the preexisting nodes into a roughly homogenous distribution.  For the relaxation, we treated each node as a point charge, and used a gradient-descent algorithm to let the repulsive forces between nodes move them to an approximate equilibrium.
+
+For the case of an $n$-dimensional sphere embedded in $n+1$-dimensional space, we used the Coulomb force law appropriate to an $n$-dimensional space, treating the sphere as a curved universe containing bodies acting in accordance with $n$-dimensional laws rather than an arbitrary limitation on an $n+1$-dimensional universe.  As we explain below, the conformity of these spherical networks to the appropriate degree distribution indicates that this is a sound method for relaxing nodes into a homogenous distribution.
 
 \section{THE PLUM PUDDING MODEL}
 A key feature of the OHO model is that the nodes can only be placed on the circumference of the circle, when we generalize this to higher dimensions we are still embedding the network on an $n$-dimensional surface in an $n+1$ dimensional space, so nodes never occupy a volume in the embedding space.
@@ -152,7 +154,9 @@ This is verified and discussed in more depth in the section on invariant propert
 %include some stuff about how clustering and path length look different from sphere if we don't choose the appropriate force law. Perhaps include more about how the force law impacts the properties? 
 
 \subsection{Spatial Embedding of Networks in a unit N-Ball}
-%Alex should probably write this section
+Similar to the $n$-sphere, the $n$-ball, a region embedded in $n$-dimensional space, is a generalization of the simpler models to higher dimensions.  However, there is an important distinction: while the repulsive forces between nodes still act as $F \propto \frac{1}{$r^{n-1}}, the attractive force - the contribution of the "cloud" of positive charge - is independent of dimension.  This is the proper result for such a scenario, however; Gauss's law continues to hold in the same general form in higher dimensions.
+
+And, because of the balance between the repulsive and attractive forces, the nodes were kept naturally confined to a unit $n$-dimensional ball, without resort to artificial boundary conditions.  (The force did, however, level off at the edge of the $n$-ball, in order to prevent oscillatory effects for small $N$ with large timesteps).  The arrangement of nodes is best seen in the case of the 2-ball, the most photogenic of $n$-balls.  
 
 \section{INVARIANT PROPERTIES}
 The preceding sections illustrate how the generalizations of the OHO model lead to some distinct network properties, but our generalizations do not change everything about the networks.
