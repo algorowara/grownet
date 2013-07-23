@@ -58,10 +58,10 @@ The original goal of the OHO model was to explore the effect that geographic loc
 \subsection{The Original Model: Embedding a Network on a Circle}
 The original OHO model exhibits the following three properties which indicate that the small-world property is present:
 \begin{description}
-  \item[Degree Distribution] It was shown in \cite{ozik2004} that for large network size N the degree distribution $H(k,N)$ approaches an asymptotically N invariant form given by 
+  \item[Degree Distribution] It was shown in \cite{ozik2004} that for large network size $N$ the degree distribution $H(k,N)$ approaches an asymptotically $N$ invariant form given by 
 \[\bar{H}(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}\]
 for $k \geq m$ and $\bar{H}(k) = 0$ for $k < m$.
-This leads to a result that as N approaches infinity, the average node degree $\langle k \rangle$ approaches the limiting value $\langle k \rangle {_\lim_{N \to \infty}} = 2m$.
+This leads to a result that as $N$ approaches infinity, the average node degree $\langle k \rangle$ approaches the limiting value $\langle k \rangle {_\lim_{N \to \infty}} = 2m$.
 This means that the average node degree remains finite even as $N \to \infty$, which shows that the OHO model meets the first criterion for the small-world property.
   \item[Characteristic Path Length] Although analytic results for the relationship between the shortest path length between pairs of nodes averaged over the whole network (which we denote $\ell$) is generally impossible, simulation results allow the verification of the desired small world path lenth scaling: $\ell \sim \log N$.
 This property was verified for the OHO model in \cite{ozik2004}, but an intuitive picture of why this is the case can be seen as follows, as new nodes are added they push apart the older connected nodes, leaving long edges that pass through the middle of the circle. 
@@ -76,8 +76,8 @@ As a note to the reader, in the past few years new measures of clustering have b
 Thus the OHO model produces a small-world network, but we wonder what general features of this model leads to the small-world property, and so we investigate similar models to explore how the small-world property emerges from spatially embedded networks.
 
 \subsection{Generalizing the Model: The Thomson Problem}
-The natural generalization from embedding nodes on the one-dimensional circumference of a circle is to embed them on the two-dimensional surface of a sphere, or in general on the n-dimnsional surface of a hypersphere.
-On a circle it is trivial to arrange N points equidistant along the circumference, but the analogous procedure is much more difficult on higher dimensional surfaces. 
+The natural generalization from embedding nodes on the one-dimensional circumference of a circle is to embed them on the two-dimensional surface of a sphere, or in general on the $d$-dimensional surface of a hypersphere.
+On a circle it is trivial to arrange $N$ points equidistant along the circumference, but the analogous procedure is much more difficult on higher dimensional surfaces. 
 The idea of finding a configuration of points on the surface of a sphere such that each point is equidistant to all of its neighbors dates back to 1904 when J.J. Thomson introduced his plum pudding model of the atom, a key problem for him was arranging the electrons (corpuscles) on the surface of the sphere of pudding such that the potential energy is minimized \cite{thomson1904}.
 
 We take this idea and model the nodes as point charges confined to exist on the surface of a sphere of unit radius; and each time step we require that the potential energy between the nodes is minimized.
@@ -88,13 +88,13 @@ In the following sections we explore the differences between the OHO model and t
 
 \subsubsection{The 2D Case: Network Embedded on the Surface of a Sphere}
 The first generalization we explore is the case of nodes confined to exist on the surface of a unit sphere in Euclidean 3-space.
-This is directly analogous to the original Thomson problem presented in \cite{thomson1904}, where N electrons are bound to the surface of a sphere and interact with each other via the Couloumb force.
+This is directly analogous to the original Thomson problem presented in \cite{thomson1904}, where $N$ electrons are bound to the surface of a sphere and interact with each other via the Couloumb force.
 As a result of the Couloumb interaction, the minimum energy configuration for these points on the sphere is one where the points are distributed in an approximately uniform manner across the surface of the sphere.
 In order to determine if this model produces a small world network we determine the following three properties:
 \begin{description}
   \item[Degree Distribution] The uniform distribution of nodes on the surface of the sphere leads to a uniform probability of choosing an area interval in which to place a new nodes; thus existing nodes each have an equal probability of having their degree increased at each timestep.
 This causes the degree distribution for this new model to be identical to the degree distribution for the original OHO model, for more detail on this discussion refer to the section on invariant properties at the end of this article.
-  \item[Characteristic Path Length] For this model we find that the the average shortest path length $\ell$ scales logarithmically with the network size N, that is, $\ell \sim \log N$. 
+  \item[Characteristic Path Length] For this model we find that the the average shortest path length $\ell$ scales logarithmically with the network size $N$, that is, $\ell \sim \log N$. 
 This is a reasonable result because as the network grows in size the older nodes get pushed apart by the repulsive Coulumb force thus leaving bridges across the network that span a significant physical distance.
 These long range links serve to connect disparate regions of highly interconnected nodes, dramatically reducing the shortest path length between any two nodes in the network.
 At each timestep only geographically local connections are made, but due to the dynamic nature of the nodes' spatial positions, each timestep can make existing links longer in physical space, thus building bridges across the network.
@@ -107,27 +107,27 @@ Thus two originally adjacent nodes can be moved apart around other nodes, formin
 %I'm going to leave this section blank until we have results and figures for this since that should determine what we write.
 \end{description}
 Thus we find that that the model of a network growing on the surface of a sphere with geographic attachment preference leads to the emergence of the small-world property.
-We now move onto discussing the generalized case of a network embedded on the surface of an N-sphere in order to see how the dimension of the embedding space impacts the network properties.
+We now move onto discussing the generalized case of a network embedded on the surface of a $d$-sphere in order to see how the dimension of the embedding space impacts the network properties.
 
-\subsubsection{Spatial Embedding of Networks on the Surface of the Unit N-Sphere}
-In this extension of the OHO model, we generalized from the simple case of nodes on a circle and investigated the possibility of placing nodes on an $n$-dimensional sphere.
-In order to preserve the non-preferential selection of the OHO model, favoring no inter-node interval above others, we placed new nodes with uniform probability on the surface of the $n$-sphere after "relaxing" the preexisting nodes into a roughly homogenous distribution. 
+\subsubsection{Spatial Embedding of Networks on the Surface of the Unit $d$-Sphere}
+In this extension of the OHO model, we generalized from the simple case of nodes on a circle and investigated the possibility of placing nodes on a $d$-dimensional sphere.
+In order to preserve the non-preferential selection of the OHO model, favoring no inter-node interval above others, we placed new nodes with uniform probability on the surface of the $d$-sphere after "relaxing" the preexisting nodes into a roughly homogenous distribution. 
 For the relaxation, we treated each node as a point charge, and used a gradient-descent algorithm to let the repulsive forces between nodes move them to an approximate equilibrium.
 
-For the case of an $n$-dimensional sphere embedded in $n+1$-dimensional space, we used the Coulomb force law appropriate to an $n$-dimensional space, treating the sphere as a curved universe containing bodies acting in accordance with $n$-dimensional laws rather than an arbitrary limitation on an $n+1$-dimensional universe.  
+For the case of an $d$-dimensional sphere embedded in $d+1$-dimensional space, we used the Coulomb force law appropriate to an $d$-dimensional space, treating the sphere as a curved universe containing bodies acting in accordance with $d$-dimensional laws rather than an arbitrary limitation on an $d+1$-dimensional universe.  
 As we explain below, the conformity of these spherical networks to the appropriate degree distribution indicates that this is a sound method for relaxing nodes into a homogenous distribution.
 
 \section{THE PLUM PUDDING MODEL}
-A key feature of the OHO model is that the nodes can only be placed on the circumference of the circle, when we generalize this to higher dimensions we are still embedding the network on an $n$-dimensional surface in an $n+1$ dimensional space, so nodes never occupy a volume in the embedding space.
-In this generalization we explore how the network properties are affected if we instead embed a growing network in an n-dimensional without restricting them to a spherical shell.  
-In order to ensure unbiased behavior over all nodes, we instead confine them to an $n$-dimensional ball. 
+A key feature of the OHO model is that the nodes can only be placed on the circumference of the circle, when we generalize this to higher dimensions we are still embedding the network on an $d$-dimensional surface in an $d+1$ dimensional space, so nodes never occupy a volume in the embedding space.
+In this generalization we explore how the network properties are affected if we instead embed a growing network in an $d$-dimensional without restricting them to a spherical shell.  
+In order to ensure unbiased behavior over all nodes, we instead confine them to an $d$-dimensional ball. 
 
 Keeping with the idea of nodes as point charges that we introduced earlier, we model our network as a collection of classical electrons, each electron representing a node, free to move around in a "cloud" of positive charge (which for our model fills the embedding space).
 This model was motivated by Thomson's defunct atomic model in which electrons were plums embedding in a sphere of positively charged pudding.
 We use this model because the repulsive potential between electrons ensures that the nodes are spaced equidistant from one another in the minimum potential configuration, while the cloud of positive charge ensures that the nodes do not move arbitrarily far from some fixed starting point.
 Due to the nature of Gauss' Law in different dimensions we find that for each dimension the potential between any given node and the cloud of positive charge is proportional to the square of the distance between the center of the embedding volume and the node in question.
 This means that we can visualize this model as a collection of classical electrons all connected to some origin point by springs (a harmonic potential) and interacting with each other via the dimensionally appropriate Couloumb force.  
-In order to maintain the unit $n$-ball, this potential is kept proportional to the number of nodes in the graph, and in the Plum Pudding analogy can be said to have a "charge" equal and opposite to the sum of "charges" over all of its nodes.
+In order to maintain the unit $d$-ball, this potential is kept proportional to the number of nodes in the graph, and in the Plum Pudding analogy can be said to have a "charge" equal and opposite to the sum of "charges" over all of its nodes.
 Like the OHO model we place new nodes randomly in the volume and connect them to their $m$ nearest neighbors, where here we define nearest to be the Euclidean distance between the nodes.
 After each node is placed, the configuration is rearranged in order to minimize the total potential energy of the system, which forces the nodes to arrange themselves in an approximately uniform distribution throughout the volume in the embedding space.
 
@@ -158,14 +158,14 @@ Since the minimum energy configuration for the nodes in a cloud of positive char
 This is verified and discussed in more depth in the section on invariant properties at the end of this article.
 %include some stuff about how clustering and path length look different from sphere if we don't choose the appropriate force law. Perhaps include more about how the force law impacts the properties? 
 
-\subsection{Spatial Embedding of Networks in a unit N-Ball}
-Similar to the $n$-sphere, the $n$-ball, a region embedded in $n$-dimensional space, is a generalization of the simpler models to higher dimensions.  
-However, there is an important distinction: while the repulsive forces between nodes still act as $F \propto \frac{1}{r^{n-1}}$, the attractive force - the contribution of the "cloud" of positive charge - is independent of dimension.  
+\subsection{Spatial Embedding of Networks in a unit $d$-Ball}
+Similar to the $d$-sphere, the $d$-ball, a region embedded in $d$-dimensional space, is a generalization of the simpler models to higher dimensions.  
+However, there is an important distinction: while the repulsive forces between nodes still act as $F \propto \frac{1}{r^{d-1}}$, the attractive force - the contribution of the "cloud" of positive charge - is independent of dimension.  
 This is the proper result for such a scenario, however; Gauss's law continues to hold in the same general form in higher dimensions.
 
-And, because of the balance between the repulsive and attractive forces, the nodes were kept naturally confined to a unit $n$-dimensional ball, without resort to artificial boundary conditions.  
-The force did, however, level off at the edge of the $n$-ball, in order to prevent oscillatory effects for small $N$ with large timesteps.  
-The arrangement of nodes is best seen in the case of the 2-ball, the most photogenic of $n$-balls.  
+And, because of the balance between the repulsive and attractive forces, the nodes were kept naturally confined to a unit $d$-dimensional ball, without resort to artificial boundary conditions.  
+The force did, however, level off at the edge of the $d$-ball, in order to prevent oscillatory effects for small $N$ with large timesteps.  
+The arrangement of nodes is best seen in the case of the 2-ball, the most photogenic of $d$-balls.  
 
 \section{INVARIANT PROPERTIES}
 The preceding sections illustrate how the generalizations of the OHO model lead to some distinct network properties, but our generalizations do not change everything about the networks.
@@ -187,11 +187,11 @@ Averaging $\hat{G}(k,N)$ over all possible random node placements we get a maste
 
 where $\delta_{km}$ is the Kronecker delta function.
 The first term on the right is the expected number of nodes with degree $k$ at time $N$.
-The second term is the expected number of nodes with degree $k$ at time N that get promoted to degree $k+1$.
-The third term is the expected number of nodes with degree $k-1$ at time N that get promoted to degree $k$.
+The second term is the expected number of nodes with degree $k$ at time $N$ that get promoted to degree $k+1$.
+The third term is the expected number of nodes with degree $k-1$ at time $N$ that get promoted to degree $k$.
 The last term on the right is the new node with degree $m$.
 
-It was shown by Ozik et al. \cite{ozik2004} that this master equation leads to an exponentially decaying degree distribution with an asymptotically N invariant form $\bar{H}(k) := \lim_{N \to +\infty} G(k,N)/N$ given by the closed form solution,
+It was shown by Ozik et al. \cite{ozik2004} that this master equation leads to an exponentially decaying degree distribution with an asymptotically $N$ invariant form $\bar{H}(k) := \lim_{N \to +\infty} G(k,N)/N$ given by the closed form solution,
 
 \[\bar{H}(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}\]
 
@@ -213,11 +213,11 @@ But the probability of incrementing the degree of the node is $\frac{m}{N}$, whi
 
 \[k(y,N) = m + m\sum_{j=0}^{y} \frac{1}{j+N-y}\]
 
-Now this expression works exactly for the expectation value of the degree of a node given its age, but we can simplify the result in the limit of large N by approximating the sum as an integral and then simply integrating to yield a logarithm, so for large $N$ we get the degree-node age distribution,
+Now this expression works exactly for the expectation value of the degree of a node given its age, but we can simplify the result in the limit of large $N$ by approximating the sum as an integral and then simply integrating to yield a logarithm, so for large $N$ we get the degree-node age distribution,
 
 \[k(y,N) = m + m\log{\frac{N}{N-y}}\]
 
-which we find fits the simulation data well for any value reasonable value of N.
+which we find fits the simulation data well for any value reasonable value of $N$.
  
 Once again we find that since this age distribution was found using only the assumption that each node has an equal chance each timestep to have its degree incremented, this result holds for all of the models discussed here.
 This equation represents a specific example of the unavoidable fact that in dynamically growing networks highly connected (and thus older) nodes are preferentially connected to one another discussed in \cite{reallyrandom}.
@@ -251,7 +251,7 @@ However, we first note that the results we have obtained, while certainly biased
 \subsection{Tolerance of Disequilibrium}
 As noted above, we used a gradient-descent method to enforce the even spacing of nodes.  
 In order to ensure that the computation halted, we introduced a ceiling on the number of iterations of gradient-descent steps, so that a persistent disequilibrium could not delay the model indefinitely.  
-We also introduced a tolerance parameter related to the average inter-node spacing (a function of N) such that if all nodes were displaced by less than a certain distance in a single timestep, the gradient-descent algorithm could exit early.  
+We also introduced a tolerance parameter related to the average inter-node spacing (a function of $N$) such that if all nodes were displaced by less than a certain distance in a single timestep, the gradient-descent algorithm could exit early.  
 Both of these steps were necessary to ensure that the use of the model was practically feasible given finite computing resources.
 
 Varying the tolerance, we found that a higher tolerance (resulting in fewer steps before exiting the algorithm) corresponded to decreased displacement of nodes, as was expected.  
@@ -267,9 +267,9 @@ Large timesteps, therefore, were also a trade between accuracy and speed, though
 This was reflected in a lower clustering coefficient for rather large timesteps, an effect which persisted even for large networks.
 
 \subsection{Force Laws}
-Finally, in calculating the gradients for the gradient-descent algorithm, we used a scaling taken from the Coulomb force in an arbitrary number of dimensions: $F \propto \frac{1}{r^{n-1}}$ in an n-dimensional space.  
-For the n-dimensional ball, the ball and the space in which it was embedded were of the same dimension, which as the dimension used there.  
-In the case of the n-dimensional sphere, however, the dimension of the sphere itself, which was one less than that of the embedding space, was used, which produced results approximately similar to those produced from the n-dimensional ball.
+Finally, in calculating the gradients for the gradient-descent algorithm, we used a scaling taken from the Coulomb force in an arbitrary number of dimensions: $F \propto \frac{1}{r^{d-1}}$ in a $d$-dimensional space.  
+For the $d$-dimensional ball, the ball and the space in which it was embedded were of the same dimension, which as the dimension used there.  
+In the case of the $d$-dimensional sphere, however, the dimension of the sphere itself, which was one less than that of the embedding space, was used, which produced results approximately similar to those produced from the $d$-dimensional ball.
 
 However, we found that different force laws produced substantially different arrangements.  %More to follow once we have conclusive data on force/dimension.
 
