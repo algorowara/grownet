@@ -110,19 +110,24 @@ Thus we find that that the model of a network growing on the surface of a sphere
 We now move onto discussing the generalized case of a network embedded on the surface of an N-sphere in order to see how the dimension of the embedding space impacts the network properties.
 
 \subsubsection{Spatial Embedding of Networks on the Surface of the Unit N-Sphere}
-In this extension of the OHO model, we generalized from the simple case of nodes on a circle and investigated the possibility of placing nodes on an $n$-dimensional sphere.  In order to preserve the non-preferential selection of the OHO model, favoring no inter-node interval above others, we placed new nodes with uniform probability on the surface of the $n$-sphere after "relaxing" the preexisting nodes into a roughly homogenous distribution.  For the relaxation, we treated each node as a point charge, and used a gradient-descent algorithm to let the repulsive forces between nodes move them to an approximate equilibrium.
+In this extension of the OHO model, we generalized from the simple case of nodes on a circle and investigated the possibility of placing nodes on an $n$-dimensional sphere.
+In order to preserve the non-preferential selection of the OHO model, favoring no inter-node interval above others, we placed new nodes with uniform probability on the surface of the $n$-sphere after "relaxing" the preexisting nodes into a roughly homogenous distribution. 
+For the relaxation, we treated each node as a point charge, and used a gradient-descent algorithm to let the repulsive forces between nodes move them to an approximate equilibrium.
 
-For the case of an $n$-dimensional sphere embedded in $n+1$-dimensional space, we used the Coulomb force law appropriate to an $n$-dimensional space, treating the sphere as a curved universe containing bodies acting in accordance with $n$-dimensional laws rather than an arbitrary limitation on an $n+1$-dimensional universe.  As we explain below, the conformity of these spherical networks to the appropriate degree distribution indicates that this is a sound method for relaxing nodes into a homogenous distribution.
+For the case of an $n$-dimensional sphere embedded in $n+1$-dimensional space, we used the Coulomb force law appropriate to an $n$-dimensional space, treating the sphere as a curved universe containing bodies acting in accordance with $n$-dimensional laws rather than an arbitrary limitation on an $n+1$-dimensional universe.  
+As we explain below, the conformity of these spherical networks to the appropriate degree distribution indicates that this is a sound method for relaxing nodes into a homogenous distribution.
 
 \section{THE PLUM PUDDING MODEL}
 A key feature of the OHO model is that the nodes can only be placed on the circumference of the circle, when we generalize this to higher dimensions we are still embedding the network on an $n$-dimensional surface in an $n+1$ dimensional space, so nodes never occupy a volume in the embedding space.
-In this generalization we explore how the network properties are affected if we instead embed a growing network in an n-dimensional without restricting them to a spherical shell.  In order to ensure unbiased behavior over all nodes, we instead confine them to an $n$-dimensional ball. 
+In this generalization we explore how the network properties are affected if we instead embed a growing network in an n-dimensional without restricting them to a spherical shell.  
+In order to ensure unbiased behavior over all nodes, we instead confine them to an $n$-dimensional ball. 
 
 Keeping with the idea of nodes as point charges that we introduced earlier, we model our network as a collection of classical electrons, each electron representing a node, free to move around in a "cloud" of positive charge (which for our model fills the embedding space).
 This model was motivated by Thomson's defunct atomic model in which electrons were plums embedding in a sphere of positively charged pudding.
 We use this model because the repulsive potential between electrons ensures that the nodes are spaced equidistant from one another in the minimum potential configuration, while the cloud of positive charge ensures that the nodes do not move arbitrarily far from some fixed starting point.
 Due to the nature of Gauss' Law in different dimensions we find that for each dimension the potential between any given node and the cloud of positive charge is proportional to the square of the distance between the center of the embedding volume and the node in question.
-This means that we can visualize this model as a collection of classical electrons all connected to some origin point by springs (a harmonic potential) and interacting with each other via the dimensionally appropriate Couloumb force.  In order to maintain the unit $n$-ball, this potential is kept proportional to the number of nodes in the graph, and in the Plum Pudding analogy can be said to have a "charge" equal and opposite to the sum of "charges" over all of its nodes.
+This means that we can visualize this model as a collection of classical electrons all connected to some origin point by springs (a harmonic potential) and interacting with each other via the dimensionally appropriate Couloumb force.  
+In order to maintain the unit $n$-ball, this potential is kept proportional to the number of nodes in the graph, and in the Plum Pudding analogy can be said to have a "charge" equal and opposite to the sum of "charges" over all of its nodes.
 Like the OHO model we place new nodes randomly in the volume and connect them to their $m$ nearest neighbors, where here we define nearest to be the Euclidean distance between the nodes.
 After each node is placed, the configuration is rearranged in order to minimize the total potential energy of the system, which forces the nodes to arrange themselves in an approximately uniform distribution throughout the volume in the embedding space.
 
@@ -154,9 +159,13 @@ This is verified and discussed in more depth in the section on invariant propert
 %include some stuff about how clustering and path length look different from sphere if we don't choose the appropriate force law. Perhaps include more about how the force law impacts the properties? 
 
 \subsection{Spatial Embedding of Networks in a unit N-Ball}
-Similar to the $n$-sphere, the $n$-ball, a region embedded in $n$-dimensional space, is a generalization of the simpler models to higher dimensions.  However, there is an important distinction: while the repulsive forces between nodes still act as $F \propto \frac{1}{$r^{n-1}}, the attractive force - the contribution of the "cloud" of positive charge - is independent of dimension.  This is the proper result for such a scenario, however; Gauss's law continues to hold in the same general form in higher dimensions.
+Similar to the $n$-sphere, the $n$-ball, a region embedded in $n$-dimensional space, is a generalization of the simpler models to higher dimensions.  
+However, there is an important distinction: while the repulsive forces between nodes still act as $F \propto \frac{1}{r^{n-1}}$, the attractive force - the contribution of the "cloud" of positive charge - is independent of dimension.  
+This is the proper result for such a scenario, however; Gauss's law continues to hold in the same general form in higher dimensions.
 
-And, because of the balance between the repulsive and attractive forces, the nodes were kept naturally confined to a unit $n$-dimensional ball, without resort to artificial boundary conditions.  (The force did, however, level off at the edge of the $n$-ball, in order to prevent oscillatory effects for small $N$ with large timesteps).  The arrangement of nodes is best seen in the case of the 2-ball, the most photogenic of $n$-balls.  
+And, because of the balance between the repulsive and attractive forces, the nodes were kept naturally confined to a unit $n$-dimensional ball, without resort to artificial boundary conditions.  
+The force did, however, level off at the edge of the $n$-ball, in order to prevent oscillatory effects for small $N$ with large timesteps.  
+The arrangement of nodes is best seen in the case of the 2-ball, the most photogenic of $n$-balls.  
 
 \section{INVARIANT PROPERTIES}
 The preceding sections illustrate how the generalizations of the OHO model lead to some distinct network properties, but our generalizations do not change everything about the networks.
@@ -164,7 +173,9 @@ In this section we discuss some properties that are invariant between our differ
 One key feature that leads to the invariance discussed below is the uniform probability for each preexisting node to be connected to any new node at each timestep. 
 
 \subsection{Degree Distribution}
-Here we show that regardless of which model we look at, we produce the same master equation governing the evolution of the degree distribution (in particular the master equation for the degree distribution in \cite{ozik2004}).  This master equation is not specific to the spatial structure of the network, or indeed the existence of any spatial structure, but rather relies on the uniform distribution of new links among preexisting nodes.  It appears, in various forms, in networks such as the Deterministic Uniform Random Tree \cite{zhang2008topologies}.
+Here we show that regardless of which model we look at, we produce the same master equation governing the evolution of the degree distribution (in particular the master equation for the degree distribution in \cite{ozik2004}).  
+This master equation is not specific to the spatial structure of the network, or indeed the existence of any spatial structure, but rather relies on the uniform distribution of new links among preexisting nodes.  
+It appears, in various forms, in networks such as the Deterministic Uniform Random Tree \cite{zhang2008topologies}.
 
 We define $\hat{G}(k,N)$ to be the number of nodes with degree $k$ when we are at time $N$ (i.e. when the system has $N$ nodes).
 When a node is added to the network it is initially connected to its $m$ nearest neighbors, so initially (upon creation) $k = m$ for each node, meaning that $\hat{G}(k,N) = 0 \text{ for } k < m$.
@@ -186,7 +197,8 @@ It was shown by Ozik et al. \cite{ozik2004} that this master equation leads to a
 
 for $k \geq m$ and of course $\bar{H}(k) = 0$ for $k < m$.
 
-The interesting point here is that this exponentially decaying degree distribution comes only from the growing procedure and the uniform probability of attaching new links to existing nodes.  Since, in our models, the uniform probability of attachment to any given node is a result of the uniform spacing of the nodes, conformity to this degree distribution is an important confirmation that our models are, in fact, spatially uniform.
+The interesting point here is that this exponentially decaying degree distribution comes only from the growing procedure and the uniform probability of attaching new links to existing nodes.  
+Since, in our models, the uniform probability of attachment to any given node is a result of the uniform spacing of the nodes, conformity to this degree distribution is an important confirmation that our models are, in fact, spatially uniform.
 Thus this distribution and the analysis therein holds for all of the generalizations presented in this article. 
 So as long as we have a growing network where nodes are added with equal probability of being nearby (in the metric space) any existing node and each new node is connected to its $m$ nearest neighbors, then we will recover the exponential degree distribution given by $\bar{H}(k)$.
 
@@ -232,20 +244,32 @@ Thus the discrepancy in betweenness vs. degree in the 1D case can be attributed 
 Although the invariance of the betweenness-degree relationship is not fully established, the higher dimensional models all exhibit the same pattern, indicating that betweenness is not significantly impacted by the space in which the network is embedded as long as the space is sufficiently large to allow nodes to move freely.
 
 \section{Limitations of the Model}
-As with any simulation, our models were limited in the degree to which they could accurately represent a "real" scenario while still remaining practically computable.  In this section, we discuss the necessary shortcomings we have identified in our model, and the effects we believe them to have had on our results.  However, we first note that the results we have obtained, while certainly biased in one way or another, still appear to accurately represent a genuine trend in the phenomena we investigated, and that the various biases come together to produce what is best characterized as noise, rather than a fundamental flaw.
+As with any simulation, our models were limited in the degree to which they could accurately represent a "real" scenario while still remaining practically computable.  
+In this section, we discuss the necessary shortcomings we have identified in our model, and the effects we believe them to have had on our results.  
+However, we first note that the results we have obtained, while certainly biased in one way or another, still appear to accurately represent a genuine trend in the phenomena we investigated, and that the various biases come together to produce what is best characterized as noise, rather than a fundamental flaw.
 
 \subsection{Tolerance of Disequilibrium}
-As noted above, we used a gradient-descent method to enforce the even spacing of nodes.  In order to ensure that the computation halted, we introduced a ceiling on the number of iterations of gradient-descent steps, so that a persistent disequilibrium could not delay the model indefinitely.  We also introduced a tolerance parameter related to the average inter-node spacing (a function of N) such that if all nodes were displaced by less than a certain distance in a single timestep, the gradient-descent algorithm could exit early.  Both of these steps were necessary to ensure that the use of the model was practically feasible given finite computing resources.
+As noted above, we used a gradient-descent method to enforce the even spacing of nodes.  
+In order to ensure that the computation halted, we introduced a ceiling on the number of iterations of gradient-descent steps, so that a persistent disequilibrium could not delay the model indefinitely.  
+We also introduced a tolerance parameter related to the average inter-node spacing (a function of N) such that if all nodes were displaced by less than a certain distance in a single timestep, the gradient-descent algorithm could exit early.  
+Both of these steps were necessary to ensure that the use of the model was practically feasible given finite computing resources.
 
-Varying the tolerance, we found that a higher tolerance (resulting in fewer steps before exiting the algorithm) corresponded to decreased displacement of nodes, as was expected.  Similarly, in cases in which the ceiling on the number of steps was too low (that is, low enough to be encountered frequently), there was less movement than in cases in which the ceiling was high.  Both of these effects were trades between accuracy and speed; a faster computation meant less displacement, corresponding to a higher clustering coefficient, among other measures.
+Varying the tolerance, we found that a higher tolerance (resulting in fewer steps before exiting the algorithm) corresponded to decreased displacement of nodes, as was expected.  
+Similarly, in cases in which the ceiling on the number of steps was too low (that is, low enough to be encountered frequently), there was less movement than in cases in which the ceiling was high.  
+Both of these effects were trades between accuracy and speed; a faster computation meant less displacement, corresponding to a higher clustering coefficient, among other measures.
 
 \subsection{Timestep Size}
-For the gradient-descent algorithm, as it was not possible to simulate a truly continuous system, the gradients of each node were calculated and applied in discrete timesteps.  The size of this timestep tended to be inversely proportional to the time to run a model, so larger timesteps were preferable to smaller ones.  However, larger timesteps increased the probability of extreme movements, where smaller timesteps would have prevented such movements by recalculating forces more frequently.
+For the gradient-descent algorithm, as it was not possible to simulate a truly continuous system, the gradients of each node were calculated and applied in discrete timesteps.  
+The size of this timestep tended to be inversely proportional to the time to run a model, so larger timesteps were preferable to smaller ones.  
+However, larger timesteps increased the probability of extreme movements, where smaller timesteps would have prevented such movements by recalculating forces more frequently.
 
-Large timesteps, therefore, were also a trade between accuracy and speed, though here, a faster computation meant more displacement.  This was reflected in a lower clustering coefficient for rather large timesteps, an effect which persisted even for large networks.
+Large timesteps, therefore, were also a trade between accuracy and speed, though here, a faster computation meant more displacement.  
+This was reflected in a lower clustering coefficient for rather large timesteps, an effect which persisted even for large networks.
 
 \subsection{Force Laws}
-Finally, in calculating the gradients for the gradient-descent algorithm, we used a scaling taken from the Coulomb force in an arbitrary number of dimensions: $F \propto \frac{1}{$r^{n-1}} in an n-dimensional space.  For the n-dimensional ball, the ball and the space in which it was embedded were of the same dimension, which as the dimension used there.  In the case of the n-dimensional sphere, however, the dimension of the sphere itself, which was one less than that of the embedding space, was used, which produced results approximately similar to those produced from the n-dimensional ball.
+Finally, in calculating the gradients for the gradient-descent algorithm, we used a scaling taken from the Coulomb force in an arbitrary number of dimensions: $F \propto \frac{1}{r^{n-1}}$ in an n-dimensional space.  
+For the n-dimensional ball, the ball and the space in which it was embedded were of the same dimension, which as the dimension used there.  
+In the case of the n-dimensional sphere, however, the dimension of the sphere itself, which was one less than that of the embedding space, was used, which produced results approximately similar to those produced from the n-dimensional ball.
 
 However, we found that different force laws produced substantially different arrangements.  %More to follow once we have conclusive data on force/dimension.
 
