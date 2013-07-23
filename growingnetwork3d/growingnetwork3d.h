@@ -39,20 +39,20 @@ public:
 
 	GrowingNetwork3D();
 	GrowingNetwork3D(long int n, long int m, float gam = DEFAULT_GAMMA, float tol = DEFAULT_TOLERANCE, long int itr = DEFAULT_ITR);
-	SpatialVertex* getNode(long int i);
+	SpatialVertex* getNode(long int i) const;
 	void grow(long int n);
-	virtual float* randomLocation();
-	virtual float distanceSquared(SpatialVertex* a, SpatialVertex* b);
-	virtual float distance(SpatialVertex* a, SpatialVertex* b);
+	virtual float* randomLocation() const;
+	virtual float distanceSquared(SpatialVertex* a, SpatialVertex* b) const;
+	virtual float distance(SpatialVertex* a, SpatialVertex* b) const;
 	float linearDistance(Vertex* a, Vertex* b);
-	virtual float* sumForces(SpatialVertex* node);
-	SpatialVertex** findMNearestNeighbors(SpatialVertex* start);
+	virtual float* sumForces(SpatialVertex* node) const;
+	SpatialVertex** findMNearestNeighbors(SpatialVertex* start) const;
 	virtual void normalizeRadius(SpatialVertex* node);
-	float calculatePotential();
+	float calculatePotential() const;
 	void equalize();
 	void gradientDescent(float gamma, float baseTolerance, long int maxItr);
-	virtual float calculateMinimumPotential(long int n, long int d);
-	float calculateMinimumPotentialDifference(long int init_n, long int final_n, long int d);
+	virtual float calculateMinimumPotential(long int n, long int d) const;
+	float calculateMinimumPotentialDifference(long int init_n, long int final_n, long int d) const;
 	~GrowingNetwork3D();
 	
 };

@@ -11,8 +11,8 @@ public:
 	float* position;
 
 	SpatialVertex(long int dimension, float* position, long int startTime);
-	SpatialVertex* getNeighbor(long int i);
-	float radialDistance();
+	SpatialVertex* getNeighbor(long int i) const;
+	float radialDistance() const;
 	~SpatialVertex();
 	
 };

@@ -6,7 +6,7 @@
 #define NSPHERE_DEFAULT_RADIUS 1.0
 #define NSPHERE_DEFAULT_GAMMA 6.0
 #define NSPHERE_DEFAULT_TOLERANCE 0.01
-#define NSPHERE_DEFAULT_ITERATIONS 100
+#define NSPHERE_DEFAULT_ITERATIONS 10000
 #define NSPHERE_DEFAULT_THRESHOLD 100
 #define NSPHERE_DEFAULT_PERIOD 1
 
@@ -22,6 +22,8 @@ using namespace std;
 class NSphere : public NGraph {
 
 	public:
+	
+		long int forceExp;
 		
 		NSphere(long int n, long int m, int d, float r = NSPHERE_DEFAULT_RADIUS, float baseGam = NSPHERE_DEFAULT_GAMMA, float baseTol = NSPHERE_DEFAULT_TOLERANCE, long int baseItr = NSPHERE_DEFAULT_ITERATIONS, long int threshold = NSPHERE_DEFAULT_THRESHOLD, long int period = NSPHERE_DEFAULT_PERIOD);
 		void grow(long int n);

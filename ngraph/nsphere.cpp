@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <iterator>
 #include <fstream>
+#include <iostream>
 
 using namespace std;
 
@@ -32,6 +33,7 @@ NSphere::NSphere(long int n, long int m, int d, float r, float baseGam, float ba
 	this->equalizationThreshold = threshold;
 	this->equalizationPeriod = period;
 	this->iterationWeights = 0;
+	this->forceExp = DIM-1;
 	
 	for(long int i = 0; i < m+1; i++){	// for the first m+1 nodes, which form a clique
 	
@@ -71,7 +73,7 @@ void NSphere::grow(long int n){
 		}
 		
 		addNode(newNode);	// add the new node to the NSphere
-		
+		/*
 		if(m > DIM){	// if there are enough nearest neighbors
 						// set the position of this node to their center
 			
@@ -87,7 +89,7 @@ void NSphere::grow(long int n){
 					
 			}
 			
-		}
+		}*/
 		
 		if(N < this->equalizationThreshold || N%(this->equalizationPeriod) == 0){
 			
@@ -226,24 +228,19 @@ float* NSphere::sumForces(SpatialVertex* node){
 	float* force = new float[DIM+1];	// allocate a new force vector of a size appropriate to the space
 	SpatialVertex* other;	// local placeholder for the other node in two-body interactions
 	float magnitude, dist;	// local fields to hold the magnitude of the force and distance between two nodes
-	
-	for(long int i = 0; i < DIM+1; i++){	// first, ensure that all components of the force vector are zero
-		
-		force[i] = 0;
-		
-	}
+	memset(force, 0, (DIM+1) * sizeof(float));
 	
 	for(long int i = 0; i < N; i++){	// for all nodes on the NSphere
 		
-		if(node == getNode(i)){	// except the node for which force is being calculated
+		if(node == GET_NODE(i)){	// except the node for which force is being calculated
 			
 			continue;	// seriously, skip the infinite self-force
 			
 		}
 		
-		other = getNode(i);
+		other = GET_NODE(i);
 		NSPHERE_LINEAR_DISTANCE(node->position, other->position, dist);
-		POSITIVE_INTEGER_POWER(dist, DIM-1, magnitude);
+		POSITIVE_INTEGER_POWER(dist, forceExp, magnitude);
 		magnitude = 1.0/magnitude;
 		
 		for(long int j = 0; j < DIM+1; j++){	// for each dimension, add the component of force from this interaction
@@ -270,13 +267,13 @@ void NSphere::equalize(){
 }
 
 void NSphere::gradientDescent(float gamma, float tolerance, long int maxItr){
-
+	
 	float* netForce[N];	// a record of the net force on each node
 	float prevMaxDisp = FLT_MAX;	// record of the maximum scalar displacement of a node on the previous iteration
 									// initially set to an impossibly large value to ensure at least one iteration occurs
-	float tolMaxDisp = (radius * pow(N, -1.0/DIM) * tolerance) * baseGam;	// the maximum tolerated displacement
+	float tolMaxDisp = ((radius / pow(N, 1.0/DIM)) * tolerance) * baseGam;	// the maximum tolerated displacement
 																				// if the maximum displacement is above this value, continue iterating
-																				// scales with gamma to provide equal treatment across timestep sizes
+	float maxAllowedDisp = (radius / pow(N, 1.0/DIM))/10;																			// scales with gamma to provide equal treatment across timestep sizes
 
 	memset(netForce, 0, N * sizeof(float*));
 	
@@ -291,7 +288,7 @@ void NSphere::gradientDescent(float gamma, float tolerance, long int maxItr){
 			#pragma omp for schedule(guided)
 			for(long int i = 0; i < N; i++){	// for each node
 				
-				netForce[i] = this->sumForces(getNode(i));	// store the current net force on each node
+				netForce[i] = this->sumForces(GET_NODE(i));	// store the current net force on each node
 				
 			}
 			
@@ -310,15 +307,14 @@ void NSphere::gradientDescent(float gamma, float tolerance, long int maxItr){
 				
 				for(long int j = 0; j < DIM+1; j++){	// for every dimension
 				
-					oldPos[j] = getNode(i)->position[j];	// store the old position
-					getNode(i)->position[j] += gamma * netForce[i][j];	// displace the node in that dimension
+					oldPos[j] = GET_NODE(i)->position[j];	// store the old position
+					GET_NODE(i)->position[j] += gamma * netForce[i][j];	// displace the node in that dimension
 																		// according to the force on it and the timestep size
 					
 				}
 				
-				normalizeRadius(getNode(i));	// normalize the radius
-				NSPHERE_LINEAR_DISTANCE(oldPos, getNode(i)->position, disp);	// calculate the displacement
-																				// between the old and current positions
+				normalizeRadius(GET_NODE(i));	// normalize the radius
+				NSPHERE_LINEAR_DISTANCE(oldPos, GET_NODE(i)->position, disp);	// calculate the displacement
 				
 				#pragma omp critial (maximumDisplacement)	// encase this comparison in a critical region
 				{
@@ -331,13 +327,41 @@ void NSphere::gradientDescent(float gamma, float tolerance, long int maxItr){
 					
 				}
 				
-				delete[] netForce[i];	// deallocate the now-outdated force vector
+			}
+			
+		}
+		
+		if(maxDisp > maxAllowedDisp){	// if the maximum displacement is greater than the maximum allowed
+			
+			float correction = gamma * (maxAllowedDisp / maxDisp - 1);	// the correction factor will scale everything down
+																		// it will be negative, as maxAllowedDisp < maxDisp
+			
+			for(long int i = 0; i < N; i++){	// for each node
+				
+				for(long int j = 0; j < DIM+1; j++){	// for each dimension
+					
+					GET_NODE(i)->position[j] += correction * netForce[i][j];	// apply the correction factor to the force
+																				// to cancel some of it out
+					
+				}
+					
+				delete[] netForce[i];	// delete the now-outdated force vector
 				
 			}
 			
 		}
 		
-		prevMaxDisp = maxDisp;	// record the largest displacement encountered here	
+		else{	// even if it is not
+			
+			for(long int i = 0; i < N; i++){	// for each node
+				
+				delete[] netForce[i];	// delete the force vector anyway
+				
+			}
+			
+		}
+		
+		prevMaxDisp = maxDisp;	// record the largest displacement encountered here
 		maxItr--;	// move one iteration closer to stopping regardless of potential
 		
 	}

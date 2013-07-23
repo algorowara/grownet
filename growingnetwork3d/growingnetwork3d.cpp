@@ -9,6 +9,14 @@ GrowingNetwork3D::GrowingNetwork3D(){
 	
 }
 
+/**
+ * constructor method specifying:
+ *   n, the number of nodes to be grown in the network
+ *   m, the number of new edges per newly created node
+ *   gam, the base timestep size (the actual timestep size will scale as a function of N)
+ *   tol, the base tolerance in terms of a fraction of the estimated minimum potential difference between N-1 and N
+ *   itr, the maximum number of iterations to be used in gradientDescent before giving up
+ */
 GrowingNetwork3D::GrowingNetwork3D(long int n, long int m, float gam, float tol, long int itr) : DIM(3){
 	
 	this->time = 0;
@@ -21,7 +29,7 @@ GrowingNetwork3D::GrowingNetwork3D(long int n, long int m, float gam, float tol,
 	for(long int i = 0; i < m+1; i++){	// for the first m+1 nodes, which form a clique
 	
 		SpatialVertex* newNode = new SpatialVertex(DIM, randomLocation(), getTime());	// generate a new node in DIM dimensions
-		addNode(newNode);
+		addNode(newNode);	// place it in the network
 		
 		for(long int j = 0; j < nodes.size()-1; j++){	// link it to all previously created nodes
 			
@@ -31,42 +39,49 @@ GrowingNetwork3D::GrowingNetwork3D(long int n, long int m, float gam, float tol,
 		
 		
 		equalize();	// equalize the distribution of nodes
-		tick();
-		n--;
+		tick();	// advance the current time
 		
 	}
 	
-	grow(n);	// grow the remaining nodes normally
+	grow(n  - (m+1));	// grow the remaining nodes, less these m+1 initial nodes, normally
 	
 }
 
-SpatialVertex* GrowingNetwork3D::getNode(long int i){
+/**
+ * method to retrieve a node and automatically cast it to a SpatialVertex
+ */
+SpatialVertex* GrowingNetwork3D::getNode(long int i) const{
 	
 	return (SpatialVertex*)nodes.at(i);
 	
 }
 
+/**
+ * method to grow a given number of nodes and equalize them using gradient descent
+ */
 void GrowingNetwork3D::grow(long int n){
 	
-	while(n > 0){
+	while(n > 0){	// while there remain nodes to be added
 		
-		SpatialVertex* newNode = new SpatialVertex(DIM, randomLocation(), getTime());
-		SpatialVertex** nearNeighbors = findMNearestNeighbors(newNode);
+		SpatialVertex* newNode = new SpatialVertex(DIM, randomLocation(), getTime());	// create a new node at a random location
+		SpatialVertex** nearNeighbors = findMNearestNeighbors(newNode);	// find its m nearest neighbors
 		
-		for(int i = 0; i < m; i++){
+		for(int i = 0; i < m; i++){	// for each such neighbor
 			
-			newNode->addNeighbor(nearNeighbors[i]);
+			newNode->addNeighbor(nearNeighbors[i]);	// create an edge between it and the new node
 			
 		}
 		
-		addNode(newNode);		
-		equalize();
+		addNode(newNode);	// add the new node to the network so that it can participate in inter-node interactions
+		equalize();	// perform gradient descent on the nodes to space them evenly
 		
-		delete[] nearNeighbors;
-		tick();		
-		n--;
+		delete[] nearNeighbors;	// deallocate the array of nearest neighbors
+		tick();	// advance the current time of the network
+		n--;	// recognize that one less node needs to be added
 		
 	}
+	
+	return;
 	
 }
 
@@ -76,12 +91,12 @@ void GrowingNetwork3D::grow(long int n){
  * u and v are taken uniformly from the interval (0, 1)
  * see doc.odt for specification of the coordinate system
  */
-float* GrowingNetwork3D::randomLocation(){
+float* GrowingNetwork3D::randomLocation() const{
 	
-	float* position = new float[DIM];
+	float* position = new float[DIM];	// allocate a position vector
 	
-	float theta = 2 * M_PI * (((float)rand())/RAND_MAX);
-	float phi = acos((2 * ((float)rand())/RAND_MAX - 1));
+	float theta = 2 * M_PI * (((float)rand())/RAND_MAX);	// randomly select a theta
+	float phi = acos((2 * ((float)rand())/RAND_MAX - 1));	// and a phi
 	
 	position[0] = radius * sin(phi) * cos(theta);
 	position[1] = radius * sin(phi) * sin(theta);
@@ -97,7 +112,7 @@ float* GrowingNetwork3D::randomLocation(){
  * for uses which actually require distance, use the distance method
  * if a and b are not both three-dimensional, this method's behavior is undefined
  */
-float GrowingNetwork3D::distanceSquared(SpatialVertex* a, SpatialVertex* b){
+float GrowingNetwork3D::distanceSquared(SpatialVertex* a, SpatialVertex* b) const{
 	
 	return ((X(a) - X(b)) * (X(a) - X(b)) + (Y(a) - Y(b)) * (Y(a) - Y(b)) + (Z(a) - Z(b)) * (Z(a) - Z(b)));
 	
@@ -108,7 +123,7 @@ float GrowingNetwork3D::distanceSquared(SpatialVertex* a, SpatialVertex* b){
  * if a and b are not both three-dimensional, this method's behavior is undefined
  * relies on the distanceSquared method
  */
-float GrowingNetwork3D::distance(SpatialVertex* a, SpatialVertex* b){
+float GrowingNetwork3D::distance(SpatialVertex* a, SpatialVertex* b) const{
 	
 	return sqrt(distanceSquared(a, b));
 	
@@ -135,7 +150,7 @@ float GrowingNetwork3D::linearDistance(Vertex* a, Vertex* b){
  * currently falls off as 1/r^2
  * dynamically allocates an array which should be deleted by the caller after use
  */
-float* GrowingNetwork3D::sumForces(SpatialVertex* node){
+float* GrowingNetwork3D::sumForces(SpatialVertex* node) const{
 	
 	float* force = new float[DIM];	// allocate a new array for the force vector
 	SpatialVertex* other;	// local placeholder for any other node in two-body interactions
@@ -172,9 +187,9 @@ float* GrowingNetwork3D::sumForces(SpatialVertex* node){
 /**
  * method to find the m nearest neighbors to some starting node
  */
-SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start){
+SpatialVertex** GrowingNetwork3D::findMNearestNeighbors(SpatialVertex* start) const{
 	 
-	SpatialVertex** near = new SpatialVertex*[m];
+	SpatialVertex** near = new SpatialVertex*[m];	// dynamically allocated array to hold the m nearest neighbors
 	float dsquare[m];	// local record of the distance-squared of the m nearest neighbors
 	
 	for(int i = 0; i < m; i++){
@@ -245,7 +260,7 @@ void GrowingNetwork3D::normalizeRadius(SpatialVertex* node){
  * where the potential of any node pair is defined as 1/r
  * where r is the magnitude of the displacement between the two nodes
  */
-float GrowingNetwork3D::calculatePotential(){
+float GrowingNetwork3D::calculatePotential() const{
 	
 	float potential = 0;
 	
@@ -279,9 +294,13 @@ float GrowingNetwork3D::calculatePotential(){
 	
 }
 
+/**
+ * call the gradient descent algorithm
+ * with a timestep which scales with N^-3/2
+ */
 void GrowingNetwork3D::equalize(){
 	
-	gradientDescent(baseGam/(N * sqrt(N)), baseTol * sqrt(N), baseItr);
+	gradientDescent(baseGam/(N * sqrt(N)), baseTol, baseItr);
 	
 }
 
@@ -295,13 +314,13 @@ void GrowingNetwork3D::gradientDescent(float gamma, float baseTolerance, long in
 	
 	float* netForce[N];	// local array to store the net forces on each node
 	float previousPotential = FLT_MAX;	// local field to store the previous known potential; set to an arbitrary maximum to ensure that at least one iteration occurs
-	float toleratedPotential = 0;
+	float toleratedPotential = 0;	// if N is less than the guided N, the algorithm will perform the maximum number of iterations anyway
 	
-	if(N > GUIDED_N){
-		toleratedPotential = calculateMinimumPotential(N, DIM) + baseTol * calculateMinimumPotentialDifference(N-1, N, DIM);
+	if(N > GUIDED_N){	// otherwise, if N is greater, the tolerated potential is equal to the minimum potential plus some fraction of the estimated potential difference due to the addition of the last node
+		toleratedPotential = calculateMinimumPotential(N, DIM) + baseTolerance * calculateMinimumPotentialDifference(N-1, N, DIM);
 	}
 	
-	while(previousPotential > toleratedPotential && maxItr > 0){
+	while(previousPotential > toleratedPotential && maxItr > 0){	// until either the potential is sufficiently low or the maximum number of iterations have been performed
 
 		#pragma omp parallel shared(netForce)
 		{
@@ -310,9 +329,9 @@ void GrowingNetwork3D::gradientDescent(float gamma, float baseTolerance, long in
 			for(int i = 0; i < N; i++){	// for every node
 				
 				netForce[i] = this->sumForces(getNode(i));	// store the net force on the node
-														// thread safety is not an issue here
-														// because the values of i are divided among threads
-														// and no two will ever write to the same index
+															// thread safety is not an issue here
+															// because the values of i are divided among threads
+															// and no two will ever write to the same index
 				
 			}
 			
@@ -348,7 +367,7 @@ void GrowingNetwork3D::gradientDescent(float gamma, float baseTolerance, long in
  * return the potential energy as a function of 
  * as calculated from the equation given in the design document
  */
-float GrowingNetwork3D::calculateMinimumPotential(long int n, long int d){
+float GrowingNetwork3D::calculateMinimumPotential(long int n, long int d) const{
 	
 	return 0.063594969640041382 * sqrt(n) + -0.55213813866389005 * pow(n, 1.5) + 0.49998893897252450 * (n * n);
 	
@@ -357,12 +376,15 @@ float GrowingNetwork3D::calculateMinimumPotential(long int n, long int d){
 /**
  * return the difference between the minimum potentials at two different values of n
  */
-float GrowingNetwork3D::calculateMinimumPotentialDifference(long int init_n, long int final_n, long int d){
+float GrowingNetwork3D::calculateMinimumPotentialDifference(long int init_n, long int final_n, long int d) const{
 	
 	return calculateMinimumPotential(final_n, d) - calculateMinimumPotential(init_n, d);
 	
 }
 
+/**
+ * default destructor which does nothing beyond calling its base classes' destructors
+ */
 GrowingNetwork3D::~GrowingNetwork3D(){
 	
 }

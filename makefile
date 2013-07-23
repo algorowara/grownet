@@ -1,4 +1,4 @@
-FLAGS = -fopenmp -ffast-math -fsingle-precision-constant -O3
+FLAGS = -fopenmp -ffast-math -fsingle-precision-constant -O3 -pg
 
 
 all: main/test main/graphgen main/parametertune main/pgrownet main/lineppnet main/figuredata

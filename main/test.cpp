@@ -15,10 +15,16 @@ using namespace std;
 
 int main(){
 	
-	long int n = 1000, m = 3, d = 2;
-	NGraph* net = new NBall(m+1, m, d);
-	net->baseGam = 10;
-	net->grow(n - (m+1));
-	cout<<net->clustering();
+	for(long int f = 0; f <= 8; f++){
+	
+		long int n = 1000, m = 12, d = 4;
+		NSphere* net = new NSphere(m+1, m, d);
+		net->baseGam = 0.01;
+		net->forceExp = f;
+		net->grow(n - (m+1));
+		cout<<f<<" "<<net->clustering()<<endl;
+		delete net;
+		
+	}
 	
 }

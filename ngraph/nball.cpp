@@ -128,24 +128,6 @@ void NBall::grow(long int n){
 		addNode(newNode);	// add the new node to the graph
 		beta = (alpha * N)/(pow(radius, DIM));	// update the attractive cloud force constant
 		
-		if(radiallyCloserNeighbors < m && m > DIM){	// if this node is not the farthest outward of all its neighbors
-													// and the number of nearest neighbors is large enough for this space
-													// to avoid being confined to a lower-dimensional set of points
-			
-			for(long int i = 0; i < DIM; i++){	// for each dimension
-				
-				newNode->position[i] = 0;
-				
-				for(long int j = 0; j < m; j++){	// slightly pre-equalize the new node
-					
-					newNode->position[i] += (nearNeighbors[j]->position[i])/m;	// by placing it at the average position of its nearest neighbors
-					
-				}
-					
-			}
-			
-		}
-		
 		if(N < this->equalizationThreshold || N%(this->equalizationPeriod) == 0){
 			
 			equalize();	// ensure that the nodes are spaced appropriately
@@ -243,14 +225,14 @@ SpatialVertex** NBall::findMNearestNeighbors(SpatialVertex* start){
 
 	for(int i = 0; i < N; i++){
 
-		if(getNode(i) == start){	//do not consider the distance between the starting node and itself
+		if(GET_NODE(i) == start){	//do not consider the distance between the starting node and itself
 
 			continue;
 
 		}
 
 		float d;
-		NBALL_LINEAR_DISTANCE(start->position, getNode(i)->position, d);
+		NBALL_LINEAR_DISTANCE(start->position, GET_NODE(i)->position, d);
 
 		for(int j = 0; j < m; j++){	//iterate through all distance squared records
 
@@ -264,7 +246,7 @@ SpatialVertex** NBall::findMNearestNeighbors(SpatialVertex* start){
 				}	
 			
  				dist[j] = d;	// put the data for this new nearest neighbor 
-				near[j] = getNode(i);	// in the spot previously occupied by neighbor j
+				near[j] = GET_NODE(i);	// in the spot previously occupied by neighbor j
 				break;	// stop looking for others
 
 			}
@@ -292,7 +274,7 @@ float* NBall::sumForces(SpatialVertex* node){
 	
 	for(long int i = 0; i < N; i++){	// for every node in the graph
 		
-		other = getNode(i);
+		other = GET_NODE(i);
 		
 		if(other == node){	// except this one
 			
@@ -362,6 +344,31 @@ void NBall::gradientDescent(const float gamma, const float tolerance, long int m
 	float tolMaxDisp = radius * pow(N, -1.0/DIM) * tolerance * baseGam;	// the maximum tolerated displacement
 																			// if the maximum displacement is above this value, continue iterating
 																			// scales with gamma to provide equal treatment across timestep sizes
+	float maxAllowedDisp = (radius * pow(N, -1.0/DIM))/10.0;
+	
+	float* initialForce = sumForces(GET_NODE(N-1));
+	float initialDisplacement = 0;
+	
+	for(long int i = 0; i < DIM; i++){
+		
+		GET_NODE(N-1)->position[i] += gamma * initialForce[i];
+		initialDisplacement += (gamma * initialForce[i]) * (gamma * initialForce[i]);
+		
+	}
+	
+	if(initialDisplacement > maxAllowedDisp){
+		
+		float correction = gamma * (maxAllowedDisp/initialDisplacement - 1);
+		
+		for(long int i = 0; i < DIM; i++){
+			
+			GET_NODE(N-1)->position[i] += correction * initialForce[i];
+			
+		}
+		
+	}
+	
+	delete[] initialForce;
 
 	memset(netForce, 0, N * sizeof(float*));
 	
@@ -376,7 +383,7 @@ void NBall::gradientDescent(const float gamma, const float tolerance, long int m
 			#pragma omp for schedule(guided)
 			for(long int i = 0; i < N; i++){	// for each node
 			
-				netForce[i] = this->sumForces(getNode(i));	// store the current net force on each node
+				netForce[i] = this->sumForces(GET_NODE(i));	// store the current net force on each node
 				
 			}
 			
@@ -395,13 +402,13 @@ void NBall::gradientDescent(const float gamma, const float tolerance, long int m
 				
 				for(long int j = 0; j < DIM; j++){	// for every dimension
 				
-					oldPos[j] = getNode(i)->position[j];	// store the old position
-					getNode(i)->position[j] += gamma * netForce[i][j];	// displace the node in that dimension
+					oldPos[j] = GET_NODE(i)->position[j];	// store the old position
+					GET_NODE(i)->position[j] += gamma * netForce[i][j];	// displace the node in that dimension
 																		// according to the force on it and the timestep size
 					
 				}
 				
-				NBALL_LINEAR_DISTANCE(oldPos, getNode(i)->position, disp);	// calculate the displacement
+				NBALL_LINEAR_DISTANCE(oldPos, GET_NODE(i)->position, disp);	// calculate the displacement
 																			// between the old and current positions
 				
 				#pragma omp critial (maximumDisplacement)	// encase this comparison in a critical region
@@ -415,7 +422,40 @@ void NBall::gradientDescent(const float gamma, const float tolerance, long int m
 					
 				}
 				
-				delete[] netForce[i];	// deallocate the now-outdated force vector
+			}
+			
+		}
+		
+		if(maxDisp > maxAllowedDisp){	// if the maximum displacement is greater than the maximum allowed
+			
+			float correction = gamma * (maxAllowedDisp/maxDisp - 1);	// the correction factor will scale everything down
+																		// it will be negative, as maxAllowedDisp > maxDisp
+			#pragma omp parallel shared (netForce)
+			{
+			
+				#pragma omp for schedule (guided)
+				for(long int i = 0; i < N; i++){	// for each node
+					
+					for(long int j = 0; j < DIM; j++){	// for each dimension
+						
+						GET_NODE(i)->position[j] += correction * netForce[i][j];	// apply the correction factor to the force
+																					// to cancel some of it out
+						
+					}
+				
+					delete[] netForce[i];	// deallocate the now-outdated force vector	
+					
+				}
+				
+			}
+			
+		}
+		
+		else{	// even if it is not
+			
+			for(long int i = 0; i < N; i++){	// for each node
+				
+				delete[] netForce[i];	// delete the force vector anyway
 				
 			}
 			
@@ -427,6 +467,7 @@ void NBall::gradientDescent(const float gamma, const float tolerance, long int m
 	}
 	
 	this->iterationWeights += (baseItr - maxItr) * N * N;
+	//cout<<N<<" "<<(baseItr - maxItr)<<endl;
 	
 	return;	// return statement placed here for clarity only
 	

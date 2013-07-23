@@ -8,6 +8,8 @@
 #define NBALL_ID 1
 #define NSPHERE_ID 2
 
+#define GET_NODE(i) ((SpatialVertex*)(nodes.at(i)))
+
 #define POSITIVE_INTEGER_POWER(base, exponent, output){ \
   output = 1; \
   for(long int itr_var = 0; itr_var < exponent; itr_var++){ \
