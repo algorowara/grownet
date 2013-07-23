@@ -227,6 +227,24 @@ As we increase the dimension this effect disappears in part because the nodes in
 Thus the discrepancy in betweenness vs. degree in the 1D case can be attributed to the feature that in 1 dimension the nodes behave like a Tonks-Girardeau Gas in that they cannot move past one another.
 Although the invariance of the betweenness-degree relationship is not fully established, the higher dimensional models all exhibit the same pattern, indicating that betweenness is not significantly impacted by the space in which the network is embedded as long as the space is sufficiently large to allow nodes to move freely.
 
+\section{Limitations of the Model}
+As with any simulation, our models were limited in the degree to which they could accurately represent a "real" scenario while still remaining practically computable.  In this section, we discuss the necessary shortcomings we have identified in our model, and the effects we believe them to have had on our results.  However, we first note that the results we have obtained, while certainly biased in one way or another, still appear to accurately represent a genuine trend in the phenomena we investigated, and that the various biases come together to produce what is best characterized as noise, rather than a fundamental flaw.
+
+\subsection{Tolerance of Disequilibrium}
+As noted above, we used a gradient-descent method to enforce the even spacing of nodes.  In order to ensure that the computation halted, we introduced a ceiling on the number of iterations of gradient-descent steps, so that a persistent disequilibrium could not delay the model indefinitely.  We also introduced a tolerance parameter related to the average inter-node spacing (a function of N) such that if all nodes were displaced by less than a certain distance in a single timestep, the gradient-descent algorithm could exit early.  Both of these steps were necessary to ensure that the use of the model was practically feasible given finite computing resources.
+
+Varying the tolerance, we found that a higher tolerance (resulting in fewer steps before exiting the algorithm) corresponded to decreased displacement of nodes, as was expected.  Similarly, in cases in which the ceiling on the number of steps was too low (that is, low enough to be encountered frequently), there was less movement than in cases in which the ceiling was high.  Both of these effects were trades between accuracy and speed; a faster computation meant less displacement, corresponding to a higher clustering coefficient, among other measures.
+
+\subsection{Timestep Size}
+For the gradient-descent algorithm, as it was not possible to simulate a truly continuous system, the gradients of each node were calculated and applied in discrete timesteps.  The size of this timestep tended to be inversely proportional to the time to run a model, so larger timesteps were preferable to smaller ones.  However, larger timesteps increased the probability of extreme movements, where smaller timesteps would have prevented such movements by recalculating forces more frequently.
+
+Large timesteps, therefore, were also a trade between accuracy and speed, though here, a faster computation meant more displacement.  This was reflected in a lower clustering coefficient for rather large timesteps, an effect which persisted even for large networks.
+
+\subsection{Force Laws}
+Finally, in calculating the gradients for the gradient-descent algorithm, we used a scaling taken from the Coulomb force in an arbitrary number of dimensions: $F \propto \frac{1}{$r^{n-1}} in an n-dimensional space.  For the n-dimensional ball, the ball and the space in which it was embedded were of the same dimension, which as the dimension used there.  In the case of the n-dimensional sphere, however, the dimension of the sphere itself, which was one less than that of the embedding space, was used, which produced results approximately similar to those produced from the n-dimensional ball.
+
+However, we found that different force laws produced substantially different arrangements.  %More to follow once we have conclusive data on force/dimension.
+
 \section{CONCLUSION}
 %Write the conclusion at the end when we have all of the results and figures and even after we've written the introduction, make sure to keep the conclusion short
 

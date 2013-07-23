@@ -17,7 +17,7 @@ int main(){
 	
 	for(long int f = 0; f <= 8; f++){
 	
-		long int n = 1000, m = 12, d = 4;
+		long int n = 1000, m = 8, d = 2;
 		NSphere* net = new NSphere(m+1, m, d);
 		net->baseGam = 0.01;
 		net->forceExp = f;
