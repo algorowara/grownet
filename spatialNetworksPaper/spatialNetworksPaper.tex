@@ -4,6 +4,8 @@
 \usepackage{bm}
 \usepackage{hyperref}
 \usepackage{natbib}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\DeclareGraphicsExtensions{.pdf}
 
 \begin{document}
 
@@ -223,7 +225,7 @@ Here we explore the relationship between the age of a given node and the degree 
 We seek an expression for the expected degree $k(y,N)$ of a node that has existed for $y$ time steps given that the network size is $N$ ($y < N$).
 Each node connects to its $m$ nearest neighbors upon creation, and the probability of incrementing the degree of the node is $\frac{m}{N}$, when the size of the network is $N$.
 Thus we obtain 
-\begin{equation}
+\begin{equation}\label{ageeq}
 \begin{split}
 k(y,N)& = m + m\sum_{n=N-y+1}^{N} \frac{1}{n}\\
       & \approx m + m \log \frac{N}{N-y} + \mathcal O\left(\frac{1}{N^2}\right)
@@ -232,6 +234,10 @@ k(y,N)& = m + m\sum_{n=N-y+1}^{N} \frac{1}{n}\\
  
 Once again, since this derivation uses only the assumption that each node has an equal chance each timestep to have its degree incremented, the result holds for all of the models discussed here.
 This represents a specific example of the fact that in dynamically growing networks, older nodes are preferentially connected to one another as discussed in \cite{reallyrandom}.
+\begin{figure}
+\includegraphics[width=\linewidth]{figures/fig12.pdf}
+\caption{\label{degage}Semilogarithmic graph of the mean degree vs the node age for two of the explored models. The magenta line is the theory in Eq. \eqref{ageeq} and the error bars are the standard deviation of the average over 10 simulated networks}
+\end{figure}
 
 %once again do we include figures to demonstrate the claim? Which figures to show? They're all pretty much the same since it's the same distribution for every model
 
