@@ -7,34 +7,37 @@
 
 \begin{document}
 
-\title{Plum pudding models for growing networks: Emergence of small worlds
-from spatial embedding}
-\author{Alex Gorowara}
-\affiliation{Institute for Research in Electronics and Applied Physics, University of Maryland, College Park, Maryland 20742, USA}
+\title{Plum pudding model for growing small-world networks}
 \author{Ari Zitin}
 \affiliation{Institute for Research in Electronics and Applied Physics, University of Maryland, College Park, Maryland 20742, USA}
-\author{Mark Herrera}
-\affiliation{Department of Physics and Institute for Research in Electronics and Applied Physics, University of Maryland, College Park, Maryland 20742, USA}
+\author{Alex Gorowara}
+\affiliation{Institute for Research in Electronics and Applied Physics, University of Maryland, College Park, Maryland 20742, USA}
 \author{Shane Squires}
-\affiliation{Department of Physics and Institute for Research in Electronics and Applied Physics, University of Maryland, College Park, Maryland 20742, USA}
+\affiliation{Institute for Research in Electronics and Applied Physics, University of Maryland, College Park, Maryland 20742, USA}
+\affiliation{Department of Physics, University of Maryland, College Park, Maryland 20742, USA}
+\author{Mark Herrera}
+\affiliation{Institute for Research in Electronics and Applied Physics, University of Maryland, College Park, Maryland 20742, USA}
+\affiliation{Department of Physics, University of Maryland, College Park, Maryland 20742, USA}
 \author{Tom Antonsen}
-\affiliation{Department of Physics, Department of Electrical and Computer Engineering, and Institute for Research in Electronics and Applied Physics, University of Maryland, College Park, Maryland 20742, USA}
+\affiliation{Institute for Research in Electronics and Applied Physics, University of Maryland, College Park, Maryland 20742, USA}
+\affiliation{Department of Electrical and Computer Engineering, University of Maryland, College Park, Maryland 20742, USA}
+\affiliation{Department of Physics, University of Maryland, College Park, Maryland 20742, USA}
 \author{Michelle Girvan}
-\affiliation{Department of Physics, Institute for Physical Science and Technology, and Institute for Research in Electronics and Applied Physics, University of Maryland, College Park, Maryland 20742, USA}
+\affiliation{Institute for Research in Electronics and Applied Physics, University of Maryland, College Park, Maryland 20742, USA}
+\affiliation{Institute for Physical Science and Technology, University of Maryland, College Park, Maryland 20742, USA}
+\affiliation{Department of Physics, University of Maryland, College Park, Maryland 20742, USA}
 \author{Edward Ott}
-\affiliation{Department of Physics, Department of Electrical and Computer Engineering, and Institute for Research in Electronics and Applied Physics, University of Maryland, College Park, Maryland 20742, USA}
+\affiliation{Institute for Research in Electronics and Applied Physics, University of Maryland, College Park, Maryland 20742, USA}
+\affiliation{Department of Electrical and Computer Engineering, University of Maryland, College Park, Maryland 20742, USA}
+\affiliation{Department of Physics, University of Maryland, College Park, Maryland 20742, USA}
 
 \date{\today}
 
 \begin{abstract}
-Researchers have studied the spatial embedding of static complex networks,
-but networks in nature are inherently dynamical, gaining links and
-nodes as they develop over time. We explore the properties of growing
-networks, investigating the relationship between statistical network
-properties and the space in which they are embedded. In particular,
-we develop a broad class of models that share some but not all network
-properties. Through these models we characterize how spatial topologies
-support the emergence of small-world networks. 
+Researchers have studied spatially embedded complex networks which are static in time, but networks in nature are inherently dynamical, gaining links and nodes as they develop over time. 
+We explore the properties of growing networks, investigating the relationship between statistical network properties and the space in which they are embedded. 
+In particular, we consider a class of models in which nodes are place one by one in random locations in space and, after placement, form connections with nearby nodes. 
+We find that the resulting networks are small-world networks, and we characterize how spatial embedding supports the emergence of small-world properties.
 \end{abstract}
 
 \pacs{05.45.-a, 05.65.+b, 89.75.-k, 89.75.Fb ,89.75.Hc} %Nonlinear dynamics and chaos, Self-organized systems, Complex Systems, Structures and organization in complex systems, Networks and genealogical trees
@@ -46,46 +49,52 @@ support the emergence of small-world networks.
 %mention how our generalizations were chosen for their physical significance rather than the ease with which we can perform comupational and analytic calculations of their properties. 
 
 \section{THE OHO MODEL}
-The original Ozik-Hunt-Ott (OHO) model, presented in \cite{ozik2004} considers a network which initially has a clique of $m+1$ nodes on the circumference of a circle. 
+The Ozik-Hunt-Ott (OHO) model, presented in \cite{ozik2004}, considers a network which initially has a clique of $m+1$ nodes on the circumference of a circle. 
 At each discrete time step the network is grown according to the following rules: 
-(a) a new node is placed on the circumference of the circle between two existing nodes in a interval selected at random from a uniform distribution;
-(b) the new node is linked to its $m$ nearest neighbors, where nearest means the smallest number of internode invervals between the nodes;
-(c) the steps are repeated in sequence to generate a networks with $N$ nodes.
-Since the network is incremented in size by one node each timestep, the network size $N$ can also be used as the system timeparameter.  
+(1) a new node is placed at a randomly selected point on the circumference of the circle;
+(2) the new node is linked to its $m$ nearest neighbors;
+(3) steps (1-2) are repeated until the network has $N$ nodes.
+Since the network is incremented in size by one node each timestep, the network size $N$ can also be used as the system time parameter.  
 It has been shown \cite{ozik2004} that this growth model leads to a small-world network with an exponentially decaying degree distribution. 
-The original goal of the OHO model was to explore the effect that geographic locality has on the growth of networks; in this paper we extend this analysis by considering networks growing by geographic attachment preference in more general Euclidean spaces than the circumference of a circle. 
+The original goal of the OHO model was to explore the effect that geographic locality has on the growth of networks; in this paper, we extend this analysis by considering networks growing by geographic attachment preference in more general Euclidean spaces. 
 
-\subsection{The Original Model: Embedding a Network on a Circle}
 The original OHO model exhibits the following three properties which indicate that the small-world property is present:
 \begin{description}
-  \item[Degree Distribution] It was shown in \cite{ozik2004} that for large network size $N$ the degree distribution $H(k,N)$ approaches an asymptotically $N$ invariant form given by 
-\[\bar{H}(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}\]
-for $k \geq m$ and $\bar{H}(k) = 0$ for $k < m$.
-This leads to a result that as $N$ approaches infinity, the average node degree $\langle k \rangle$ approaches the limiting value $\langle k \rangle {_\lim_{N \to \infty}} = 2m$.
-This means that the average node degree remains finite even as $N \to \infty$, which shows that the OHO model meets the first criterion for the small-world property.
-  \item[Characteristic Path Length] Although analytic results for the relationship between the shortest path length between pairs of nodes averaged over the whole network (which we denote $\ell$) is generally impossible, simulation results allow the verification of the desired small world path lenth scaling: $\ell \sim \log N$.
-This property was verified for the OHO model in \cite{ozik2004}, but an intuitive picture of why this is the case can be seen as follows, as new nodes are added they push apart the older connected nodes, leaving long edges that pass through the middle of the circle. 
+  \item[Degree Distribution] The degree distribution $H(k)$ is the probablility that a node with have $k$ network connections at time $N$.
+For large $N$, the degree distribution of the OHO model is given by 
+\[H(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}\]
+for $k \geq m$ and $H(k) = 0$ for $k < m$ \cite{ozik2004}.
+The average node degree $\langle k \rangle$ is $2m$.
+Since the average node degree remains finite even as $N \to \infty$, the OHO model meets the first criterion for the small-world property.
+  \item[Characteristic Path Length] The characteristic path length $\ell$ is the average of the length of the shortest path between two randomly selected nodes.
+In the OHO model, simulation results allow the verification of the desired small world path lenth scaling; $\ell \sim \log N$.
+This may be explained intuitively by noting that as new nodes are added they push apart the older connected nodes, lengthening the distance traversed by older edges. 
 These older nodes then serve as hubs for travel between pairs of nodes across the network, dramatically decreasing the shortest path length between any given pair of nodes.
-  \item[Clustering Coefficient] The final criterion for a small world network is comparatively high clustering coefficient, or to be more precise, a clustering coefficient that does not decay to $0$ as $N \to \infty$. 
-In order for this criterion to make sense, we must provide a clear definition of this clustering coefficient. 
-In their seminal paper, Watts and Strogatz defined the clustering coefficient (which we will denote $C_{ws}$) as the average over the whole network of the clustering coefficient $C_i$ of each node $i$ \cite{wsnat}.
-For each node the local clustering $C_i$ is defined as $C_i = \frac{q_i}{\frac{1}{2} k_i(k_i-1)}$ where $q_i$ is the number of links between the $k_i$ neighbors of node $i$ and $\frac{1}{2} k_i(k_i-1)$ is the maximum possible number of such links between the neighbors of node $i$.
-This leads to a natural expression for the clustering coefficient, $C_{ws} = \frac{1}{N} \sum_{i=1}^{N} C_i$, which is shown in \cite{ozik2004} to approach an asymptotic value $C_{ws} = 0.648$ as $N \to \infty$.
-As a note to the reader, in the past few years new measures of clustering have been developed that do a better job representing the global clustering in the network, and although for consistency with \cite{ozik2004} we used the Watts-Strogatz definition of clustering in the preceding discussion, we will later use some different definitions that will be presented as they arise.
+  \item[Clustering Coefficient] The final criterion for a small world network is a nonzero clustering coefficient as $N \to \infty$. 
+The clustering coefficient of a network is the fraction of connected triples in a network which are also traignles.
+This measures whether two nodes which are both connected to a third node are likely to be connected to one another \footnote{In \cite{ozik2004} an alternate definition of clustering was used, specifically the average of the local clustering $C_i$ of each node, $C_i = \frac{q_i}{\frac{1}{1} k_i (k_i-1)}$ where $q_i$ is the number of links between the $k_i$ neighbors of node $i$ \cite{wsnat}.}
 \end{description}
-Thus the OHO model produces a small-world network, but we wonder what general features of this model leads to the small-world property, and so we investigate similar models to explore how the small-world property emerges from spatially embedded networks.
+Thus the OHO model produces a small-world network.
+Here, we hypothesize that the small-world properties are caused by the fact that, although new edges are all local, nearby nodes separate over time, creating long-range connections.
+To test this hypothesis we investigate generalizations to higher-dimensional spaces in order to explore how the small-world property emerges in dynamically growing spatially embedded networks.
 
-\subsection{Generalizing the Model: The Thomson Problem}
+\section{The Thomson Problem}
 The natural generalization from embedding nodes on the one-dimensional circumference of a circle is to embed them on the two-dimensional surface of a sphere, or in general on the $d$-dimensional surface of a hypersphere.
-On a circle it is trivial to arrange $N$ points equidistant along the circumference, but the analogous procedure is much more difficult on higher dimensional surfaces. 
-The idea of finding a configuration of points on the surface of a sphere such that each point is equidistant to all of its neighbors dates back to 1904 when J.J. Thomson introduced his plum pudding model of the atom, a key problem for him was arranging the electrons (corpuscles) on the surface of the sphere of pudding such that the potential energy is minimized \cite{thomson1904}.
+On a circle it is trivial to arrange $N$ points along the circumference with uniform spacing, but the analogous procedure is much more difficult on higher dimensional surfaces.
+One way to generalize the procedure is to consider each node to be a point charge on the surface of a $d$-dimensional conductor and find their equilibrium configuration. 
+The problem of finding the equilibrium configuration of points on the surface of a sphere dates back to 1904 when J.J. Thomson introduced his plum pudding model of the atom, in which a centroal could of positive charge was surrounded by a discrete negative charges on the surface \cite{thomson1904}
+A key problem for him was arranging the electrons (corpuscles) on the surface of the sphere of pudding such that the potential energy is minimized.
 
-We take this idea and model the nodes as point charges confined to exist on the surface of a sphere of unit radius; and each time step we require that the potential energy between the nodes is minimized.
-In this way we produce a configuration of nodes on the sphere's surface such that each internode area interval is approximately (up to numerical defects) equal, implying that if we were to select a point on the sphere uniformly at random, each area interval would be equally likely to be selected.
+Here we adopt the thomson problem as one possible generalization of the OHO model.
+We model the nodes as point charges confined to exist on the surface of a sphere of unit radius.
+%In this way we produce a configuration of nodes on the sphere's surface such that each internode area interval is approximately (up to numerical defects) equal, implying that if we were to select a point on the sphere uniformly at random, each area interval would be equally likely to be selected.
 Now at each timestep we drop a node into an area interval selected at random on the sphere and add links to connect it to its $m$ nearest neighbors, where here distance is defined as the shortest great circle path along the surface of the sphere between two nodes.
+Next we require that the potential energy between the nodes is minimized.
+For large $N$, the repulsive interaction ensures that the points are distributed approximately uniformly across the surface of the sphere.
 In this way we reproduce the key features of the OHO model, a growing network with new nodes only making local connections, but we also introduce a new parameter, the dimension of the space in which the growing network is embedded.
-In the following sections we explore the differences between the OHO model and the higher dimension generalizations, starting with the sphere case. 
+In the following sections we explore the differences between the OHO model and the higher dimension generalizations.
 
+%FIXME rethink how we integrate this with the higher dimensional stuff, may have to rewrite most of this section!
 \subsubsection{The 2D Case: Network Embedded on the Surface of a Sphere}
 The first generalization we explore is the case of nodes confined to exist on the surface of a unit sphere in Euclidean 3-space.
 This is directly analogous to the original Thomson problem presented in \cite{thomson1904}, where $N$ electrons are bound to the surface of a sphere and interact with each other via the Couloumb force.
@@ -118,13 +127,15 @@ For the case of an $d$-dimensional sphere embedded in $d+1$-dimensional space, w
 As we explain below, the conformity of these spherical networks to the appropriate degree distribution indicates that this is a sound method for relaxing nodes into a homogenous distribution.
 
 \section{THE PLUM PUDDING MODEL}
-A key feature of the OHO model is that the nodes can only be placed on the circumference of the circle, when we generalize this to higher dimensions we are still embedding the network on an $d$-dimensional surface in an $d+1$ dimensional space, so nodes never occupy a volume in the embedding space.
-In this generalization we explore how the network properties are affected if we instead embed a growing network in an $d$-dimensional without restricting them to a spherical shell.  
-In order to ensure unbiased behavior over all nodes, we instead confine them to an $d$-dimensional ball. 
+A key feature of the OHO model is that the nodes can only be placed on the circumference of a circle. 
+When we generalize this to higher dimensions we are still embedding the network on a $d$-dimensional surface in a $d+1$ dimensional space, so nodes never occupy a volume in the embedding space.
+In this generalization we explore how the network properties are affected if we instead embed a growing network in a $d$-dimensional space without restricting them to a spherical shell.  
+In order to ensure unbiased behavior over all nodes, we instead confine them to a $d$-dimensional ball. 
 
-Keeping with the idea of nodes as point charges that we introduced earlier, we model our network as a collection of classical electrons, each electron representing a node, free to move around in a "cloud" of positive charge (which for our model fills the embedding space).
-This model was motivated by Thomson's defunct atomic model in which electrons were plums embedding in a sphere of positively charged pudding.
-We use this model because the repulsive potential between electrons ensures that the nodes are spaced equidistant from one another in the minimum potential configuration, while the cloud of positive charge ensures that the nodes do not move arbitrarily far from some fixed starting point.
+In this case, we can generalize the main features of the OHO model in another way, inspired by Thomson's plum pudding model.
+We model our network as a collection of classical electrons, each electron representing a node, free to move around in a ``cloud" of positive charge of uniform density, filling a $d$-dimensional ball of unit radius.
+The repulsive potential between nodes ensures that they are spaced approximately equidistantly for large $N$ in the minimum potential configuration, while the cloud of positive charge ensures that the nodes do not move arbitrarily far from some fixed starting point.
+%FIXME deal with force law issues before editing this and subsequent sections
 Due to the nature of Gauss' Law in different dimensions we find that for each dimension the potential between any given node and the cloud of positive charge is proportional to the square of the distance between the center of the embedding volume and the node in question.
 This means that we can visualize this model as a collection of classical electrons all connected to some origin point by springs (a harmonic potential) and interacting with each other via the dimensionally appropriate Couloumb force.  
 In order to maintain the unit $d$-ball, this potential is kept proportional to the number of nodes in the graph, and in the Plum Pudding analogy can be said to have a "charge" equal and opposite to the sum of "charges" over all of its nodes.
@@ -168,64 +179,63 @@ The force did, however, level off at the edge of the $d$-ball, in order to preve
 The arrangement of nodes is best seen in the case of the 2-ball, the most photogenic of $d$-balls.  
 
 \section{INVARIANT PROPERTIES}
-The preceding sections illustrate how the generalizations of the OHO model lead to some distinct network properties, but our generalizations do not change everything about the networks.
-In this section we discuss some properties that are invariant between our different models and explore why the dimension of the space in which the network is embedded does not impact these particular properties.
-One key feature that leads to the invariance discussed below is the uniform probability for each preexisting node to be connected to any new node at each timestep. 
+Several important network features can be found analytically and do not depend on dimension or on the choice of the plum pudding or Thomson model.
+A key observation in each of the following derivations is that the probability that each newly added node will form an edge to any particular existing node is $\frac{m}{N}$ for all nodes.
+This is because existing nodes are distributed approximately uniformly, and new nodes are placed randomly according to a uniform distribution.
 
 \subsection{Degree Distribution}
-Here we show that regardless of which model we look at, we produce the same master equation governing the evolution of the degree distribution (in particular the master equation for the degree distribution in \cite{ozik2004}).  
+Here we show that for each considered model, we produce the same master equation governing the evolution of the degree distribution (in particular the master equation for the degree distribution in \cite{ozik2004}).  
 This master equation is not specific to the spatial structure of the network, or indeed the existence of any spatial structure, but rather relies on the uniform distribution of new links among preexisting nodes.  
 It appears, in various forms, in networks such as the Deterministic Uniform Random Tree \cite{zhang2008topologies}.
 
 We define $\hat{G}(k,N)$ to be the number of nodes with degree $k$ when we are at time $N$ (i.e. when the system has $N$ nodes).
 When a node is added to the network it is initially connected to its $m$ nearest neighbors, so initially (upon creation) $k = m$ for each node, meaning that $\hat{G}(k,N) = 0 \text{ for } k < m$.
-At each timestep a node with $k = m$ is added to the network and so connects to $m$ existing nodes.
 Since each existing node is equally likely to be chosen to be connected to the new node, there is a $\frac{m}{N}$ probability that any given node with have its degree incremented by 1.
-Averaging $\hat{G}(k,N)$ over all possible random node placements we get a master equation for the time evolution of $G(k,N)$, the average of $\hat{G}(k,N)$ over all possible randomly grown networks:
+Averaging $\hat{G}(k,N)$ over all possible random node placements we get a master equation for the time evolution of $G(k,N)$, the average of $\hat{G}(k,N)$ over all possible randomly grown networks;
 
-\[G(k,N+1) = G(k,N) - \frac{m}{N}G(k,N) + \frac{m}{N}G(k-1,N) + \delta_{km}\]
+\[G(k,N+1) = G(k,N) - \frac{m}{N}G(k,N) + \frac{m}{N}G(k-1,N) + \delta_{km}\],
 
-where $\delta_{km}$ is the Kronecker delta function.
+\noindent where $\delta_{km}$ is the Kronecker delta function.
 The first term on the right is the expected number of nodes with degree $k$ at time $N$.
 The second term is the expected number of nodes with degree $k$ at time $N$ that get promoted to degree $k+1$.
 The third term is the expected number of nodes with degree $k-1$ at time $N$ that get promoted to degree $k$.
 The last term on the right is the new node with degree $m$.
 
-It was shown by Ozik et al. \cite{ozik2004} that this master equation leads to an exponentially decaying degree distribution with an asymptotically $N$ invariant form $\bar{H}(k) := \lim_{N \to +\infty} G(k,N)/N$ given by the closed form solution,
+It was shown by Ozik et al. \cite{ozik2004} that this master equation leads to an exponentially decaying degree distribution with an asymptotically $N$ invariant form $H(k) = \lim_{N \to +\infty} G(k,N)/N$ given by
 
-\[\bar{H}(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}\]
+\[H(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}\].
 
-for $k \geq m$ and of course $\bar{H}(k) = 0$ for $k < m$.
+\noindent for $k \geq m$ and $H(k) = 0$ for $k < m$.
 
-The interesting point here is that this exponentially decaying degree distribution comes only from the growing procedure and the uniform probability of attaching new links to existing nodes.  
+%FIXME may want to move this to a section on numerical results or wherever we discuss the figure
+Interestingly, this exponentially decaying degree distribution comes only from the growth process and the uniform probability of attaching new links to existing nodes.  
 Since, in our models, the uniform probability of attachment to any given node is a result of the uniform spacing of the nodes, conformity to this degree distribution is an important confirmation that our models are, in fact, spatially uniform.
-Thus this distribution and the analysis therein holds for all of the generalizations presented in this article. 
-So as long as we have a growing network where nodes are added with equal probability of being nearby (in the metric space) any existing node and each new node is connected to its $m$ nearest neighbors, then we will recover the exponential degree distribution given by $\bar{H}(k)$.
+%end section we want to move
+This distribution for all of the generalizations presented in this article, since it relies only on the assumptions that nodes are added with equal probability of being nearby (in the metric space) to any existing node and each new node is connected to its $m$ nearest neighbors.
 
 %do we want to include figures here to demonstrate our claim? It would be nice to show that theory agrees with simulations for at least a few of the models?
 
-\subsection{Degree-Node Age Distribution}
-In nearly all models of growing networks the older nodes experience some preferential attachment, since nodes all have a finite chance each timestep to have new links made, and the older nodes have seen more timesteps and thus have a higher chance of making new links than newer nodes \cite{reallyrandom}.
-This inherent preferential attachment provides motivation to explore the relationship between the age of a given node and the degree of that node. 
-Based on the work in \cite{reallyrandom} we would expect that older nodes have consistently higher degrees than young nodes, so we seek an expression for the expected degree $k(y,N)$ of a node that has existed for $y$ timesteps given that the network size is $N$ (clearly $y < N$ is required).
-Since each node connects to its $m$ nearest neighbors upon creation we start with $k(y,N) = m + (\text{probability of incrementing degree of node})*(\text{timesteps node has seen})$.
-But the probability of incrementing the degree of the node is $\frac{m}{N}$, which changes as time progresses, thus we get a sum for our degree-node age distribution,
-
-\[k(y,N) = m + m\sum_{j=0}^{y} \frac{1}{j+N-y}\]
-
-Now this expression works exactly for the expectation value of the degree of a node given its age, but we can simplify the result in the limit of large $N$ by approximating the sum as an integral and then simply integrating to yield a logarithm, so for large $N$ we get the degree-node age distribution,
-
-\[k(y,N) = m + m\log{\frac{N}{N-y}}\]
-
-which we find fits the simulation data well for any value reasonable value of $N$.
+\subsection{Mean Degree as a Function of Node Age}
+In nearly all models of growing networks the older nodes experience an early-mover advantage in accumulating connections, since nodes all have the same probability each timestep to form new links, and older nodes have existed for more timesteps than younger nodes \cite{reallyrandom}.
+Here we explore the relationship between the age of a given node and the degree of that node. 
+We seek an expression for the expected degree $k(y,N)$ of a node that has existed for $y$ time steps given that the network size is $N$ ($y < N$).
+Each node connects to its $m$ nearest neighbors upon creation, and the probability of incrementing the degree of the node is $\frac{m}{N}$, when the size of the network is $N$.
+Thus we obtain 
+\begin{equation}
+\begin{split}
+k(y,N)& = m + m\sum_{n=N-y+1}^{N} \frac{1}{n}\\
+      & \approx m + m \log \frac{N}{N-y} + \mathcal O(\frac{1}{N^2}
+\end{split}
+\end{equation}
  
-Once again we find that since this age distribution was found using only the assumption that each node has an equal chance each timestep to have its degree incremented, this result holds for all of the models discussed here.
-This equation represents a specific example of the unavoidable fact that in dynamically growing networks highly connected (and thus older) nodes are preferentially connected to one another discussed in \cite{reallyrandom}.
+Once again, since this derivation uses only the assumption that each node has an equal chance each timestep to have its degree incremented, the result holds for all of the models discussed here.
+This represents a specific example of the fact that in dynamically growing networks, older nodes are preferentially connected to one another as discussed in \cite{reallyrandom}.
 
 %once again do we include figures to demonstrate the claim? Which figures to show? They're all pretty much the same since it's the same distribution for every model
 
 \subsection{Betweenness-Degree Relationship}	%this section may not even be necessary...
-Betweenness centrality is a common measure of how many shortest paths go through a node; so nodes with higher betweenness appear in more shortest paths across the network than nodes with lower betweenness.
+Betweenness centrality is a common measure of the importance of a node to the propagation of information through a network.
+Formally it is the fraction of shortest paths between all node pairs which pass through a given node.
 In general we would expect that the nodes with the greatest degree have the highest betweenness since they serve as bridges across the network, meaning many shortest paths between low degree nodes must pass through these high degree nodes.
 The existence and subsequent high betweenness of high degree nodes (which can be thought of as hubs in the network) is directly related to the small-world property.
 High clustering in networks leads to regions where nodes are highly connected separated from one another.
