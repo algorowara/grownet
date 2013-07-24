@@ -1,4 +1,4 @@
-\documentclass[aps,pre,reprint,superscriptaddress,amsmath,amssymb]{revtex4-1}
+\documentclass[aps,pre,reprint,superscriptaddress,amsmath,amssymb,nofootinbib]{revtex4-1}
 \usepackage{graphicx}
 \usepackage{dcolumn}
 \usepackage{bm}
@@ -62,7 +62,9 @@ The original OHO model exhibits the following three properties which indicate th
 \begin{description}
   \item[Degree Distribution] The degree distribution $H(k)$ is the probablility that a node with have $k$ network connections at time $N$.
 For large $N$, the degree distribution of the OHO model is given by 
-\[H(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}\]
+\begin{equation}
+H(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}
+\end{equation}
 for $k \geq m$ and $H(k) = 0$ for $k < m$ \cite{ozik2004}.
 The average node degree $\langle k \rangle$ is $2m$.
 Since the average node degree remains finite even as $N \to \infty$, the OHO model meets the first criterion for the small-world property.
@@ -72,7 +74,7 @@ This may be explained intuitively by noting that as new nodes are added they pus
 These older nodes then serve as hubs for travel between pairs of nodes across the network, dramatically decreasing the shortest path length between any given pair of nodes.
   \item[Clustering Coefficient] The final criterion for a small world network is a nonzero clustering coefficient as $N \to \infty$. 
 The clustering coefficient of a network is the fraction of connected triples in a network which are also traignles.
-This measures whether two nodes which are both connected to a third node are likely to be connected to one another \footnote{In \cite{ozik2004} an alternate definition of clustering was used, specifically the average of the local clustering $C_i$ of each node, $C_i = \frac{q_i}{\frac{1}{1} k_i (k_i-1)}$ where $q_i$ is the number of links between the $k_i$ neighbors of node $i$ \cite{wsnat}.}
+This measures whether two nodes which are both connected to a third node are likely to be connected to one another \footnote{In \cite{ozik2004} an alternate definition of clustering was used, specifically the average of the local clustering $C_i$ of each node, $C_i = \frac{q_i}{\frac{1}{1} k_i (k_i-1)}$ where $q_i$ is the number of links between the $k_i$ neighbors of node $i$.}
 \end{description}
 Thus the OHO model produces a small-world network.
 Here, we hypothesize that the small-world properties are caused by the fact that, although new edges are all local, nearby nodes separate over time, creating long-range connections.
@@ -123,7 +125,7 @@ In this extension of the OHO model, we generalized from the simple case of nodes
 In order to preserve the non-preferential selection of the OHO model, favoring no inter-node interval above others, we placed new nodes with uniform probability on the surface of the $d$-sphere after "relaxing" the preexisting nodes into a roughly homogenous distribution. 
 For the relaxation, we treated each node as a point charge, and used a gradient-descent algorithm to let the repulsive forces between nodes move them to an approximate equilibrium.
 
-For the case of an $d$-dimensional sphere embedded in $d+1$-dimensional space, we used the Coulomb force law appropriate to an $d$-dimensional space, treating the sphere as a curved universe containing bodies acting in accordance with $d$-dimensional laws rather than an arbitrary limitation on an $d+1$-dimensional universe.  
+For the case of a $d$-dimensional sphere embedded in $d+1$-dimensional space, we used the Coulomb force law appropriate to a $d$-dimensional space, treating the sphere as a curved universe containing bodies acting in accordance with $d$-dimensional laws rather than an arbitrary limitation on a $d+1$-dimensional universe.  
 As we explain below, the conformity of these spherical networks to the appropriate degree distribution indicates that this is a sound method for relaxing nodes into a homogenous distribution.
 
 \section{THE PLUM PUDDING MODEL}
@@ -192,9 +194,9 @@ We define $\hat{G}(k,N)$ to be the number of nodes with degree $k$ when we are a
 When a node is added to the network it is initially connected to its $m$ nearest neighbors, so initially (upon creation) $k = m$ for each node, meaning that $\hat{G}(k,N) = 0 \text{ for } k < m$.
 Since each existing node is equally likely to be chosen to be connected to the new node, there is a $\frac{m}{N}$ probability that any given node with have its degree incremented by 1.
 Averaging $\hat{G}(k,N)$ over all possible random node placements we get a master equation for the time evolution of $G(k,N)$, the average of $\hat{G}(k,N)$ over all possible randomly grown networks;
-
-\[G(k,N+1) = G(k,N) - \frac{m}{N}G(k,N) + \frac{m}{N}G(k-1,N) + \delta_{km}\],
-
+\begin{equation}
+G(k,N+1) = G(k,N) - \frac{m}{N}G(k,N) + \frac{m}{N}G(k-1,N) + \delta_{km},
+\end{equation}
 \noindent where $\delta_{km}$ is the Kronecker delta function.
 The first term on the right is the expected number of nodes with degree $k$ at time $N$.
 The second term is the expected number of nodes with degree $k$ at time $N$ that get promoted to degree $k+1$.
@@ -202,9 +204,9 @@ The third term is the expected number of nodes with degree $k-1$ at time $N$ tha
 The last term on the right is the new node with degree $m$.
 
 It was shown by Ozik et al. \cite{ozik2004} that this master equation leads to an exponentially decaying degree distribution with an asymptotically $N$ invariant form $H(k) = \lim_{N \to +\infty} G(k,N)/N$ given by
-
-\[H(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}\].
-
+\begin{equation}
+H(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}.
+\end{equation}
 \noindent for $k \geq m$ and $H(k) = 0$ for $k < m$.
 
 %FIXME may want to move this to a section on numerical results or wherever we discuss the figure
@@ -224,7 +226,7 @@ Thus we obtain
 \begin{equation}
 \begin{split}
 k(y,N)& = m + m\sum_{n=N-y+1}^{N} \frac{1}{n}\\
-      & \approx m + m \log \frac{N}{N-y} + \mathcal O(\frac{1}{N^2}
+      & \approx m + m \log \frac{N}{N-y} + \mathcal O\left(\frac{1}{N^2}\right)
 \end{split}
 \end{equation}
  
