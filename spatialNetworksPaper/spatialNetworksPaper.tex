@@ -279,7 +279,7 @@ Both of these effects were trades between accuracy and speed; a faster computati
 \subsection{Timestep Size}
 For the gradient-descent algorithm, as it was not possible to simulate a truly continuous system, the gradients of each node were calculated and applied in discrete timesteps.  
 The size of this timestep tended to be inversely proportional to the time to run a model, so larger timesteps were preferable to smaller ones.  
-However, larger timesteps increased the probability of extreme movements, where smaller timesteps would have prevented such movements by recalculating forces more frequently.
+However, larger timesteps increased the probability of overshooting the equilibrium (an error which would then be remedied in subsequent iterations of or calls to the algorithm), where smaller timesteps would have prevented such movements by recalculating forces more frequently.
 
 Large timesteps, therefore, were also a trade between accuracy and speed, though here, a faster computation meant more displacement.  
 This was reflected in a lower clustering coefficient for rather large timesteps, an effect which persisted even for large networks.
@@ -290,6 +290,9 @@ For the $d$-dimensional ball, the ball and the space in which it was embedded we
 In the case of the $d$-dimensional sphere, however, the dimension of the sphere itself, which was one less than that of the embedding space, was used, which produced results approximately similar to those produced from the $d$-dimensional ball.
 
 However, we found that different force laws produced substantially different arrangements.  %More to follow once we have conclusive data on force/dimension.
+
+\subsection{Error Summary}
+Based on informal comparisons to networks using small $N$, we have come to the conclusion that while the error introduced by these factors does affect the properties of the networks, the effects do, to some extent, act against each other.  Increased tolerance results in insufficient movement, while increased timestep size results in extra movement.  With that in mind, and in light of the "growing" nature of our models, it may be appropriate to slightly change our concept of the model.  Rather than converging to a static state, our models instead experience a substantial excitation upon the addition of a new node, but then return to what is akin to a dynamic equilibrium, the activity of its members no longer organized or large.  We believe this is a better analogy for real growing networks, which are rarely truly static.
 
 \section{CONCLUSION}
 %Write the conclusion at the end when we have all of the results and figures and even after we've written the introduction, make sure to keep the conclusion short

@@ -73,23 +73,6 @@ void NSphere::grow(long int n){
 		}
 		
 		addNode(newNode);	// add the new node to the NSphere
-		/*
-		if(m > DIM){	// if there are enough nearest neighbors
-						// set the position of this node to their center
-			
-			for(long int i = 0; i < DIM+1; i++){	// for each dimension
-				
-				newNode->position[i] = 0;
-				
-				for(long int j = 0; j < m; j++){	// slightly pre-equalize the new node
-					
-					newNode->position[i] += (nearNeighbors[j]->position[i])/m;	// by placing it at the average position of its nearest neighbors
-					
-				}
-					
-			}
-			
-		}*/
 		
 		if(N < this->equalizationThreshold || N%(this->equalizationPeriod) == 0){
 			

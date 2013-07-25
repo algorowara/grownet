@@ -111,15 +111,12 @@ void NBall::grow(long int n){
 		
 		SpatialVertex* newNode = new SpatialVertex(DIM, randomLocation(), getTime());	// generate a new node at a random location
 		SpatialVertex** nearNeighbors = findMNearestNeighbors(newNode);	// find its m nearest neighbors
-		long int radiallyCloserNeighbors = 0;
 		
 		for(long int i = 0; i < m; i++){	// for each of those nearest neighbors
 			
 			newNode->addNeighbor(nearNeighbors[i]);	// link it to the new node
 			
 			if(newNode->radialDistance() > nearNeighbors[i]->radialDistance()){	// if this node is farther from the origin than this neighbor
-				
-				radiallyCloserNeighbors++;	// note that it has an additional neighbor which is radially closer
 				
 			}
 			

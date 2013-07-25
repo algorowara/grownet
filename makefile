@@ -1,5 +1,4 @@
-FLAGS = -fopenmp -ffast-math -fsingle-precision-constant -O3 -pg
-
+FLAGS = -fopenmp -ffast-math -fsingle-precision-constant -O3
 
 all: main/test main/graphgen main/parametertune main/pgrownet main/lineppnet main/figuredata
 main/parametertune: main/parametertune.o ngraph/nball.o ngraph/nsphere.o ngraph/ngraph.o growingnetwork3d/growingnetwork3d.o growingnetwork3d/spatialvertex.o graph/growingnetwork.o graph/graph.o graph/vertex.o
