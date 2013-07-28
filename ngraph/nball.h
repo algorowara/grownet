@@ -13,6 +13,10 @@
 #define NBALL_DEFAULT_THRESHOLD 100
 #define NBALL_DEFAULT_PERIOD 1
 
+/**
+ * macro to take a pair of position vectors (nodePos and otherPos)
+ * and place the scalar linear distance between them in the variable dist
+ */
 #define NBALL_LINEAR_DISTANCE(nodePos, otherPos, dist) \
 	dist = 0; \
 	for(long int itr_var = 0; itr_var < DIM; itr_var++){ \

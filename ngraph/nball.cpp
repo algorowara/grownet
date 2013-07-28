@@ -342,30 +342,6 @@ void NBall::gradientDescent(const float gamma, const float tolerance, long int m
 																			// if the maximum displacement is above this value, continue iterating
 																			// scales with gamma to provide equal treatment across timestep sizes
 	float maxAllowedDisp = (radius * pow(N, -1.0/DIM))/10.0;
-	
-	float* initialForce = sumForces(GET_NODE(N-1));
-	float initialDisplacement = 0;
-	
-	for(long int i = 0; i < DIM; i++){
-		
-		GET_NODE(N-1)->position[i] += gamma * initialForce[i];
-		initialDisplacement += (gamma * initialForce[i]) * (gamma * initialForce[i]);
-		
-	}
-	
-	if(initialDisplacement > maxAllowedDisp){
-		
-		float correction = gamma * (maxAllowedDisp/initialDisplacement - 1);
-		
-		for(long int i = 0; i < DIM; i++){
-			
-			GET_NODE(N-1)->position[i] += correction * initialForce[i];
-			
-		}
-		
-	}
-	
-	delete[] initialForce;
 
 	memset(netForce, 0, N * sizeof(float*));
 	
@@ -387,7 +363,7 @@ void NBall::gradientDescent(const float gamma, const float tolerance, long int m
 			
 		}
 		
-		#pragma omp parallel shared(netForce)
+		#pragma omp parallel shared(netForce) num_threads(1)
 		{
 			
 			#pragma omp for schedule(guided)
@@ -464,7 +440,6 @@ void NBall::gradientDescent(const float gamma, const float tolerance, long int m
 	}
 	
 	this->iterationWeights += (baseItr - maxItr) * N * N;
-	//cout<<N<<" "<<(baseItr - maxItr)<<endl;
 	
 	return;	// return statement placed here for clarity only
 	

@@ -10,6 +10,11 @@
 #define NSPHERE_DEFAULT_THRESHOLD 100
 #define NSPHERE_DEFAULT_PERIOD 1
 
+/**
+ * macro to take a pair of position vectors (nodePos and otherPos)
+ * and place the scalar linear distance between them in the variable dist
+ * calculates distance in the dimension of the space, not the sphere
+ */
 #define NSPHERE_LINEAR_DISTANCE(nodePos, otherPos, dist) \
 	dist = 0; \
 	for(long int itr_var = 0; itr_var < DIM+1; itr_var++){ \
@@ -23,7 +28,7 @@ class NSphere : public NGraph {
 
 	public:
 	
-		long int forceExp;
+		long int forceExp;	// remove after force-law is settled (?)
 		
 		NSphere(long int n, long int m, int d, float r = NSPHERE_DEFAULT_RADIUS, float baseGam = NSPHERE_DEFAULT_GAMMA, float baseTol = NSPHERE_DEFAULT_TOLERANCE, long int baseItr = NSPHERE_DEFAULT_ITERATIONS, long int threshold = NSPHERE_DEFAULT_THRESHOLD, long int period = NSPHERE_DEFAULT_PERIOD);
 		void grow(long int n);

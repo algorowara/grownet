@@ -243,6 +243,12 @@ float* NSphere::sumForces(SpatialVertex* node){
 	
 }
 
+/**
+ * method to call gradientDescent with certain parameters
+ * based on the desired scaling of said parameters with N
+ * currently scales gamma as N^(1 + 1/D) to account for the scaling of internode distance (N^(1/D)) and node density (N)
+ * does not scale tolerance (beyond the scaling which is part of gradientDescent) or the maximum iterations
+ */
 void NSphere::equalize(){
 	
 	gradientDescent(baseGam / pow(N, 1 + 1.0/DIM), baseTol, baseItr);
@@ -278,7 +284,7 @@ void NSphere::gradientDescent(float gamma, float tolerance, long int maxItr){
 			
 		}
 		
-		#pragma omp parallel shared(netForce)
+		#pragma omp parallel shared(netForce) num_threads(1)z
 		{
 			
 			#pragma omp for schedule(guided)
@@ -380,11 +386,16 @@ void NSphere::normalizeRadius(SpatialVertex* node){
 	
 }
 
+/**
+ * method to write an NSphere object to file
+ * so that it can be later read in and reconstructed after its process has ended
+ */
 void NSphere::exportObject(const NSphere* ns, const char* filename){
 	
 	ofstream outfile(filename, ios::out | ios::trunc);	// open the output file
 	
 	// output all of the parameters of the model
+	// in the format: "# paramname = paramvalue"
 	outfile<<"# dimension = "<<ns->DIM<<endl;
 	outfile<<"# radius = "<<ns->radius<<endl;
 	outfile<<"# base gamma = "<<ns->baseGam<<endl;
@@ -399,6 +410,7 @@ void NSphere::exportObject(const NSphere* ns, const char* filename){
 	
 	outfile<<endl;
 	
+	// output nodes in the format: "index dimension starttime position-list neighbor-index-list"
 	for(long int i = 0; i < ns->N; i++){	// for each node in the graph
 		
 		outfile<<i<<" ";	// output the index of the node, now its only identifier

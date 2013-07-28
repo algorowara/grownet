@@ -10,6 +10,7 @@
 #include <cfloat>
 #include <algorithm>
 #include <iterator>
+#include <climits>
 
 using namespace std;
 
@@ -31,11 +32,11 @@ int main(){
 		
 	}
 	
-	for(long int f = 0; f <= 6; f += 3){
+	for(long int f = 0; f <= 3; f++){
 		
-		for(float gamma = 0.125; gamma <= 8.05; gamma *= 2){
+		for(float gamma = 0.001; gamma > 0.000005; gamma /= 10){
 		
-			for(long int num = 0; num < 4; num++){
+			for(long int num = 0; num < 1; num++){
 				
 				float loc[nend][d+1];
 				//ofstream file;
@@ -75,6 +76,7 @@ int main(){
 				
 				end->baseGam = gamma;
 				end->forceExp = f;
+				end->baseItr = LONG_MAX;
 				
 				for(long int n = nstart; n < nend; n++){
 					
@@ -114,7 +116,7 @@ int main(){
 					
 				}
 				
-				cout<<gamma<<" "<<end->clustering()<<endl;
+				cout<<f<<" "<<gamma<<" "<<end->clustering()<<endl;
 				//file.close();
 				delete end;
 				
