@@ -38,7 +38,7 @@
 \begin{abstract}
 Researchers have studied spatially embedded complex networks which are static in time, but networks in nature are inherently dynamical, gaining links and nodes as they develop over time. 
 We explore the properties of growing networks, investigating the relationship between statistical network properties and the space in which they are embedded. 
-In particular, we consider a class of models in which nodes are place one by one in random locations in space and, after placement, form connections with nearby nodes. 
+In particular, we consider a class of models in which nodes are placed one by one in random locations in space and, after placement, form connections with nearby nodes. 
 We find that the resulting networks are small-world networks, and we characterize how spatial embedding supports the emergence of small-world properties.
 \end{abstract}
 
@@ -211,11 +211,15 @@ The third term is the expected number of nodes with degree $k-1$ at time $N$ tha
 The last term on the right is the new node with degree $m$.
 
 It was shown by Ozik et al. \cite{ozik2004} that this master equation leads to an exponentially decaying degree distribution with an asymptotically $N$ invariant form $H(k) = \lim_{N \to +\infty} G(k,N)/N$ given by
-\begin{equation}
+\begin{equation}\label{degeq}
 H(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}.
 \end{equation}
 \noindent for $k \geq m$ and $H(k) = 0$ for $k < m$.
 
+\begin{figure}
+\includegraphics[width=\linewidth]{figures/fig11.pdf}
+\caption{\label{degdist}Semilogarithmic graph of the degree distribution for 8 models compared to the theory in \eqref{degeq}; the blue points represent the Thomson model while the red points represent the Plum Pudding model. The dimensions are represented as follows, 1D - circle; 2D - star; 3D - triangle; 4D - square. Note a linear offset was used to separate data for visualization and thus values on the y-axis are only relative.}
+\end{figure}
 %FIXME may want to move this to a section on numerical results or wherever we discuss the figure
 Interestingly, this exponentially decaying degree distribution comes only from the growth process and the uniform probability of attaching new links to existing nodes.  
 Since, in our models, the uniform probability of attachment to any given node is a result of the uniform spacing of the nodes, conformity to this degree distribution is an important confirmation that our models are, in fact, spatially uniform.
