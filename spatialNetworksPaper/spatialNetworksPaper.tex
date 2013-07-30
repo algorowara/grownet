@@ -61,8 +61,8 @@ It has been shown \cite{ozik2004} that this growth model leads to a small-world 
 The original goal of the OHO model was to explore the effect that geographic locality has on the growth of networks; in this paper, we extend this analysis by considering networks growing by geographic attachment preference in more general Euclidean spaces. 
 
 The original OHO model exhibits the following three properties which indicate that the small-world property is present:
-\begin{description}
-  \item[Degree Distribution] The degree distribution $H(k)$ is the probablility that a node with have $k$ network connections at time $N$.
+\begin{itemize}
+  \item \textbf{Degree Distribution:} The degree distribution $H(k)$ is the probablility that a node with have $k$ network connections at time $N$.
 For large $N$, the degree distribution of the OHO model is given by 
 \begin{equation}
 H(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}
@@ -70,14 +70,14 @@ H(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}
 for $k \geq m$ and $H(k) = 0$ for $k < m$ \cite{ozik2004}.
 The average node degree $\langle k \rangle$ is $2m$.
 Since the average node degree remains finite even as $N \to \infty$, the OHO model meets the first criterion for the small-world property.
-  \item[Characteristic Path Length] The characteristic path length $\ell$ is the average of the length of the shortest path between two randomly selected nodes.
+  \item \textbf{Characteristic Path Length:} The characteristic path length $\ell$ is the average of the length of the shortest path between two randomly selected nodes.
 In the OHO model, simulation results allow the verification of the desired small world path lenth scaling; $\ell \sim \log N$.
 This may be explained intuitively by noting that as new nodes are added they push apart the older connected nodes, lengthening the distance traversed by older edges. 
 These older nodes then serve as hubs for travel between pairs of nodes across the network, dramatically decreasing the shortest path length between any given pair of nodes.
-  \item[Clustering Coefficient] The final criterion for a small world network is a nonzero clustering coefficient as $N \to \infty$. 
+  \item \textbf{Clustering Coefficient:} The final criterion for a small world network is a nonzero clustering coefficient as $N \to \infty$. 
 The clustering coefficient of a network is the fraction of connected triples in a network which are also traignles.
 This measures whether two nodes which are both connected to a third node are likely to be connected to one another \footnote{In \cite{ozik2004} an alternate definition of clustering was used, specifically the average of the local clustering $C_i$ of each node, $C_i = \frac{q_i}{\frac{1}{1} k_i (k_i-1)}$ where $q_i$ is the number of links between the $k_i$ neighbors of node $i$.}
-\end{description}
+\end{itemize}
 Thus the OHO model produces a small-world network.
 Here, we hypothesize that the small-world properties are caused by the fact that, although new edges are all local, nearby nodes separate over time, creating long-range connections.
 To test this hypothesis we investigate generalizations to higher-dimensional spaces in order to explore how the small-world property emerges in dynamically growing spatially embedded networks.
@@ -89,47 +89,36 @@ One way to generalize the procedure is to consider each node to be a point charg
 The problem of finding the equilibrium configuration of points on the surface of a sphere dates back to 1904 when J.J. Thomson introduced his plum pudding model of the atom, in which a centroal could of positive charge was surrounded by a discrete negative charges on the surface \cite{thomson1904}
 A key problem for him was arranging the electrons (corpuscles) on the surface of the sphere of pudding such that the potential energy is minimized.
 
-Here we adopt the thomson problem as one possible generalization of the OHO model.
-We model the nodes as point charges confined to exist on the surface of a sphere of unit radius.
+Using this problem as a guide we develop the following generalization to the OHO model.
+We model the nodes as point charges confined to exist on the surface of a $d$-sphere of unit radius.
 %In this way we produce a configuration of nodes on the sphere's surface such that each internode area interval is approximately (up to numerical defects) equal, implying that if we were to select a point on the sphere uniformly at random, each area interval would be equally likely to be selected.
-Now at each timestep we drop a node into an area interval selected at random on the sphere and add links to connect it to its $m$ nearest neighbors, where here distance is defined as the shortest great circle path along the surface of the sphere between two nodes.
+Now at each timestep we drop a node into an area interval selected at random on the $d$-sphere and add links to connect it to its $m$ nearest neighbors, where here distance is defined as the shortest great circle path along the surface of the sphere between two nodes.
 Next we require that the potential energy between the nodes is minimized.
-For large $N$, the repulsive interaction ensures that the points are distributed approximately uniformly across the surface of the sphere.
+For large $N$, the repulsive interaction ensures that the points are distributed approximately uniformly across the surface of the $d$-sphere.
 In this way we reproduce the key features of the OHO model, a growing network with new nodes only making local connections, but we also introduce a new parameter, the dimension of the space in which the growing network is embedded.
-In the following sections we explore the differences between the OHO model and the higher dimension generalizations.
+Limiting this model to a $2$-sphere in $3$-space, this is analogous to the original Thomson problem presented in \cite{thomson1904}, where $N$ electrons are bound to the surface of a sphere and interact with each other via the $2$ dimensional Couloumb force.
 
-%FIXME rethink how we integrate this with the higher dimensional stuff, may have to rewrite most of this section!
-\subsubsection{The 2D Case: Network Embedded on the Surface of a Sphere}
-The first generalization we explore is the case of nodes confined to exist on the surface of a unit sphere in Euclidean 3-space.
-This is directly analogous to the original Thomson problem presented in \cite{thomson1904}, where $N$ electrons are bound to the surface of a sphere and interact with each other via the Couloumb force.
+For the case of a $d$-dimensional sphere embedded in $d+1$-dimensional space, we use as our repulsive term the Coulomb force law appropriate to a $d$-dimensional space, treating the sphere as a curved universe containing bodies acting in accordance with $d$-dimensional electrostatic laws rather than an arbitrary limitation on a $d+1$-dimensional universe.
+
 As a result of the Couloumb interaction, the minimum energy configuration for these points on the sphere is one where the points are distributed in an approximately uniform manner across the surface of the sphere.
 In order to determine if this model produces a small world network we determine the following three properties:
-\begin{description}
-  \item[Degree Distribution] The uniform distribution of nodes on the surface of the sphere leads to a uniform probability of choosing an area interval in which to place a new nodes; thus existing nodes each have an equal probability of having their degree increased at each timestep.
+\begin{itemize}
+  \item \textbf{Degree Distribution:} The uniform distribution of nodes on the surface of the $d$-sphere leads to a uniform probability of choosing an area interval in which to place a new nodes; thus existing nodes each have an equal probability of having their degree increased at each timestep.
 This causes the degree distribution for this new model to be identical to the degree distribution for the original OHO model, for more detail on this discussion refer to the section on invariant properties at the end of this article.
-  \item[Characteristic Path Length] For this model we find that the the average shortest path length $\ell$ scales logarithmically with the network size $N$, that is, $\ell \sim \log N$. 
+  \item \textbf{Characteristic Path Length:} For this model we find that the the average shortest path length $\ell$ scales logarithmically with the network size $N$, that is, $\ell \sim \log N$. 
 This is a reasonable result because as the network grows in size the older nodes get pushed apart by the repulsive Coulumb force thus leaving bridges across the network that span a significant physical distance.
 These long range links serve to connect disparate regions of highly interconnected nodes, dramatically reducing the shortest path length between any two nodes in the network.
 At each timestep only geographically local connections are made, but due to the dynamic nature of the nodes' spatial positions, each timestep can make existing links longer in physical space, thus building bridges across the network.
-Furthermore, we find that for a given value of $N$ the shortest path between any two nodes in this 2D case is shorter than that of the corresponding 1D case (the original OHO model).
-One possible explanation for this feature is that the surface of a sphere provides more freedom for nodes to move around each other, thus increasing the chance that a shortcut is created.
+Furthermore, we find that for a given value of $N$ the shortest path between any two nodes in this case is shorter than that of the corresponding 1D case (the original OHO model).
+In fact we find that as we increase the dimension $d$ of the embedding space the shortest path shrinks, although it keeps the logarithmic scaling with $N$ that we require for small-worlds.
+One possible explanation for this feature is that the surface of a higher dimensional sphere provides more freedom for nodes to move around each other, thus increasing the chance that a shortcut is created.
 In the original OHO model each node, like a boson in a Tonks-Girardeau gas, is forever locked between its two original spatial neighbors, and thus long range links can only be created if new nodes are placed between the two neighbors.
-In this first generalization of the OHO model, the repulsive Couloumb force between electrons allows them to rearrange thier relative positions by moving in 2 dimensions in order to minimize the potential energy of the configuration.
-Thus two originally adjacent nodes can be moved apart around other nodes, forming long range links; of course placing new nodes between them will also create bridges, but these effects combine to produce shorter path length in the 2D case than in the 1D case.
-  \item[Clustering Coefficient] 
+Here the repulsive Couloumb force between electrons allows them to rearrange thier relative positions by moving in $d$ dimensions in order to minimize the potential energy of the configuration.
+Thus two originally adjacent nodes can be moved apart around other nodes, forming long range links; of course placing new nodes between them will also create bridges, but these effects combine to produce shorter path length in the higher dimensional cases.
+  \item \textbf{Clustering Coefficient:} This section has not yet been written since we're waiting on the results of the force law investigation to come to a conclusion about clustering. 
 %I'm going to leave this section blank until we have results and figures for this since that should determine what we write.
-\end{description}
-Thus we find that that the model of a network growing on the surface of a sphere with geographic attachment preference leads to the emergence of the small-world property.
-We now move onto discussing the generalized case of a network embedded on the surface of a $d$-sphere in order to see how the dimension of the embedding space impacts the network properties.
-
-\subsubsection{Spatial Embedding of Networks on the Surface of the Unit $d$-Sphere}
-In this extension of the OHO model, we generalized from the simple case of nodes on a circle and investigated the possibility of placing nodes on a $d$-dimensional sphere.
-In order to preserve the non-preferential selection of the OHO model, favoring no inter-node interval above others, we placed new nodes with uniform probability on the surface of the $d$-sphere after ``relaxing" the preexisting nodes into a roughly homogenous distribution. 
-For the relaxation, we treated each node as a point charge, and used a gradient-descent algorithm to let the repulsive forces between nodes move them to an approximate equilibrium.
-
-For the case of a $d$-dimensional sphere embedded in $d+1$-dimensional space, we used the Coulomb force law appropriate to a $d$-dimensional space, treating the sphere as a curved universe containing bodies acting in accordance with $d$-dimensional laws rather than an arbitrary limitation on a $d+1$-dimensional universe.  
-As we explain below, the conformity of these spherical networks to the appropriate degree distribution indicates that this is a sound method for relaxing nodes into a homogenous distribution.
-%the above claim is a bit too ambitious; it's not strictly true... we get a similar degree distribution even when the nodes are not particularly uniform (i.e. even if the method is unsound
+\end{itemize}
+Thus we find that that the model of a network growing on the surface of a $d$-sphere with geographic attachment preference leads to the emergence of the small-world property.
 
 \section{THE PLUM PUDDING MODEL}
 A key feature of the OHO model is that the nodes can only be placed on the circumference of a circle. 
@@ -166,19 +155,10 @@ For large $N$ there are still only two boundary nodes, but they make up a fracti
 For very small values of $N$ we see some minor differences between the two model, but for any value of $N$ large enough to calculate statistics we find agreement between the 1D Plum Pudding model and the original OHO model (which is the 1D case of the generalized thomson model discussed earlier).
 
 %What properties should we include here? We have to put some plots up, maybe comparing 1D PP and TP?
-
-
-\subsubsection{The 2D Case: Nodes on a Disk}
-Although the disk is a 2 dimensional object and the sphere is fundamentally a 3 dimensional object, nodes embedded on the surface of a sphere and nodes embedded on a disk both live in an effectively 2 dimensional space.
-As a result we would expect that the properties explored for the case of nodes embedded on the surface of a sphere hold in this case as well.
-Since the minimum energy configuration for the nodes in a cloud of positive charge is a uniform distribution across the face of the unit circle, we expect to find an identical degree distribution to that of the prior models.
-This is verified and discussed in more depth in the section on invariant properties at the end of this article.
-%include some stuff about how clustering and path length look different from sphere if we don't choose the appropriate force law. Perhaps include more about how the force law impacts the properties? 
-
 \subsection{Spatial Embedding of Networks in a unit $d$-Ball}
 Similar to the $d$-sphere, the $d$-ball, a region embedded in $d$-dimensional space, is a generalization of the simpler models to higher dimensions.  
 However, there is an important distinction: while the repulsive forces between nodes still act as $F \propto \frac{1}{r^{d-1}}$, the attractive force - the contribution of the "cloud" of positive charge - is independent of dimension.  
-This is the proper result for such a scenario, however; Gauss's law continues to hold in the same general form in higher dimensions.
+Applying Gauss' law in the appropriate dimension reveals that the field experienced by a node a distance $r$ from the center of the ball is always proportional to $r$ itself, since only a fraction of the total positive charge is felt by the node at radius $r$.
 %here it's not so much that Gauss' law continues to hold in general, it's that when we apply gauss's law in higher dimensions we find that the force exerted on nodes by the cloud scales linearly with r because the surface term from gauss' law cancels the all but the linear part of the volume term from the enclose charge.
 
 And, because of the balance between the repulsive and attractive forces, the nodes were kept naturally confined to a unit $d$-dimensional ball, without resort to artificial boundary conditions.  
@@ -218,7 +198,7 @@ H(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}.
 
 \begin{figure}
 \includegraphics[width=\linewidth]{figures/fig11.pdf}
-\caption{\label{degdist}Semilogarithmic graph of the degree distribution for 8 models compared to the theory in \eqref{degeq}; the blue points represent the Thomson model while the red points represent the Plum Pudding model. The dimensions are represented as follows, 1D - circle; 2D - star; 3D - triangle; 4D - square. Note a linear offset was used to separate data for visualization and thus values on the y-axis are only relative.}
+\caption{\label{degdist}Semilogarithmic graph of the degree distribution for 8 models with $N = 10000$ and $m = 4$ compared to the theory in \eqref{degeq}; the blue points represent the Thomson model while the red points represent the Plum Pudding model. The dimensions are represented as follows, 1D - circle; 2D - star; 3D - triangle; 4D - square. Note a linear offset was used to separate data for visualization and thus values on the y-axis are only relative.}
 \end{figure}
 %FIXME may want to move this to a section on numerical results or wherever we discuss the figure
 Interestingly, this exponentially decaying degree distribution comes only from the growth process and the uniform probability of attaching new links to existing nodes.  
@@ -245,7 +225,7 @@ Once again, since this derivation uses only the assumption that each node has an
 This represents a specific example of the fact that in dynamically growing networks, older nodes are preferentially connected to one another as discussed in \cite{reallyrandom}.
 \begin{figure}
 \includegraphics[width=\linewidth]{figures/fig12.pdf}
-\caption{\label{degage}Semilogarithmic graph of the mean degree vs the node age for two of the explored models. The magenta line is the theory in Eq. \eqref{ageeq} and the error bars are the standard deviation of the average over 10 simulated networks}
+\caption{\label{degage}Semilogarithmic graph of the mean degree vs the node age for two of the explored models with $N = 10000$ and $m = 4$. The magenta line is the theory in Eq. \eqref{ageeq} and the error bars are the standard deviation of the average over 10 simulated networks}
 \end{figure}
 
 %once again do we include figures to demonstrate the claim? Which figures to show? They're all pretty much the same since it's the same distribution for every model
