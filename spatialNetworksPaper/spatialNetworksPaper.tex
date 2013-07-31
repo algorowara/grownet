@@ -1,4 +1,4 @@
-\documentclass[aps,pre,reprint,superscriptaddress,amsmath,amssymb,nofootinbib]{revtex4-1}
+\documentclass[aps,pre,manuscript,superscriptaddress,amsmath,amssymb,nofootinbib]{revtex4-1}
 \usepackage{graphicx}
 \usepackage{dcolumn}
 \usepackage{bm}
@@ -49,6 +49,10 @@ We find that the resulting networks are small-world networks, and we characteriz
 \section{INTRODUCTION}
 %in the introduction don't forget to present definitions we use, in particular be clear what we mean by small world property
 %mention how our generalizations were chosen for their physical significance rather than the ease with which we can perform comupational and analytic calculations of their properties. 
+Haven't written the introduction yet but we intend to cite:
+\cite{wsnat}, \cite{ozik2004}, \cite{przuljgeo}, \cite{hermannspace}, \cite{bullockspatial}, \cite{guan1D}, \cite{zhang2006}, \cite{zhang2007}, \cite{newmanreview}  as prior work on the subject.
+We also intend to cite:
+\cite{neuronembedding}, \cite{plenzcascade}, \cite{fruitfly}, \cite{barthelemy}, \cite{vazquez2002} as examples of applications of spatial network models.
 
 \section{THE OHO MODEL}
 The Ozik-Hunt-Ott (OHO) model, presented in \cite{ozik2004}, considers a network which initially has a clique of $m+1$ nodes on the circumference of a circle. 
@@ -159,11 +163,7 @@ For very small values of $N$ we see some minor differences between the two model
 Similar to the $d$-sphere, the $d$-ball, a region embedded in $d$-dimensional space, is a generalization of the simpler models to higher dimensions.  
 However, there is an important distinction: while the repulsive forces between nodes still act as $F \propto \frac{1}{r^{d-1}}$, the attractive force - the contribution of the "cloud" of positive charge - is independent of dimension.  
 Applying Gauss' law in the appropriate dimension reveals that the field experienced by a node a distance $r$ from the center of the ball is always proportional to $r$ itself, since only a fraction of the total positive charge is felt by the node at radius $r$.
-%here it's not so much that Gauss' law continues to hold in general, it's that when we apply gauss's law in higher dimensions we find that the force exerted on nodes by the cloud scales linearly with r because the surface term from gauss' law cancels the all but the linear part of the volume term from the enclose charge.
-
 And, because of the balance between the repulsive and attractive forces, the nodes were kept naturally confined to a unit $d$-dimensional ball, without resort to artificial boundary conditions.  
-The force did, however, level off at the edge of the $d$-ball, in order to prevent oscillatory effects for small $N$ with large timesteps.  
-%it's not clear what leveling off means in this context
 The arrangement of nodes is best seen in the case of the 2-ball, the most photogenic of $d$-balls.  
 %I think we should include a picture... maybe color coded by degree? Seems illustrative.
 
@@ -198,7 +198,7 @@ H(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}.
 
 \begin{figure}
 \includegraphics[width=\linewidth]{figures/fig11.pdf}
-\caption{\label{degdist}Semilogarithmic graph of the degree distribution for 8 models with $N = 10000$ and $m = 4$ compared to the theory in \eqref{degeq}; the blue points represent the Thomson model while the red points represent the Plum Pudding model. The dimensions are represented as follows, 1D - circle; 2D - star; 3D - triangle; 4D - square. Note a linear offset was used to separate data for visualization and thus values on the y-axis are only relative.}
+\caption{\label{degdist}Semilogarithmic graph of the degree distribution for 8 models with $N = 10000$ and $m = 4$ compared to the theory in Eq. \eqref{degeq}; the blue points represent the Thomson model while the red points represent the Plum Pudding model. The dimensions are represented as follows, 1D - circle; 2D - star; 3D - triangle; 4D - square. Note a linear offset was used to separate data for visualization and thus values on the y-axis are only relative.}
 \end{figure}
 %FIXME may want to move this to a section on numerical results or wherever we discuss the figure
 Interestingly, this exponentially decaying degree distribution comes only from the growth process and the uniform probability of attaching new links to existing nodes.  
@@ -251,13 +251,13 @@ Thus the discrepancy in betweenness vs. degree in the 1D case can be attributed 
 Although the invariance of the betweenness-degree relationship is not fully established, the higher dimensional models all exhibit the same pattern, indicating that betweenness is not significantly impacted by the space in which the network is embedded as long as the space is sufficiently large to allow nodes to move freely.
 
 \section{Limitations of the Model}
-As with any simulation, our models were limited in the degree to which they could accurately represent a "real" scenario while still remaining practically computable.  
+\textbf{****** I'm not sure that we will need to include this section, the key points could be dispersed through the paper instead******}
+As with any simulation, our models were limited in the degree to which they could accurately represent a ``real" scenario while still remaining practically computable.  
 In this section, we discuss the necessary shortcomings we have identified in our model, and the effects we believe them to have had on our results.  
-However, we first note that the results we have obtained, while certainly biased in one way or another, still appear to accurately represent a genuine trend in the phenomena we investigated, and that the various biases come together to produce what is best characterized as noise, rather than a fundamental flaw.
+We first note that the results we have obtained, while certainly biased in one way or another, still appear to accurately represent a genuine trend in the phenomena we investigated, and that the various biases come together to produce what is best characterized as random error, rather than a fundamental flaw.
 %the above sentence needs to be clarified, noise is not a good term for what we're talking about.
 
-\subsection{Tolerance of Disequilibrium}
-%I'm not sure we want to use the word disequilibrium, it generally has connotations related to fields we're not working in.
+\subsection{Tolerance of Non-Equilibrium Configurations}
 As noted above, we used a gradient-descent method to enforce the even spacing of nodes.  
 In order to ensure that the computation halted, we introduced a ceiling on the number of iterations of gradient-descent steps, so that a persistent disequilibrium could not delay the model indefinitely.  
 We also introduced a tolerance parameter related to the average inter-node spacing (a function of $N$) such that if all nodes were displaced by less than a certain distance in a single timestep, the gradient-descent algorithm could exit early.  
@@ -270,15 +270,16 @@ Both of these effects were trades between accuracy and speed; a faster computati
 
 \subsection{Time Step Size}
 For the gradient-descent algorithm, as it was not possible to simulate a truly continuous system, the gradients of each node were calculated and applied in discrete timesteps.  
-The size of this timestep tended to be inversely proportional to the time to run a model, so larger timesteps were preferable to smaller ones.  
-However, larger timesteps increased the probability of overshooting the equilibrium (an error which would then be remedied in subsequent iterations of or calls to the algorithm), where smaller timesteps would have prevented such movements by recalculating forces more frequently.
+The size of this timestep tended to be inversely proportional to the time to run a model, so larger time steps were preferable to smaller ones.  
+However, larger time steps increased the probability of overshooting the equilibrium (an error which would then be remedied in subsequent iterations of or calls to the algorithm), where smaller timesteps would have prevented such movements by recalculating forces more frequently.
 
-Large timesteps, therefore, were also a trade between accuracy and speed, though here, a faster computation meant more displacement.  
-This was reflected in a lower clustering coefficient for rather large timesteps, an effect which persisted even for large networks.
+Large time steps, therefore, were also a trade between accuracy and speed, though here, a faster computation meant more displacement.  
+The effect of this overshoot is to rearrange the relative position of nodes, pulling apart communities of nearby nodes.
+This was reflected in a lower clustering coefficient for rather large time steps, an effect which persisted even for large networks.
 %In order to make this claim, you will need more evidence as well as an explanation linking movement to clustering
 
 \subsection{Force Laws} %maybe this section can be expanded to it's own section where we justify the choice of force law we used and mention how higher force exponent leads to more numerical problems??
-Finally, in calculating the gradients for the gradient-descent algorithm, we used a scaling taken from the Coulomb force in an arbitrary number of dimensions: $F \propto \frac{1}{r^{d-1}}$ in a $d$-dimensional space.  
+In calculating the gradients for the gradient-descent algorithm, we used a scaling taken from the Coulomb force in an arbitrary number of dimensions: $F \propto \frac{1}{r^{d-1}}$ in a $d$-dimensional space.  
 For the $d$-dimensional ball, the ball and the space in which it was embedded were of the same dimension, which as the dimension used there.  
 In the case of the $d$-dimensional sphere, however, the dimension of the sphere itself, which was one less than that of the embedding space, was used, which produced results approximately similar to those produced from the $d$-dimensional ball.
 
