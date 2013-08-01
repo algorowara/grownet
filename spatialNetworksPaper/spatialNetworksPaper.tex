@@ -6,8 +6,15 @@
 \usepackage{natbib}
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
 \DeclareGraphicsExtensions{.pdf}
+\renewcommand\thesection{\arabic{section}}
+\renewcommand\thesubsection{\arabic{section}.\arabic{subsection}}
+
+\makeatletter
+\def\p@subsection{}
+\makeatother
 
 \begin{document}
+
 
 \title{Spatially embedded growing small-world networks}
 \author{Ari Zitin}
@@ -98,7 +105,7 @@ The problem of finding the equilibrium configuration of point charges on the sur
 Using the Thomson problem as a guide, we develop one of our generalizations to the Circle Model, which we call the Sphere Model, as follows.
 We model the nodes as point charges confined to exist on the surface of a $d$-sphere of unit radius.
 Now, at each timestep, we drop a new node onto the sphere at random with uniform probability density per unit area and then add links to connect it to its $m$ nearest neighbors, where here distance is defined as the shortest great circle path along the surface of the sphere between two nodes.
-Next we minimize the potential energy of the configuration by a steepest descent procedure, $\frac{d\underline{x}_i}{dt} = -\bigtriangledown_\parallel V$, where $V$ is the potential, $\underline{x}_i$ is the position of node $i$, and $\bigtriangledown_\parallel$ represents the projection of the $d$-dimensional gradient operator onto the surface of the sphere.
+Next we minimize the potential energy of the configuration by a steepest descent procedure, $\frac{d\underline{x}_i}{dt} = -\vec\nabla_\parallel V$, where $V$ is the potential, $\underline{x}_i$ is the position of node $i$, and $\vec\nabla_\parallel$ represents the projection of the $d$-dimensional gradient operator onto the surface of the sphere.
 Note that, as new nodes are added, this procedure tends to yield a local energy minimum, as opposed to the global minimum, and we view this as being appropriate for the situations of interest to us (e.g., biological network growth processes).
 For large $N$, the repulsive interaction ensures that the points are distributed approximately uniformly on the surface of the $d$-sphere.
 In this way we reproduce the key features of the Circle Model, but we also introduce a new parameter, the dimension of the space in which the growing network is embedded.
@@ -109,19 +116,30 @@ As a result of the Couloumb interaction, the minimum energy configuration for th
 In order to determine if this model produces a small world network we determine the following three properties:
 \begin{itemize}
   \item \textbf{Degree Distribution:} The approximately uniform distribution of nodes on the surface of the $d$-sphere leads to an approximately equal probability of nodes having their degree increased by a link to a new node at each timestep.
-In accord with this, we fill find that the degree distribution for this new model is identical to the degree distribution for the original Circle Model (for more detail see Sec.~\ref{sec:degreedistribution}).
+In accord with this, we fill find that the degree distribution for this new model is identical to the degree distribution for the original Circle Model (for more detail see Sec.~\ref{sub:degreedistribution}).
   \item \textbf{Characteristic Path Length:} For this model we find that the the average shortest path length $\ell$ scales logarithmically with the network size $N$, that is, $\ell \sim \log N$. 
 This is a reasonable result because as the network grows in size the older nodes get pushed apart by the repulsive Coulumb force thus leaving bridges across the network that span a significant geographic distance.
 These long range links serve to connect disparate regions of highly interconnected nodes, dramatically reducing the shortest path length between any two nodes in the network.
 At each timestep only geographically local connections are made, but due to the dynamic nature of the nodes' spatial positions, each timestep can make existing links longer in physical space, thus building bridges across the network.
-Furthermore, we find that for a given value of $N$ the shortest path between any two nodes in this case is shorter than that of the corresponding 1D case (the original OHO model).
+Furthermore, we find that for a given value of $N$ the shortest path between any two nodes in this case is shorter than that of the corresponding 1D case (the original Circle Model).
 In fact we find that as we increase the dimension $d$ of the embedding space the shortest path shrinks, although it keeps the logarithmic scaling with $N$ that we require for small-worlds.
 One possible explanation for this feature is that the surface of a higher dimensional sphere provides more freedom for nodes to move around each other, thus increasing the chance that a shortcut is created.
-In the original OHO model each node, like a boson in a Tonks-Girardeau gas, is forever locked between its two original spatial neighbors, and thus long range links can only be created if new nodes are placed between the two neighbors.
+In the original Circle Model each node, like a boson in a Tonks-Girardeau gas, is forever locked between its two original spatial neighbors, and thus long range links can only be created if new nodes are placed between the two neighbors.
 Here the repulsive Couloumb force between electrons allows them to rearrange thier relative positions by moving in $d$ dimensions in order to minimize the potential energy of the configuration.
 Thus two originally adjacent nodes can be moved apart around other nodes, forming long range links; of course placing new nodes between them will also create bridges, but these effects combine to produce shorter path length in the higher dimensional cases.
+
+\begin{figure}
+\includegraphics[width=\linewidth]{figures/figPLvsN.pdf}
+\caption{\label{pathlength}%FIXME add caption}
+\end{figure}
+
   \item \textbf{Clustering Coefficient:} This section has not yet been written since we're waiting on the results of the force law investigation to come to a conclusion about clustering. 
-%I'm going to leave this section blank until we have results and figures for this since that should determine what we write.
+
+\begin{figure}
+\includegraphics[width=\linewidth]{figures/figCvsN.pdf}
+\caption{\label{clustN}%FIXME add caption}
+\end{figure}
+
 \end{itemize}
 Thus we find that that the model of a network growing on the surface of a $d$-sphere with geographic attachment preference leads to the emergence of the small-world property.
 
@@ -133,14 +151,14 @@ We call this second model the Plum Pudding Model.
 We again model our nodes as a collection of negative point charges in $d$-dimensions.
 The growth procedure is similar to the previous models; we place new nodes randomly in our volume and connect them to their $m$ nearest neighbors, where here we define nearest to be the Euclidean distance between the nodes.
 Now, however, we regard the nodes as free to move in a unit radius, $d$-dimensional sphere containing a uniform background positive charge density such that the total background charge in the sphere is equal and opposite to that of the $N$ network nodes.
-Similar to our previous mode, after adding a node with uniform probability density within the unit $d$-dimensional sphere, we relax the configuration to a local energy minimum via the process $\frac{d\underline{x}_i}{dt} = -\bigtriangledown V$, where $\bigtriangledown$ is the $d$-dimensional gradient operator.
+Similar to our previous mode, after adding a node with uniform probability density within the unit $d$-dimensional sphere, we relax the configuration to a local energy minimum via the process $\frac{d\underline{x}_i}{dt} = -\vec\nabla V$, where $\vec\nabla$ is the $d$-dimensional gradient operator.
 The repulsive potential between nodes ensures that they are spaced approximately equidistantly for large $N$ in a minimum potential configuration, while the cloud of positive charge ensures that the nodes remain in the sphere.
 
 Due to the nature of Gauss's Law for any dimension $d$ the `force` of attraction between a node and the center of the background constant-density positive charge cloud is proportional to the value of the radial coordinate of the node.
 This means that we can visualize this model as a collection of classical electrons all connected to the origin by springs (a harmonic potential) and interacting with each other via the dimensionally appropriate Couloumb force.  
 
 We now consider the one-dimensional Plum Pudding Model on a line segment and compare it to the original Circle Model.
-For the electrostatic problem on a one-dimensional line segment, we regard the node particles as charge sheets, which, through Gauss's law, leads to a constant repulsive force between electron pairs, thus the equilibrium for both the analogouse $1$-d sphere (i.e. Circle) and Plum Pudding Models yields equally spaced nodes. 
+For the electrostatic problem on a one-dimensional line segment, we regard the node particles as charge sheets, which, through Gauss's law, leads to a constant repulsive force between electron pairs, thus the equilibrium for both the analogouse $1$-d Sphere (i.e. Circle) and Plum Pudding Models yields equally spaced nodes. 
 On the circle every node borders two internode intervals, while on the line segment, this is so for $(N-2)$ interior nodes with only the two boundary nodes bordering just one internode interval.
 Thus as $N \to \infty$, the one-dimensional Plum Pudding Model is expected to yield results that are identical to those of the Circle Model.
 Two fundamental properties of our one-dimensional models are that, when a new node is added, relaxation to equilibrium preserves the relative spatial ordering of nodes, and the equilibrium has uniform internodal spacing.
@@ -148,6 +166,11 @@ In contrast, for $d \geq 2$ the concept of linear ordering is absent.
 In addition, for our $d \geq 2$ sphere and plum pudding topologies, exact, global regular-lattice positioning is not possible.
 E.g., for large $N$ on a $2$-d sphere, it is known that, although equilibrium positioning through much of the area of the sphere is locally approximately a regular triangular lattice, the sphere's surface curvature leads to point and line defects in the triangular lattice pattern \cite{nelson}.
 Thus a natural question is whther the $d = 1$ cases might have special properties that deviate from those for $d \geq 2$.
+
+\begin{figure}
+\includegraphics[width=\linewidth]{figures/figCvsD.pdf}
+\caption{\label{clustdim}%FIXME add caption}
+\end{figure}
 
 \section{INVARIANT PROPERTIES}
 Several important network features can be found analytically and do not depend on dimension or on the choice of the plum pudding or Sphere Model.
@@ -179,9 +202,10 @@ H(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}.
 \noindent for $k \geq m$ and $H(k) = 0$ for $k < m$.
 
 \begin{figure}
-\includegraphics[width=\linewidth]{figures/fig11.pdf}
+\includegraphics[width=\linewidth]{figures/figDegDist.pdf}
 \caption{\label{degdist}Semilogarithmic graph of the degree distribution for 8 models with $N = 10000$ and $m = 4$ compared to the theory in Eq. \eqref{degeq}; the blue points represent the Sphere Model while the red points represent the Plum Pudding model. The dimensions are represented as follows, 1D - circle; 2D - star; 3D - triangle; 4D - square. Note that an arbitrary linear offset was used to separate data for visualization and thus values on the y-axis are only relative.}
 \end{figure}
+
 Interestingly, this exponentially decaying degree distribution comes only from the growth process and the uniform probability of attaching new links to existing nodes.  
 As seen in Fig. \ref{degdist}, for $m = 4$, $N = 10^4$, with $d = 1,2,3,4$, Eq. \eqref{degeq} is well-satisfied by numerical simulations of both the Sphere (blue points) and Plum Pudding (red points) Models.
 
@@ -199,7 +223,7 @@ k(y,N)& = m + m\sum_{n=N-y+1}^{N} \frac{1}{n}\\
 Once again, since this derivation uses only the assumption that each node has an equal chance each timestep to have its degree incremented, the result holds for both of the models discussed here.
 This represents a specific example of the fact that in dynamically growing networks, older nodes are preferentially connected to one another as discussed in \cite{reallyrandom}.
 \begin{figure}
-\includegraphics[width=\linewidth]{figures/fig12.pdf}
+\includegraphics[width=\linewidth]{figures/figDvsAge.pdf}
 \caption{\label{degage}Semilogarithmic graph of the mean degree vs the node age for two of the explored models with $N = 10000$ and $m = 4$. The magenta line is the theory in Eq. \eqref{ageeq} and the error bars are the standard deviation of the average over 10 simulated networks}
 \end{figure}
 Numerical simulations of the mean degree as a function of node age, Fig. \ref{degage}, demonstrate that Eq. \eqref{ageeq} is satisfied for both the Sphere (blue points) and Plum Pudding (red points) models.
