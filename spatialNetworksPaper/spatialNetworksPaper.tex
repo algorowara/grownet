@@ -56,9 +56,27 @@ We characterize the spatial and topological properties of these networks and sho
 \section{INTRODUCTION}
 %in the introduction don't forget to present definitions we use, in particular be clear what we mean by small world property
 %mention how our generalizations were chosen for their physical significance rather than the ease with which we can perform comupational and analytic calculations of their properties. 
-FIXME: Write introduction and cite:
-\cite{wsnat}, \cite{ozik2004}, \cite{przuljgeo}, \cite{hermannspace}, \cite{bullockspatial}, \cite{guan1D}, \cite{zhang2006}, \cite{zhang2007}, \cite{newmanreview}  as prior work on the subject and cite:
-\cite{neuronembedding}, \cite{plenzcascade}, \cite{fruitfly}, \cite{barthelemy}, \cite{vazquez2002} as examples of applications of spatial network models.
+The burgeoning field of network science has made significant headway in the past 15 years exploring the statistical properties and growth processes of real world complex networks.
+The identification of the small-world property by Watts and Strogatz in \cite{wsnat} represented a significant step towards understanding the underlying structure of many existing networks.
+Small-world networks exhibit two key properties, the first being a short characteristic path length similar to an Erd\H{o}s-R\'{e}nyi random network, and the second being a high clustering coefficient.
+More specifically, the characteristic path length ($\ell$), which is the average over all nodes of the smallest number of links connecting a pair of nodes, must grow no faster than $\log N$ where $N$ is the size of the network (i.e. $\ell \sim \log N$).
+In this paper we define the clustering coefficient to be the number of closed triplet divided by the number of connected triples of vertices, i.e. the fraction of triples that form complete triangles \cite{newmanrandom}.
+In order for a network to have the small-world property we require that this clustering coefficient approach some non-zero value for large $N$.
+Real world networks from the social networks to networks of neurons exhibit the small-world property, revealing it as something fundamental about the structure of many networks.
+
+Another key feature of real world networks is that they often live in some physical space with imposed spatial contraints. 
+E.g., the Internet, a network of routers connected via cables, is embedded on the $2$-dimensional surface of the Earth and can only have links of a certain physical distance due to the cost of wiring.
+This has led many researchers to consider network models with spatial embedding \cite{ozik2004,przuljgeo,hermannspace,bullockspatial,guan1D,zhang2006,zhang2007}.
+Work on this topic has revealed that spatially constrained networks can lead to small-world networks, even when links are only formed locally.
+Many of these models (e.g. \cite{bullockspatial,guan1D,przuljgeo}) introduce growing network models, but force the nodes to remain fixed in their initial spatial location.
+Of the literature on the subject, only \cite{ozik2004} introduces a growing network model in which nodes can move once placed in a spatial substrate.
+The importance of dynamics in the growth of the network cannot be understated, real world networks are often dynamic in both time and space, with new nodes being added while existing nodes are free to move about.
+For example social networks generally require spatial proximity to form (people tend to make friends with those near them), but people don't stay still, in fact many of the critical features of social networks arise from the fact that people in the modern era are able to travel across the globe with ease. 
+As such, we seek to further the work performed in \cite{ozik2004} by introducing a class of growing network models that have spatially contrained nodes free to move about in the embedding surface. 
+
+Models of spatially embedded networks have been used previously to attempt to describe real world networks, from the neuronal networks of the \textit{C. Elegans} worm \cite{plenzcascade} to the protein interaction network of the common fruit-fly \cite{fruitfly}, biological researchers have used network theory to describe physically embedded networks.
+Further applications of spatial network models are presented in \cite{neuronembedding,barthelemy,vazquez2002}.
+This motivates us to explore how networks depend on the space in which we embed them, and what features of this space are most important in determining network properties.
 
 \section{THE CIRCLE MODEL}
 In Ref. \cite{ozik2004} the authors presented a model, henceforth referred to as the Circle Mode, which considers a network which initially has $m+1$ uniformly separated, all-to-all connected nodes on the circumference of a circle. 
@@ -256,10 +274,10 @@ Larger values of $\alpha$ simply add computational difficulty to the problem, bu
 In Fig. \ref{forcelaw} we demonstrate agreement in the clustering coefficient for various values of $\alpha$ for the $d=2$ case in the Sphere Network Model.
 Thus we find that our results apply not only to nodes behaving as negative charges, but to any system where nodes interact through a distatnce-dependent monotonic repulsive force.
 
-\begin{figure}
-\includegraphics[width=\linewidth]{figures/CvsFLaw.pdf}
-\caption{\label{forcelaw}Clustering coefficient vs force exponent $\alpha$ for the $d = 2$ Sphere Network Model, indicating that the network properties generated by this model are independent of the choice of $\alpha$.}
-\end{figure}
+%\begin{figure}
+%\includegraphics[width=\linewidth]{figures/CvsFLaw.pdf}
+%\caption{\label{forcelaw}Clustering coefficient vs force exponent $\alpha$ for the $d = 2$ Sphere Network Model, indicating that the network properties generated by this model are independent of the choice of $\alpha$.}
+%\end{figure}
 
 \section{CONCLUSION}
 We expanded upon the work presented in \cite{ozik2004} to generate small-world networks embedded in more general spaces.
@@ -267,6 +285,7 @@ By allowing nodes to move in space, our models provide a realistic model of how 
 Furthermore, we find that the dimension of the space in which the nodes are embedded determines how they cluster, in particular we find that the clustering coefficient C scales as $C \sim 1/d^{-2}$ for a $d$-dimensional space.
 We hope these finding will spark interest in dynamic spatial networks, as most real world networks grow and shift position in some underlying space.
 
+\nocite{*}
 \bibliography{grownet}
 
 \end{document}
