@@ -132,7 +132,7 @@ Thus two originally adjacent nodes can be moved apart around other nodes, formin
 
 \begin{figure}
 \includegraphics[width=\linewidth]{figures/figPLvsN.pdf}
-\caption{\label{pathlength}Semilogarithmic plot of characteristic graph path length ($\ell$) shows the desired scaling, $\ell \sim \log N$. Note that in general the average shortest path is shorter in the higher dimensions. The blue points represent the Sphere Network Model ($\alpha = d-1$), while the red points represent the Plum Pudding Network Model. The dimensions are represented as follows, 1D - circle; 2D - star; 3D - triangle; 4D - square.}
+\caption{\label{pathlength}Semilogarithmic plot of characteristic graph path length ($\ell$) shows the desired scaling, $\ell \sim \log N$. Note that in general the average shortest path is shorter in the higher dimensions. The blue points are for the Sphere Network Model while the red points are for the Plum Pudding Network Model ($alpha = d-1$ in both cases). Circles, starts, triangles and squares are respectively for $d = 1$,$2$,$3$, and $4$.}
 \end{figure}
 
   \item \textbf{Clustering Coefficient:} The clustering coefficients in this model vary as we change the dimension of the embedding space, but in each case we find that for large $N$ the clustering approaches an asymptotic value. 
@@ -143,7 +143,7 @@ The higher dimensional cases also have this $N$-invariant clustering, and we fin
 
 \begin{figure}
 \includegraphics[width=\linewidth]{figures/figCvsN.pdf}
-\caption{\label{clustN}Clustering coefficient vs. network size. The linear fits have approximately zero slope, showing that for large $N$ the clustering coefficient approaches a non-zero asymptote. The blue points are for the Sphere Network Model while the red points are for the Plum Pudding Network Model. Circles, starts, triangles and squares are respectively for $d = 1$,$2$,$3$, and $4$.}
+\caption{\label{clustN}Clustering coefficient vs. network size. The linear fits have approximately zero slope, showing that for large $N$ the clustering coefficient approaches a non-zero asymptote. The blue points are for the Sphere Network Model while the red points are for the Plum Pudding Network Model ($\alpha = d-1$ in both cases). Circles, starts, triangles and squares are respectively for $d = 1$,$2$,$3$, and $4$.}
 \end{figure}
 
 \end{itemize}
@@ -182,7 +182,7 @@ FIXME: Discuss Fig. \ref{clustdim} and hopefully explain $C \sim d^2$.
 
 \begin{figure}
 \includegraphics[width=\linewidth]{figures/figCvsD.pdf}
-\caption{\label{clustdim}Log-log plot of asymptotic clustering coefficient versus dimension of embedding space reveals that for $d \geq 2$ the clustering ($C$) scales with $d^2$. This relationship, $C \sim d^2$ was found from the slopes of the linear fits. Blue points represent the Sphere Network Model while the red points represent the Plum Pudding Network Model.}
+\caption{\label{clustdim}Log-log plot of asymptotic clustering coefficient versus dimension of embedding space reveals that for $d \geq 2$ the clustering ($C$) scales with $d^2$. This relationship, $C \sim d^2$ was found from the slopes of the linear fits. Blue points are for the Sphere Network Model while the red points are for the Plum Pudding Network Model ($\alpha = d-1$ in both cases).}
 \end{figure}
 
 \section{INVARIANT PROPERTIES}
@@ -216,7 +216,7 @@ H(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}.
 
 \begin{figure}
 \includegraphics[width=\linewidth]{figures/figDegDist.pdf}
-\caption{\label{degdist}Semilogarithmic graph of the degree distribution for 8 models with $N = 10000$ and $m = 4$ compared to the theory in Eq. \eqref{degeq}. The slope of -0.22 agrees with the theoretical slope of $\log \frac{m}{m+1} = \log \frac{4}{5} \approx -0.22$. The blue points represent the Sphere Network Model while the red points represent the Plum Pudding Network Model. The dimensions are represented as follows, 1D - circle; 2D - star; 3D - triangle; 4D - square. Note that an arbitrary linear offset was used to separate data for visualization and thus values on the y-axis are only relative.}
+\caption{\label{degdist}Semilogarithmic graph of the degree distribution for 8 models with $N = 10000$ and $m = 4$ compared to the theory in Eq. \eqref{degeq}. The slope of -0.22 agrees with the theoretical slope of $\log \frac{m}{m+1} = \log \frac{4}{5} \approx -0.22$. The blue points are for the Sphere Network Model while the red points are for the Plum Pudding Network Model. Circles, stars, triangles, and squares are respectively for $d=1$, $2$, $3$, and $4$. Note that an arbitrary linear offset was used to separate data for visualization and thus values on the y-axis are only relative.}
 \end{figure}
 
 Interestingly, this exponentially decaying degree distribution comes only from the growth process and the uniform probability of attaching new links to existing nodes.  
@@ -244,19 +244,28 @@ Results are only presented for the $2$-dimensional case for simplicity, but the 
 
 \subsection{Dependence on $\alpha$, the force exponent}
 \label{sub:forcelaw}
-FIXME: Write this and combine with the appendix
+In calculating the gradients for the gradient-descent algorithm, we use a force law motivated by electrostatics, with the force on node $i$ given by 
+\begin{equation}
+F_i \sim \sum_{i \neq j} \frac{1}{|\textbf{x}_i - \textbf{x}_j|^{\alpha}}, 
+\end{equation}
+with $\alpha = d-1$ in a $d$-dimensional space and $\textbf{x}_i$ the position vector of node $i$.
+Using a force familiar from electrostatics serves a dual purpose, (i) it turns an otherwise difficult problem into a familiar one for which literature is plentiful, and (ii) it provides physical motivation for the movement and dynamics of the nodes in our networks.
+Furthermore, the choice of $\alpha = d-1$ was found to minimize computational time while still achieving the equalization desired compared to larger values of $\alpha$.
+Nevertheless, we find different values of $\alpha$ do not produce significant changes to the structure of our network models.
+Larger values of $\alpha$ simply add computational difficulty to the problem, but if the gradient descent method is implemented with the correct parameters, distinct values of $\alpha$ lead to the same network properties as the models described previously.
+In Fig. \ref{forcelaw} we demonstrate agreement in the clustering coefficient for various values of $\alpha$ for the $d=2$ case in the Sphere Network Model.
+Thus we find that our results apply not only to nodes behaving as negative charges, but to any system where nodes interact through a distatnce-dependent monotonic repulsive force.
+
+\begin{figure}
+\includegraphics[width=\linewidth]{figures/CvsFLaw.pdf}
+\caption{\label{forcelaw}Clustering coefficient vs force exponent $\alpha$ for the $d = 2$ Sphere Network Model, indicating that the network properties generated by this model are independent of the choice of $\alpha$.}
+\end{figure}
 
 \section{CONCLUSION}
-FIXME: Write conclusion.
-
-\section{APPENDIX: FORCE LAWS} 
-In calculating the gradients for the gradient-descent algorithm, we use a scaling taken from the Coulomb force in an arbitrary number of dimensions: $F \propto \frac{1}{r^{d-1}}$ in a $d$-dimensional space where $r$ is the distance between nodes.  
-For the $d$-dimensional ball, the ball and the space in which it was embedded were of the same dimension, which as the dimension used there.  
-In the case of the $d$-dimensional sphere, however, the dimension of the sphere itself, which was one less than that of the embedding space, was used, which produced results approximately similar to those produced from the $d$-dimensional ball.
-We chose these force laws for convenience (fairly simple straightforward force laws help easy computation) and because the natural analogy to electrostatics adds physical significance to our model. 
-However, we found that altering the force law to similar repulsive forces (i.e. changing the dependence on $r$ by altering the exponent) did not produce significant changes in our results.
-A stronger dependence on $r$, such as $F \propto \frac{1}{r^{d+2}}$ simply adds computational difficulty to the problem, but if the gradient descent method is implemented correctly, these distinct force laws lead to the same network properties as the model described in this paper.
-Thus we find that our results apply not only to nodes behaving as electrons, but to any system where nodes interact through a repulsive force.
+We expanded upon the work presented in \cite{ozik2004} to generate small-world networks embedded in more general spaces.
+By allowing nodes to move in space, our models provide a realistic model of how small-world networks can emerge from a growing collection of dynamically interacting and locally constrained vertices.  
+Furthermore, we find that the dimension of the space in which the nodes are embedded determines how they cluster, in particular we find that the clustering coefficient C scales as $C \sim 1/d^{-2}$ for a $d$-dimensional space.
+We hope these finding will spark interest in dynamic spatial networks, as most real world networks grow and shift position in some underlying space.
 
 \bibliography{grownet}
 
