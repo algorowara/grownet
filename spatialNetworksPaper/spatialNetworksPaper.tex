@@ -200,11 +200,14 @@ In addition, for our $d \geq 2$ sphere and plum pudding topologies, exact, globa
 E.g., for $N \gg 1$ on a $2$-dimensional sphere surface, it is known that, although equilibrium positioning through much of the area of the sphere is locally approximately a regular triangular lattice, the sphere's surface curvature leads to point and line defects in the triangular lattice pattern \cite{nelson}.
 Thus a natural question is whether the $d = 1$ cases might have special properties that deviate from those for $d \geq 2$.
 
-FIXME: Discuss Fig.\ref{clustdim} and hopefully explain $C \sim d^{-2}$.
+We find that the clustering has a power law dependence on the dimension of the embedding space, but the power, which we will call $\beta$ is dependent on $m$, so $\beta = \beta(m)$ and $C \sim d^{-\beta}$.
+In Fig.\ref{clustdim} we find that $\beta{4} = 1.85$, while for largers values of $m$ we find $\beta$ decreases, but remains positive.
+We have yet to find a conclusive closed form for the function $\beta(m)$, but for low values of $m$ (high values of $m$ are generally less sensible anyways), we find that $\beta(m) \sim ?????$.
+CONTINUE ANALYSIS ONCE WE HAVE MORE RESULTS.
 
 \begin{figure}
 \includegraphics[width=\linewidth]{figures/figCvsD.pdf}
-\caption{\label{clustdim}Log-log plot of asymptotic clustering coefficient versus dimension of embedding space reveals that for $d \geq 2$ the clustering ($C$) scales with $d^{-2}$. This relationship, $C \sim d^{-2}$ was found from the slopes of the linear fits. Blue points are for the Sphere Network Model while the red points are for the Plum Pudding Network Model ($\alpha = d-1$ in both cases).}
+\caption{\label{clustdim}Log-log plot of asymptotic clustering coefficient versus dimension of embedding space reveals that for $d \geq 2$ the clustering ($C$) scales with $d^{-\beta}$ for some $m$-dependent value $\beta(m)$. Here we find from the slopes of the linear fits that for $m=4$, $\beta(4) \approx 1.85$. Blue points are for the Sphere Network Model while the red points are for the Plum Pudding Network Model ($\alpha = d-1$ in both cases).}
 \end{figure}
 
 \section{INVARIANT PROPERTIES}
@@ -286,7 +289,7 @@ Thus we find that our results apply not only to nodes behaving as negative charg
 \section{CONCLUSION}
 We generalize the idea of geographic attachment preference presented in \cite{ozik2004} to higher dimensional spaces.
 By allowing nodes to move in space, our models provide a realistic model of how small-world networks can emerge from a growing collection of dynamically interacting and locally constrained vertices.  
-Furthermore, we find that the dimension of the space in which the nodes are embedded determines how they cluster, in particular we find that the clustering coefficient C scales as $C \sim 1/d^{-2}$ for a $d$-dimensional space.
+Furthermore, we find that the dimension of the space in which the nodes are embedded determines how they cluster, in particular we find that the clustering coefficient C scales as $C \sim 1/d^{-\beta}$ in a $d$-dimensional space for some positive-valued function $\beta(m)$.
 We hope these finding will spark interest in dynamic spatial networks, as most real world networks grow and move in some underlying space.
 
 \nocite{newmanreview}
