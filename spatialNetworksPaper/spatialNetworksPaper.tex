@@ -120,7 +120,7 @@ On a circle it is trivial to arrange $N$ points along the circumference with uni
 One way to generalize the arrangement procedure is to consider nodes to be point charges and to move them to a minimum electrostatic energy equilibrium configuration. 
 The problem of finding the equilibrium configuration of point charges on the surface of a sphere dates back to 1904 when J.J. Thomson introduced his model of the atom, and the problem of obtaining such an equilibrium is sometimes referred to as the `Thomson problem' \cite{thomson1904}. 
 A related `generalized Thomson problem' assumes that the force between `charges' is proportional to $r^{-\alpha}$ with $\alpha$ not necessarily equal to the Couloumb value, $\alpha = d$ \cite{nelson}.
-In general, our numerical simulations show that results for network properties are independent of $\alpha$ (Sec. \ref{sub:forcelaw}), and our simulations use $\alpha = d-1$.
+In general, our numerical simulations show that results for network properties are weakly dependent on $\alpha$ (Sec. \ref{sub:forcelaw}), and our simulations use $\alpha = d-1$.
 
 Using the generalized Thomson problem as a guide, we develop one of our generalizations to the Circle Model, which we call the Sphere Network Model, as follows.
 We model the nodes as point charges confined to the surface of a $d$-sphere of unit radius.
@@ -145,8 +145,7 @@ This is expected because as the network grows in size, the older nodes get pushe
 These long range links serve to connect spatially separated regions of highly interconnected nodes, dramatically reducing the shortest path length between any two nodes in the network.
 At each time step only geographically local connections are made, but due to the dynamic nature of the nodes' spatial positions, each time step can make existing links longer in physical space, thus building bridges across the network.
 
-\indent
-We see from Fig.\ref{pathlength} that, for a given value of $N$, the characteristic path length decreases with $d$ and is shorter than that of the corresponding 1D case (the original Circle Model).
+\indent We see from Fig.\ref{pathlength} that, for a given value of $N$, the characteristic path length decreases with $d$ and is shorter than that of the corresponding 1D case (the original Circle Model).
 One possible explanation for this feature is that the surface of a higher dimensional sphere provides more freedom for nodes to move around each other, thus increasing the chance that a shortcut is created.
 In the original Circle Model each node, like a boson in a Tonks-Girardeau gas, is forever locked between its two original spatial neighbors \cite{girardeau}, and thus long range links can only be created if new nodes are placed between the two neighbors.
 For $d \geq 2$ the repulsive Couloumb force between point charges allows them to rearrange thier relative positions by moving in $d$ dimensions in order to minimize the potential energy of the configuration.
@@ -203,7 +202,7 @@ Thus a natural question is whether the $d = 1$ cases might have special properti
 In fact the $d = 1$ case is special, but in an unexpected way; we find that $d = 1$ does not follow the trend in clustering that we find for higher dimensions. 
 For $d \geq 2$ the clustering has a power law dependence on the dimension of the embedding space, but the power, which we will call $\beta$ is dependent on $m$, so $\beta = \beta(m)$ and $C \sim d^{-\beta}$.
 This decrease in clustering as dimension increases is due to the greater space in which nodes can spread out in higher dimensions.
-As dimension increases the nodes have more ways to move around each other, this freedom allows nodes to rearrange their relative positions, thus reducing the possible number of closed triangles of nodes.
+As dimension increases the nodes have more ways to move around each other, this freedom allows nodes to rearrange their relative positions, thus reducing the probability of forming a closed triangle with the addition of new nodes.
 This reveals why the $d = 1$ case is special; nodes cannot change their relative positions when confined to only one dimension.
 In Fig.\ref{clustdim} we find that $\beta{4} = 1.85$, while for largers values of $m$ we find $\beta$ decreases, but remains positive.
 We have yet to find a conclusive closed form for the function $\beta(m)$, but for low values of $m$ (high values of $m$ are generally less sensible anyways), we find that $\beta(m) \sim ?????$.
@@ -270,7 +269,13 @@ This represents a specific example of the fact that in dynamically growing netwo
 Numerical simulations of the mean degree as a function of node age, Fig.\ref{degage}, demonstrate that Eq. \eqref{ageeq} is satisfied for both the Sphere Network (blue points) and Plum Pudding Network (red points) Models.
 Results are only presented for the $2$-dimensional case for simplicity, but the Eq. \eqref{ageeq} has no dependence on the embedding space, and thus holds for other dimensions as well.
 
-\subsection{Dependence on $\alpha$, the force exponent}
+\section{CONCLUSION}
+We generalize the idea of geographic attachment preference presented in \cite{ozik2004} to higher dimensional spaces.
+By allowing nodes to move in space, our models provide a realistic model of how small-world networks can emerge from a growing collection of dynamically interacting and locally constrained vertices.  
+Furthermore, we find that the dimension of the space in which the nodes are embedded determines how they cluster, in particular we find that the clustering coefficient C scales as $C \sim 1/d^{-\beta}$ in a $d$-dimensional space for some positive, $m$-dependent value $\beta$.
+We hope these finding will spark interest in spatial networks with dynamically located nodes, as most real world networks grow and move in some underlying space.
+
+\section{APPENDIX: $\alpha$, THE FORCE EXPONENT}
 \label{sub:forcelaw}
 In calculating the forces for the gradient descent algorithm, we use a force law motivated by electrostatics, with the force on node $i$ given by 
 \begin{equation}
@@ -279,21 +284,16 @@ F_i \sim \sum_{i \neq j} \frac{1}{|\textbf{x}_i - \textbf{x}_j|^{\alpha}},
 with $\alpha = d-1$ in a $d$-dimensional space and $\textbf{x}_i$ the position vector of node $i$.
 Using a force familiar from electrostatics serves a dual purpose, (i) it turns an otherwise difficult problem into a familiar one for which literature is plentiful, and (ii) it provides physical motivation for the movement and dynamics of the nodes in our networks.
 Furthermore, the choice of $\alpha = d-1$ was found to minimize computational time while still achieving the desired equalization.
-Nevertheless, we find different values of $\alpha$ do not produce significant changes to the structure of our network models.
-Larger values of $\alpha$ simply add computational difficulty to the problem, but if the gradient descent method is implemented with the correct parameters, distinct values of $\alpha$ lead to the same network properties as the models described previously.
-In Fig.\ref{forcelaw} we demonstrate agreement in the clustering coefficient for various values of $\alpha$ for the $d=2$ case in the Sphere Network Model.
-Thus we find that our results apply not only to nodes behaving as negative charges, but to any system where nodes interact through a monotonic repulsive force.
+We find different values of $\alpha$ produce minor changes to the structure of our network models, in particular the clustering is dependent on the choice of $\alpha$.
+While larger values of $\alpha$ add computational difficulty to the problem, they also serve to reduce the clustering of the network model.
+In Fig.\ref{forcelaw} we show the variation in the clustering coefficient for various values of $\alpha$ for the $d = 3$ case in the Sphere Network Model.
+Nevertheless, for each reasonable value of $\alpha$ (i.e. for $\alpha \sim \mathcal O (1)$) the clustering approaches a non-zero value independent of $N$, indicating that for these values of $\alpha$ we still produce small-world networks.
+Thus we find that although minor differences arise, our results apply not only to nodes behaving as negative charges in $d$ dimensions, but to systems where nodes interact through a physically sensible inverse force-law.
 
 \begin{figure}
 \includegraphics[width=\linewidth]{figures/figCvsAlpha.pdf}
-\caption{\label{forcelaw}Clustering coefficient vs force exponent $\alpha$ for the $d = 3$ Sphere Network Model, with $m=4$ and $N = 100$. Since $N = 100$ is generally too low for a consistent value for clustering, the errors bars display standard deviation between 10 randomly grown networks. The agreement for different $\alpha$ within a standard deviation indicates that the network properties generated by this model are independent of the choice of $\alpha$.}
+\caption{\label{forcelaw}Clustering coefficient vs force exponent $\alpha$ for the $d = 3$ Sphere Network Model, with $m = 4$ and $N = 1000$. Each data point represents an average over the clustering coefficient of ten randomly grown networks with standard deviation error bars; the small error indicates that this value is a stable large $N$ value for the clustering. We find that for larger $\alpha$ the clustering decreases but remains non-zero, indicating that these values of $\alpha$ still produce small-world networks.}
 \end{figure}
-
-\section{CONCLUSION}
-We generalize the idea of geographic attachment preference presented in \cite{ozik2004} to higher dimensional spaces.
-By allowing nodes to move in space, our models provide a realistic model of how small-world networks can emerge from a growing collection of dynamically interacting and locally constrained vertices.  
-Furthermore, we find that the dimension of the space in which the nodes are embedded determines how they cluster, in particular we find that the clustering coefficient C scales as $C \sim 1/d^{-\beta}$ in a $d$-dimensional space for some positive-valued function $\beta(m)$.
-We hope these finding will spark interest in dynamic spatial networks, as most real world networks grow and move in some underlying space.
 
 \nocite{newmanreview}
 \bibliography{grownet}
