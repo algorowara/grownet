@@ -1,4 +1,4 @@
-\documentclass[aps,pre,reprint,superscriptaddress,amsmath,amssymb,nofootinbib]{revtex4-1}
+\documentclass[aps,pre,manuscript,superscriptaddress,amsmath,amssymb,nofootinbib]{revtex4-1}
 \usepackage{graphicx}
 \usepackage{dcolumn}
 \usepackage{bm}
@@ -65,22 +65,22 @@ In order for a network to have the small-world property we require that this clu
 Real world networks from social networks to neuronal networks exhibit the small-world property, revealing it as something fundamental about the structure or growth process of many networks.
 
 Another key feature of real networks is that they often live in some physical space with naturally imposed spatial contraints. 
-E.g., the Internet, a network of routers connected via cables, is embedded on the $2$-dimensional surface of the Earth and can only have links of a certain physical distance due to the cost of wiring.
+E.g., the Internet, a network of routers connected via cables, is embedded on the $2$-dimensional surface of the Earth and tend to have mostly local links due to the cost of wiring.
 This has led many researchers to consider network models with spatial embedding \cite{ozik2004,przuljgeo,hermannspace,bullockspatial,guan1D,zhang2006,zhang2007}.
 Work on this topic has revealed that spatially constrained networks can lead to small-world networks, even when links are only formed locally.
-Many of these models (e.g. \cite{bullockspatial,guan1D,przuljgeo}) introduce growing network models, but force the nodes to remain fixed in their initial spatial location.
+Much of this research (e.g. \cite{bullockspatial,guan1D,przuljgeo}) introduces growing network models, but forces the nodes to remain fixed in their initial spatial location.
 Of the literature on the subject, only \cite{ozik2004} introduces a growing network model in which nodes can move once placed in a spatial substrate.
-The importance of dynamics in the growth of the network cannot be understated, real world networks are often dynamic in both time and space, with new nodes being added while existing nodes are free to move about.
-For example social networks generally have spatial attachment preference (i.e. people tend to make friends who live near them), but people don't stay still, in fact many features of social networks arise from the fact that people in are able to travel the globe. 
-As such, we seek to further the work performed in \cite{ozik2004} by introducing a class of growing network models that have spatially contrained nodes free to move about in the embedding surface. 
+The importance of dynamics in the growth of the network cannot be understated, real world networks are often dynamic in both time and space, with new nodes being added while existing nodes move due to some interaction.
+For example, social networks generally have spatial attachment preferences (i.e. people tend to make friends who live near them), but people don't stay still; in fact, many features of social networks arise from the fact that people in are able to travel the globe. 
+As such, we seek to further the work performed in \cite{ozik2004} by introducing a class of growing network models that have spatially contrained nodes able to move about in the embedding surface. 
 
 Models of spatially embedded networks have been used previously to describe real world networks.
 From the neuronal networks of the \textit{C. elegans} worm \cite{plenzcascade} to the protein interaction network of the fruit-fly \textit{Drosophilia melanogaster} \cite{fruitfly}, biological researchers have used network theory to describe physically embedded networks.
 Further applications of spatial network models are discussed in \cite{neuronembedding,barthelemy,vazquez2002}.
 This motivates us to explore how networks depend on the space in which we embed them, and what features of this space are most important in determining network properties.
 
-\section{THE CIRCLE MODEL}
-In Ref. \cite{ozik2004} the authors presented a model, henceforth referred to as the Circle Mode, which considers a network which initially has $m+1$ uniformly separated, all-to-all connected nodes on the circumference of a circle. 
+\section{THE CIRCLE NETWORK MODEL}
+In Ref. \cite{ozik2004} the authors presented a model, henceforth referred to as the Circle Network Model, which considers a network which initially has $m+1$ uniformly separated, all-to-all connected nodes on the circumference of a circle. 
 At each discrete time step the network is grown according to the following rules: 
 (1) a new node is placed at a randomly selected point on the circumference of the circle;
 (2) the new node is linked to its $m$ nearest neighbors;
@@ -88,41 +88,41 @@ At each discrete time step the network is grown according to the following rules
 (4) steps (1-3) are repeated until the network has $N$ nodes.
 Since the network is incremented in size by one node each time step, the network size $N$ can also be used as the system time parameter.  
 It has been shown \cite{ozik2004} that this growth model leads to a small-world network with an exponentially decaying degree distribution. 
-The original goal of the Circle Model was to explore the effect that geographic attachment locality has on the growth of networks.
+The original goal of the Circle Network Model was to explore the effect that geographic attachment locality has on the growth of networks.
 In this paper, we extend this analysis by considering networks growing by geographic attachment preference in more general spaces. 
 
 We define a network growth procedure to yield the small-world property if, as $N \to \infty$,
 (i) the average degree $\langle k \rangle$ of a node approaches a non-zero value,
 (ii) the characteristic graph path length (defined as the average value of the smallest number of links joining node pairs) does not grow with $N$ faster than $\log N$, and
 (iii) the clustering coefficient (defined below) does not approach zero.
-The original Circle Model exhibits these properties.
+The original Circle Network Model exhibits these properties.
 \begin{itemize}
   \item \textbf{Degree Distribution:} The degree distribution $H(k)$ is the probablility that a randomly selected node has $k$ network connections at time $N$.
-For large $N$, the degree distribution of the Circle Model is given by 
+For large $N$, the degree distribution of the Circle Network Model is given by 
 \begin{equation}\label{eq:degdist}
 H(k) = \frac{1}{m+1}\left(\frac{m}{m+1}\right)^{k-m}
 \end{equation}
 for $k \geq m$, and $H(k) = 0$ for $k < m$ \cite{ozik2004}.
 Since the number of new links added each time a new node is added is $m$, Eq. \eqref{eq:degdist} yields the result that the average node degree $\langle k \rangle$ is $2m$, satisfying the criterion (i) for the small-world property.
-  \item \textbf{Characteristic Path Length:} In the Circle Model, simulation results show the path length scaling, $\ell \sim \log N$ [criterion ii].
+  \item \textbf{Characteristic Path Length:} In the Circle Network Model, simulation results show the path length scaling, $\ell \sim \log N$ [criterion ii].
 This may be explained intuitively by noting that as new nodes are added they push apart the older connected nodes, lengthening the spatial distance traversed by older edges. 
 These older nodes can then have geographically long links, thus dramatically decreasing the shortest graph path length between any given pair of nodes.
-  \item \textbf{Clustering Coefficient:} For the Circle Model it was shown  that the clustering coefficient approaches a constant, positive, $m$-dependent value as $N \to \infty$ [criterion (iii)]. 
+  \item \textbf{Clustering Coefficient:} For the Circle Network Model it was shown  that the clustering coefficient approaches a constant, positive, $m$-dependent value as $N \to \infty$ [criterion (iii)]. 
 The clustering coefficient of a network is the fraction of connected triples which are also triangles.
 This measures whether two nodes which are both connected to a third node are likely to be connected to one another. \footnote{In \cite{ozik2004} an alternate definition of clustering was used, specifically, the average of the local clustering $C_i$ of each node, $C_i = q_i/[\frac{1}{2} k_i (k_i-1)]$ where $q_i$ is the number of links between the $k_i$ neighbors of node $i$.}
 \end{itemize}
-The Circle Model, being fundamentally based upon the supposed one-dimensional nature and spatial periodicity of the underlying space (a circle), naturally raises the question of whether similar properties apply for other types of underlying spaces, e.g., spaces with higher dimensionality. 
+The Circle Network Model, being fundamentally based upon the supposed one-dimensional nature and spatial periodicity of the underlying space (a circle), naturally raises the question of whether similar properties apply for other types of underlying spaces, e.g., spaces with higher dimensionality. 
 The goal of this article is to address this question.
 
 \section{THE SPHERE NETWORK MODEL}
-One natural generalization from embedding nodes on the one-dimensional circumference of a circle is to embed them on the two-dimensional surface of a sphere, or more generally on the $d$-dimensional surface of a hypersphere ($d=1$ corresponding to the Circle Model).
+One natural generalization from embedding nodes on the one-dimensional circumference of a circle is to embed them on the two-dimensional surface of a sphere, or more generally on the $d$-dimensional surface of a hypersphere ($d=1$ corresponding to the Circle Network Model).
 On a circle it is trivial to arrange $N$ points along the circumference with uniform spacing, but the analogous procedure is less well-defined on higher dimensional surfaces.
 One way to generalize the arrangement procedure is to consider nodes to be point charges and to move them to a minimum electrostatic energy equilibrium configuration. 
 The problem of finding the equilibrium configuration of point charges on the surface of a sphere dates back to 1904 when J.J. Thomson introduced his model of the atom, and the problem of obtaining such an equilibrium is sometimes referred to as the `Thomson problem' \cite{thomson1904}. 
 A related `generalized Thomson problem' assumes that the force between `charges' is proportional to $r^{-\alpha}$ with $\alpha$ not necessarily equal to the Couloumb value, $\alpha = d$ \cite{nelson}.
 In general, our numerical simulations show that results for network properties are weakly dependent on $\alpha$ (Sec. \ref{sub:forcelaw}), and our simulations use $\alpha = d-1$.
 
-Using the generalized Thomson problem as a guide, we develop one of our generalizations to the Circle Model, which we call the Sphere Network Model, as follows.
+Using the generalized Thomson problem as a guide, we develop one of our generalizations to the Circle Network Model, which we call the Sphere Network Model, as follows.
 We model the nodes as point charges confined to the surface of a $d$-sphere of unit radius.
 At each time step, we drop a new node onto the sphere at random with uniform probability density per unit area and then add links to connect it to its $m$ nearest neighbors, where distance is defined as the shortest great circle path along the surface of the sphere between two nodes.
 Next we minimize the potential energy of the configuration by a steepest descent procedure, 
@@ -133,22 +133,22 @@ Next we minimize the potential energy of the configuration by a steepest descent
 where $\textbf{x}_i$ is the $(d+1)$ dimensional position vector of node $i$, $|\textbf{x}_i| \equiv 1$, and $P\{...\}$ denotes projection onto the $d$-dimensional surface of the sphere.
 Note that, as new nodes are added, this procedure tends to yield a local energy minimum, as opposed to the global minimum, and we view this as being appropriate for the situations of interest to us (e.g., biological network growth processes).
 For large $N$, the repulsive interaction ensures that the points are distributed approximately uniformly on the surface of the $d$-sphere.
-In this way we reproduce the key features of the Circle Model in a higher dimensional space.
+In this way we reproduce the key features of the Circle Network Model in a higher dimensional space.
 
 As a result of the repulsive force, the minimum energy configuration for these points on the sphere is one where the points are distributed in an approximately uniform manner on the surface of the sphere.
 In order to check if this model produces a small world network we determine the following three properties:
 \begin{itemize}
   \item \textbf{Degree Distribution:} The approximately uniform distribution of nodes on the surface of the $d$-sphere leads to an approximately equal probability of nodes having their degree increased by a link to a new node at each time step.
-Since this is the key feature leading to Eq. \eqref{eq:degdist}, we again find that the degree distribution for this new model is identical to the degree distribution for the original Circle Model (for more detail see Sec.~\ref{sub:degreedistribution}).
+Since this is the key feature leading to Eq. \eqref{eq:degdist}, we again find that the degree distribution for this new model is identical to the degree distribution for the original Circle Network Model (for more detail see Sec.~\ref{sub:degreedistribution}).
   \item \textbf{Characteristic Path Length:} For this model we find (blue points in Fig.\ref{pathlength}) that the the average shortest path length $\ell$ scales logarithmically with the network size $N$, that is, $\ell \sim \log N$. 
 This is expected because as the network grows in size, the older nodes get pushed apart by the repulsive Coulumb force thus leaving bridges across the network that span a significant geographic distance.
 These long range links serve to connect spatially separated regions of highly interconnected nodes, dramatically reducing the shortest path length between any two nodes in the network.
 At each time step only geographically local connections are made, but due to the dynamic nature of the nodes' spatial positions, each time step can make existing links longer in physical space, thus building bridges across the network.
 
-\indent We see from Fig.\ref{pathlength} that, for a given value of $N$, the characteristic path length decreases with $d$ and is shorter than that of the corresponding 1D case (the original Circle Model).
+\indent We see from Fig.\ref{pathlength} that, for a given value of $N$, the characteristic path length decreases with $d$ and is shorter than that of the corresponding 1D case (the original Circle Network Model).
 One possible explanation for this feature is that the surface of a higher dimensional sphere provides more freedom for nodes to move around each other, thus increasing the chance that a shortcut is created.
-In the original Circle Model each node, like a boson in a Tonks-Girardeau gas, is forever locked between its two original spatial neighbors \cite{girardeau}, and thus long range links can only be created if new nodes are placed between the two neighbors.
-For $d \geq 2$ the repulsive Couloumb force between point charges allows them to rearrange thier relative positions by moving in $d$ dimensions in order to minimize the potential energy of the configuration.
+In the original Circle Network Model each node, like a boson in a Tonks-Girardeau gas, is forever locked between its two original spatial neighbors \cite{girardeau}, and thus long range links can only be created if new nodes are placed between the two neighbors.
+For $d \geq 2$ the repulsive Couloumb force between point charges allows them to rearrange their relative positions by moving in $d$ dimensions in order to minimize the potential energy of the configuration.
 Thus two originally adjacent nodes can be moved apart around other nodes, forming long range links; of course placing new nodes between them will also create bridges, but these effects combine to produce shorter path length in the higher dimensional cases.
 
 \begin{figure}
@@ -189,10 +189,10 @@ The repulsive force between nodes ensures that they are spaced approximately equ
 Due to the nature of Gauss's Law for any dimension $d$ the `force' of attraction between a node and the center of the background constant-density positive charge cloud is proportional to the value of the radial coordinate of the node.
 This means that we can visualize this model as a collection of point charges all connected to the origin by springs (a harmonic potential) and interacting with each other via the dimensionally appropriate Couloumb force.  
 
-We now consider the one-dimensional Plum Pudding Network Model on a line segment and compare it to the original Circle Model.
+We now consider the one-dimensional Plum Pudding Network Model on a line segment and compare it to the original Circle Network Model.
 For the electrostatic problem on a one-dimensional line segment, we regard the node particles as charge sheets, which, through Gauss's law, leads to a constant separation-distance-independent repulsive force between electron pairs, thus the equilibrium for both the analogous $1$-dimensional Sphere Network (i.e. Circle) and Plum Pudding Network Models yields equally spaced nodes. 
 On the circle every node borders two internode intervals, while on the line segment, this is true for $(N-2)$ interior nodes with only the two boundary nodes bordering just one internode interval.
-Thus as $N \to \infty$, the one-dimensional Plum Pudding Network Model is expected to yield results that are identical to those of the Circle Model.
+Thus as $N \to \infty$, the one-dimensional Plum Pudding Network Model is expected to yield results that are identical to those of the Circle Network Model.
 Two fundamental properties of our one-dimensional models are that, when a new node is added, relaxation to equilibrium preserves the relative spatial ordering of nodes, and the equilibrium has uniform internodal spacing.
 In contrast, for $d \geq 2$ the concept of linear ordering is absent.
 In addition, for our $d \geq 2$ sphere and plum pudding topologies, exact, global regular-lattice positioning is not possible.
@@ -272,7 +272,7 @@ Results are only presented for the $2$-dimensional case for simplicity, but the 
 \section{CONCLUSION}
 We generalize the idea of geographic attachment preference presented in \cite{ozik2004} to higher dimensional spaces.
 By allowing nodes to move in space, our models provide a realistic model of how small-world networks can emerge from a growing collection of dynamically interacting and locally constrained vertices.  
-Furthermore, we find that the dimension of the space in which the nodes are embedded determines how they cluster, in particular we find that the clustering coefficient C scales as $C \sim 1/d^{-\beta}$ in a $d$-dimensional space for some positive, $m$-dependent value $\beta$.
+Furthermore, we find that the dimension of the space in which the nodes are embedded determines how they cluster, in particular we find that the clustering coefficient C scales as $C \sim d^{-\beta}$ in a $d$-dimensional space for some positive, $m$-dependent value $\beta$.
 We hope these finding will spark interest in spatial networks with dynamically located nodes, as most real world networks grow and move in some underlying space.
 
 \section{APPENDIX: $\alpha$, THE FORCE EXPONENT}
