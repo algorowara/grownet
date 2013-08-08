@@ -120,7 +120,8 @@ On a circle it is trivial to arrange $N$ points along the circumference with uni
 One way to generalize the arrangement procedure is to consider nodes to be point charges and to move them to a minimum electrostatic energy equilibrium configuration. 
 The problem of finding the equilibrium configuration of point charges on the surface of a sphere dates back to 1904 when J.J. Thomson introduced his model of the atom, and the problem of obtaining such an equilibrium is sometimes referred to as the `Thomson problem' \cite{thomson1904}. 
 A related `generalized Thomson problem' assumes that the force between `charges' is proportional to $r^{-\alpha}$ with $\alpha$ not necessarily equal to the Couloumb value, $\alpha = d$ \cite{nelson}.
-In general, our numerical simulations show that results for network properties are weakly dependent on $\alpha$ (Sec. \ref{sub:forcelaw}), and our simulations use $\alpha = d-1$.
+In general, our numerical simulations show that clustering is dependent on $\alpha$ (Sec. \ref{sub:forcelaw}), and our simulations use $\alpha = d-1$.
+Nevertheless, choices of $\alpha$ other than $d-1$ (but $\alpha \sim \mathcal O(d)$) still produce networks with the small-world property.
 
 Using the generalized Thomson problem as a guide, we develop one of our generalizations to the Circle Network Model, which we call the Sphere Network Model, as follows.
 We model the nodes as point charges confined to the surface of a $d$-sphere of unit radius.
@@ -205,7 +206,6 @@ This decrease in clustering as dimension increases is due to the greater space i
 As dimension increases the nodes have more ways to move around each other, this freedom allows nodes to rearrange their relative positions, thus reducing the probability of forming a closed triangle with the addition of new nodes.
 This reveals why the $d = 1$ case is special; nodes cannot change their relative positions when confined to only one dimension.
 In Fig.\ref{clustdim} we find that $\beta{4} = 1.85$, while for largers values of $m$ we find $\beta$ decreases, but remains positive.
-We have yet to find a conclusive closed form for the function $\beta(m)$, but for low values of $m$ (high values of $m$ are generally less sensible anyways), we find that $\beta(m) \sim ?????$.
 
 \begin{figure}
 \includegraphics[width=\linewidth]{figures/figCvsD.pdf}
@@ -289,10 +289,12 @@ While larger values of $\alpha$ add computational difficulty to the problem, the
 In Fig.\ref{forcelaw} we show the variation in the clustering coefficient for various values of $\alpha$ for the $d = 3$ case in the Sphere Network Model.
 Nevertheless, for each reasonable value of $\alpha$ (i.e. for $\alpha \sim \mathcal O (1)$) the clustering approaches a non-zero value independent of $N$, indicating that for these values of $\alpha$ we still produce small-world networks.
 Thus we find that although minor differences arise, our results apply not only to nodes behaving as negative charges in $d$ dimensions, but to systems where nodes interact through a physically sensible inverse force-law.
+A power law was found relating the clustering to the choice of $\alpha$ for the $d = 3$ Sphere Network Model, but further investigation is needed to determine whether this power law applies to the other models.
+We leave this to future research as the focus of our work has been growing network models in analogy to electrostatics, which represents the $\alpha = d-1$ case we presented in this article.
 
 \begin{figure}
 \includegraphics[width=\linewidth]{figures/figCvsAlpha.pdf}
-\caption{\label{forcelaw}Clustering coefficient vs force exponent $\alpha$ for the $d = 3$ Sphere Network Model, with $m = 4$ and $N = 1000$. Each data point represents an average over the clustering coefficient of ten randomly grown networks with standard deviation error bars; the small error indicates that this value is a stable large $N$ value for the clustering. We find that for larger $\alpha$ the clustering decreases but remains non-zero, indicating that these values of $\alpha$ still produce small-world networks.}
+\caption{\label{forcelaw}Clustering coefficient vs force exponent $\alpha$ for the $d = 3$ Sphere Network Model, with $m = 4$ and $N = 1000$. Each data point represents an average over the clustering coefficient of ten randomly grown networks with standard deviation error bars; the small error indicates that this value is a stable large $N$ value for the clustering. We find that for larger $\alpha$ the clustering decreases but remains non-zero, indicating that these values of $\alpha$ still produce small-world networks. In particular, for the $d = 3$ Sphere Network Model we find a power law between clustering and the choice of force law, $C \sim 0.26\alpha^{-.39}$}
 \end{figure}
 
 \nocite{newmanreview}
